@@ -70,6 +70,24 @@ export const tos = (req: Request, res: Response) => {
   res.render("tos/read");
 };
 
+export const getTermsOfService = (_req: Request, res: Response): void => {
+  res.render("tos/read");
+};
+
+/**
+ * Modern UI preview page - always shows modern interface
+ * @route GET /modern
+ */
+export const modernPreview = async (req: Request, res: Response): Promise<void> => {
+  const config = getConfig();
+  
+  return res.render("home-modern", {
+    title: "SignumLBRI - Modern UI Preview",
+    config: config,
+    isAuthenticated: req.user ? true : false,
+    user: req.user || null
+  });
+};
 
 export const index = async (req: Request, res: Response): Promise<void> => {
   const config = getConfig();

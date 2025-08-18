@@ -47,29 +47,29 @@ mixin modern-carousel(config)
           .absolute.inset-0.bg-gradient-to-r.from-black/60.via-black/30.to-transparent
           
           //- Content Container
-          .relative.z-10.flex.items-center.justify-start.h-full.px-6.md:px-12.lg:px-20
+          .relative.z-10.flex.items-center.justify-start.h-full.px-6(class="md:px-12 lg:px-20")
             .max-w-2xl.text-white.animate-fade-in-up(
               class=`slide-content-${index}`
             )
               //- Subtitle
               if slide.subtitle
-                .text-sm.md:text-base.font-medium.text-blue-200.mb-2.tracking-wide.uppercase
+                .text-sm.font-medium.text-blue-200.mb-2.tracking-wide.uppercase(class="md:text-base")
                   = slide.subtitle
               
               //- Title
-              h2.text-3xl.md:text-5xl.lg:text-6xl.font-bold.mb-4.leading-tight.drop-shadow-lg
+              h2.text-3xl.font-bold.mb-4.leading-tight.drop-shadow-lg(class="md:text-5xl lg:text-6xl")
                 = slide.title
               
               //- Description
               if slide.description
-                p.text-lg.md:text-xl.text-gray-200.mb-6.md:mb-8.leading-relaxed.max-w-xl
+                p.text-lg.text-gray-200.mb-6.leading-relaxed.max-w-xl(class="md:text-xl md:mb-8")
                   = slide.description
               
               //- Call to Action
               if slide.ctaText && slide.ctaUrl
-                a.inline-flex.items-center.px-8.py-4.bg-white/10.backdrop-blur-sm.text-white.font-semibold.rounded-full.border.border-white/20.transition-all.duration-300.hover:bg-white/20.hover:scale-105.hover:shadow-xl.focus:outline-none.focus:ring-4.focus:ring-white/30(
+                a.inline-flex.items-center.px-8.py-4.bg-white.bg-opacity-10.backdrop-blur-sm.text-white.font-semibold.rounded-full.border.border-white.border-opacity-20.transition-all.duration-300(
                   href=slide.ctaUrl
-                  class="group"
+                  class="group hover:bg-white/20 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-white/30"
                 )
                   = slide.ctaText
                   svg.ml-2.w-5.h-5.transition-transform.duration-300.group-hover:translate-x-1(
@@ -86,12 +86,14 @@ mixin modern-carousel(config)
     
     //- Navigation Arrows
     if showArrows
-      button.carousel-prev.absolute.left-4.md:left-6.top-1/2.-translate-y-1/2.w-12.h-12.md:w-14.md:h-14.bg-white/10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.hover:bg-white/20.hover:scale-110.focus:outline-none.focus:ring-4.focus:ring-white/30.z-20(
+      button.carousel-prev.absolute.left-4.top-1/2.-translate-y-1/2.w-12.h-12.bg-white.bg-opacity-10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.z-20(
         type="button"
         aria-label="Previous slide"
         tabindex="0"
+        class="md:left-6 md:w-14 md:h-14 hover:bg-white/20 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/30"
       )
-        svg.w-6.h-6.md:w-7.md:h-7(
+        svg.w-6.h-6(
+          class="md:w-7 md:h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -103,12 +105,14 @@ mixin modern-carousel(config)
             d="M15 19l-7-7 7-7"
           )
       
-      button.carousel-next.absolute.right-4.md:right-6.top-1/2.-translate-y-1/2.w-12.h-12.md:w-14.md:h-14.bg-white/10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.hover:bg-white/20.hover:scale-110.focus:outline-none.focus:ring-4.focus:ring-white/30.z-20(
+      button.carousel-next.absolute.right-4.top-1/2.-translate-y-1/2.w-12.h-12.bg-white.bg-opacity-10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.z-20(
         type="button"
         aria-label="Next slide"
         tabindex="0"
+        class="md:right-6 md:w-14 md:h-14 hover:bg-white/20 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/30"
       )
-        svg.w-6.h-6.md:w-7.md:h-7(
+        svg.w-6.h-6(
+          class="md:w-7 md:h-7"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

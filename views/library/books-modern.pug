@@ -1,6 +1,5 @@
 extends ../layout_tailwindcss
-include ../mixins/a.pug
-include ../mixins/modern-carousel.pug
+include ../mixins/modern-carousel
 
 block content
     // Hero Section with Carousel
@@ -8,20 +7,20 @@ block content
         // Background Effects
         .absolute.inset-0.bg-gradient-to-br.from-blue-900.via-purple-900.to-indigo-900
         .absolute.inset-0.opacity-20
-            .absolute.top-10.left-10.w-72.h-72.bg-purple-500.rounded-full.filter.blur-3xl.animate-pulse
-            .absolute.bottom-10.right-10.w-96.h-96.bg-blue-500.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 2s")
-            .absolute.top-1/3.right-1/4.w-64.h-64.bg-indigo-500.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 4s")
+            .absolute.top-10.left-10.w-72.h-72.bg-purple-500.rounded-full.blur-3xl.animate-pulse
+            .absolute.bottom-10.right-10.w-96.h-96.bg-blue-500.rounded-full.blur-3xl.animate-pulse(style="animation-delay: 2s")
+            .absolute.top-1/3.right-1/4.w-64.h-64.bg-indigo-500.rounded-full.blur-3xl.animate-pulse(style="animation-delay: 4s")
 
         .container.mx-auto.px-4.relative.z-10
-            .grid.lg:grid-cols-2.gap-12.items-center
+            .grid.gap-12.items-center(class="lg:grid-cols-2")
                 // Left Side - Content
                 .text-left.space-y-6(class="lg:pr-8")
                     .glassmorphism-light.p-8.rounded-2xl.backdrop-blur-xl.border.border-white.border-opacity-20
-                        h1.text-5xl.md:text-7xl.font-bold.mb-6
+                        h1.text-5xl.font-bold.mb-6(class="md:text-7xl")
                             span.bg-gradient-to-r.from-white.to-blue-200.bg-clip-text.text-transparent
                                 = language.website.title
                         
-                        h2.text-2xl.md:text-3xl.font-serif.text-blue-200.mb-6.leading-relaxed
+                        h2.text-2xl.font-serif.text-blue-200.mb-6.leading-relaxed(class="md:text-3xl")
                             = language.website.signature
                         
                         p.text-lg.text-gray-200.leading-relaxed.mb-8
@@ -29,7 +28,7 @@ block content
                             br
                             small.text-gray-400.italic= language.website.creator
 
-                        .flex.flex-col.sm:flex-row.gap-4.mt-8
+                        .flex.flex-col.gap-4.mt-8(class="sm:flex-row")
                             +a-button("/book/add").modern-btn.modern-btn-primary.text-lg.px-8.py-4
                                 = language.website.button.addBook
                             a(href="#books").modern-btn.modern-btn-secondary.text-lg.px-8.py-4.no-underline.text-center
@@ -37,7 +36,7 @@ block content
 
                 // Right Side - Hero Visual
                 .relative.flex.justify-center.items-center
-                    .glassmorphism.p-8.rounded-3xl.w-full.max-w-md.transform.hover:scale-105.transition-transform.duration-500
+                    .glassmorphism.p-8.rounded-3xl.w-full.max-w-md.transform.transition-transform.duration-500(class="hover:scale-105")
                         .text-center.space-y-6
                             .w-32.h-32.mx-auto.rounded-full.bg-gradient-to-r.from-blue-400.to-purple-500.flex.items-center.justify-center.mb-6
                                 svg.w-16.h-16.text-white(fill="currentColor", viewBox="0 0 20 20")
@@ -67,7 +66,7 @@ block content
                         svg.w-8.h-8.text-blue-400(fill="currentColor", viewBox="0 0 20 20")
                             path(d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
                     
-                    h2.text-4xl.md:text-5xl.font-bold.mb-6
+                    h2.text-4xl.font-bold.mb-6(class="md:text-5xl")
                         span.bg-gradient-to-r.from-white.to-blue-200.bg-clip-text.text-transparent
                             Available Books by School
                     
@@ -77,7 +76,7 @@ block content
                 // Schools Grid
                 .space-y-16
                     each schoolEntry in data
-                        .glassmorphism.rounded-3xl.p-8.hover:shadow-2xl.transition-all.duration-500
+                        .glassmorphism.rounded-3xl.p-8.transition-all.duration-500(class="hover:shadow-2xl")
                             // School Header
                             .flex.items-center.mb-8
                                 .w-16.h-16.rounded-full.overflow-hidden.mr-4.ring-4.ring-blue-400.ring-opacity-50
@@ -90,9 +89,9 @@ block content
                                     p.text-gray-400 #{schoolEntry.book.length} books available
 
                             // Books Grid
-                            .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.xl:grid-cols-4.gap-6
+                            .grid.grid-cols-1.gap-6(class="md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4")
                                 each bookEntry in schoolEntry.book
-                                    .book-card.glassmorphism-light.rounded-2xl.p-6.hover:scale-105.transform.transition-all.duration-300.cursor-pointer
+                                    .book-card.glassmorphism-light.rounded-2xl.p-6.transform.transition-all.duration-300.cursor-pointer(class="hover:scale-105")
                                         // Book Cover
                                         .relative.mb-4.rounded-xl.overflow-hidden.bg-gradient-to-br.from-gray-700.to-gray-800
                                             .aspect-w-3.aspect-h-4.h-48
@@ -151,18 +150,18 @@ block content
     section.py-20.bg-gradient-to-r.from-blue-600.via-purple-600.to-indigo-600.relative.overflow-hidden
         .absolute.inset-0.bg-black.bg-opacity-20
         .absolute.inset-0.opacity-30
-            .absolute.top-0.left-0.w-64.h-64.bg-white.rounded-full.filter.blur-3xl.animate-pulse
-            .absolute.bottom-0.right-0.w-80.h-80.bg-yellow-300.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 1s")
+            .absolute.top-0.left-0.w-64.h-64.bg-white.rounded-full.blur-3xl.animate-pulse
+            .absolute.bottom-0.right-0.w-80.h-80.bg-yellow-300.rounded-full.blur-3xl.animate-pulse(style="animation-delay: 1s")
 
         .container.mx-auto.px-4.relative.z-10
             .glassmorphism.rounded-3xl.p-12.text-center
-                h2.text-4xl.md:text-5xl.font-bold.text-white.mb-6
+                h2.text-4xl.font-bold.text-white.mb-6(class="md:text-5xl")
                     Join Our Community
                 
                 p.text-xl.text-gray-200.mb-8.max-w-2xl.mx-auto.leading-relaxed
                     Start buying and selling textbooks today. Connect with students from verified schools.
                 
-                .flex.flex-col.sm:flex-row.justify-center.gap-6
+                .flex.flex-col.justify-center.gap-6(class="sm:flex-row")
                     +a-button("/book/add").modern-btn.modern-btn-primary.text-lg.px-8.py-4
                         | Add Your Books
                     a(href="/login").modern-btn.modern-btn-secondary.text-lg.px-8.py-4.no-underline
@@ -172,7 +171,7 @@ block content
     footer.bg-black.bg-opacity-90.py-12.border-t.border-gray-800
         .container.mx-auto.px-4
             .glassmorphism-light.rounded-2xl.p-8
-                .grid.md:grid-cols-3.gap-8.text-center.md:text-left
+                .grid.gap-8.text-center(class="md:grid-cols-3 md:text-left")
                     div
                         h3.text-lg.font-bold.text-white.mb-4= language.website.title
                         p.text-gray-400.text-sm.leading-relaxed
@@ -181,21 +180,68 @@ block content
                     div
                         h4.font-semibold.text-white.mb-4 Quick Links
                         .space-y-2
-                            a(href="/book/add").text-gray-400.hover:text-white.transition-colors.text-sm Add Books
-                            a(href="/library").text-gray-400.hover:text-white.transition-colors.text-sm Browse Books
-                            a(href="/login").text-gray-400.hover:text-white.transition-colors.text-sm Sign In
+                            a(href="/book/add").text-gray-400.transition-colors.text-sm(class="hover:text-white") Add Books
+                            a(href="/library").text-gray-400.transition-colors.text-sm(class="hover:text-white") Browse Books
+                            a(href="/login").text-gray-400.transition-colors.text-sm(class="hover:text-white") Sign In
 
                     div
                         h4.font-semibold.text-white.mb-4 Information
                         .space-y-2
-                            a(href="/privacy").text-gray-400.hover:text-white.transition-colors.text-sm Privacy Policy
-                            a(href="/tos").text-gray-400.hover:text-white.transition-colors.text-sm Terms of Service
+                            a(href="/privacy").text-gray-400.transition-colors.text-sm(class="hover:text-white") Privacy Policy
+                            a(href="/tos").text-gray-400.transition-colors.text-sm(class="hover:text-white") Terms of Service
                             
                 .mt-8.pt-8.border-t.border-gray-700.text-center
                     p.text-gray-500.text-sm
                         | © 2024 #{language.website.title}. All rights reserved.
                         br
                         small.italic= language.website.creator
+
+    //- Smooth Scrolling JavaScript
+    script.
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Book card hover effects
+            document.querySelectorAll('.book-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05) translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) translateY(0)';
+                });
+            });
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            // Observe all glassmorphism elements
+            document.querySelectorAll('.glassmorphism, .glassmorphism-light').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
 
 //- Smooth Scrolling JavaScript
 script.

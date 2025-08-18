@@ -9,7 +9,8 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "build-sass": "sass src/public/css/main.scss:dist/public/css/main.css src/public/css/admin.scss:dist/public/css/admin.css src/public/css/print.scss:dist/public/css/print.css",
+    "build-sass": "sass public/css/modern-ui.scss:dist/public/css/modern-ui.css --no-source-map",
+    "build-sass-all": "sass public/css/main.scss:dist/public/css/main.css public/css/admin.scss:dist/public/css/admin.css public/css/print.scss:dist/public/css/print.css public/css/modern-ui.scss:dist/public/css/modern-ui.css",
     "build-ts": "tsc",
     "build-webpack": "webpack --progress",
     "build": "npm run build-webpack && npm run build-ts && npm run lint && npm run copy-static-assets",

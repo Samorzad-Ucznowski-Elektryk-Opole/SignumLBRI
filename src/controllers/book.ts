@@ -464,8 +464,8 @@ export const getLibrary = async (
 ): Promise<void> => {
   const data = await fetchAnonTopBooks();
   
-  // Check for modern UI preference or default to modern
-  const useModern = req.query.modern !== 'false';
+  // Check for modern UI preference - default to classic for now
+  const useModern = req.query.modern === 'true';
   
   return res.render(useModern ? "library/books-modern" : "library/books", {
     title: req.language.titles.library,
