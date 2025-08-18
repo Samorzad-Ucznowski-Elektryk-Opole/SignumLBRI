@@ -26,7 +26,8 @@ To get started with SignumLBRI, follow these steps:
 1. Clone the repository:
 
 ```
-git clone https://github.com/PiRifle/SignumLBRI.git
+```bash
+git clone https://github.com/your-org/SignumLBRI.git
 ```
 
 2. Install dependencies:

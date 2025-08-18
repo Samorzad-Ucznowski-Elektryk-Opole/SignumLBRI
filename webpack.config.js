@@ -48,6 +48,8 @@ module.exports = [
       "js/admin": "./src/public/js/admin.ts",
       "css/admin": "./src/public/css/admin.scss",
       "css/tailwind": "./src/public/css/tailwind.scss",
+      "css/modern-ui": "./src/public/css/modern-ui.scss",
+      "css/landing": "./src/public/css/landing.scss",
       
     },
     optimization: {

@@ -4,9 +4,9 @@
   "description": "complex bookselling platform for schools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pirifle/SignumLBRI"
+    "url": ""
   },
-  "author": "Piotr Czirnia",
+  "author": "",
   "license": "MIT",
   "scripts": {
     "build-sass": "sass src/public/css/main.scss:dist/public/css/main.css src/public/css/admin.scss:dist/public/css/admin.css src/public/css/print.scss:dist/public/css/print.css",
