@@ -10,23 +10,16 @@
   "license": "MIT",
   "scripts": {
     "build-sass": "sass public/css/modern-ui.scss:dist/public/css/modern-ui.css --no-source-map",
-    "build-sass-all": "sass public/css/main.scss:dist/public/css/main.css public/css/admin.scss:dist/public/css/admin.css public/css/print.scss:dist/public/css/print.css public/css/modern-ui.scss:dist/public/css/modern-ui.css",
     "build-ts": "tsc",
     "build-webpack": "webpack --progress",
-    "build": "npm run build-webpack && npm run build-ts && npm run lint && npm run copy-static-assets",
+    "build": "npm run build-webpack && npm run build-ts && npm run build-sass && npm run copy-static-assets",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
-    "debug": "npm run build && npm run watch-debug",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
-    "serve-debug": "nodemon --inspect dist/server.js",
     "serve": "node dist/server.js",
     "start": "npm run serve",
-    "test": "jest --forceExit --coverage --verbose",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Webpack,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-webpack\" \"npm run watch-ts\" \"npm run serve-debug\"",
-    "watch-node": "nodemon dist/server.js",
-    "watch-test": "npm run test -- --watchAll",
     "watch-ts": "tsc -w",
     "watch-webpack": "webpack --watch --progress --mode=development",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Webpack,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-webpack\" \"npm run watch-ts\" \"npm run watch-node\""
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Webpack,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-webpack\" \"npm run watch-ts\" \"npm run serve\""
   },
   "dependencies": {
     "@csstools/postcss-sass": "^5.0.1",

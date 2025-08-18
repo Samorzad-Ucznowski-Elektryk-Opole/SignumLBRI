@@ -1,42 +1,204 @@
-extends layout_tailwindcss
-
-include mixins/a
-include mixins/prebuild_blocks
+extends layout
 
 block content
-    .container.mx-auto
-        +header()= language.website.headers.books
-        +divider()
-
-        if bookListings
-            div(class="max-md:overflow-scroll")
-                table.w-full.table-auto.my-6(class="max-md:text-3xs text-sm")
-                    thead.text-sm.bg-gray-700.text-white.uppercase.border-gray-50.border
-                        th.px-6.py-3= language.website.table.headers.title
-                        if !device.mobile()
-                            th.px-6.py-3= language.website.table.headers.publisher
-                            th.px-6.py-3= language.website.table.headers.price
-                        th.px-6.py-3= language.website.table.headers.status
-                        th.px-6.py-3 
-                    tbody
-                        each bookListing in bookListings
-                            tr.border-b.py-2
-                                td
-                                    p.px-6.py-3= bookListing.book.title.length > 40 ? bookListing.book.title.substring(0, 40 - 3) + "..." : bookListing.book.title
-                                if !device.mobile()
-                                    td
-                                        p.px-6.py-3= bookListing.book.publisher.length > 80 ? bookListing.book.publisher.substring(0, 80 - 3) + "..." : bookListing.book.publisher
-                                    td
-                                        p.px-6.py-3= bookListing.cost.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })
-                                td
-                                    p.px-6.py-3= bookListing.getStatusString(language)
-                                td 
-                                    +a-button(href=`/book/${bookListing._id}/manage`).block.m-3.w-max.mx-auto= language.website.button.manage
-            +a-button(href="/book/add").w-max.block.m-3= language.website.button.addNextBook
-
-        else 
-            div.text-center.mx-auto            
-                h6= language.website.empty
-                .flex.justify-center
-                    +a-button(href="/book/add").block.m-3.max-w-max= language.website.button.addFirstBook
+  // Modern Landing Page - Complete User Journey
+  .min-h-screen.bg-gradient-to-br.from-slate-50.to-blue-50
+    
+    // Hero Section
+    section.hero.relative.py-20.px-4(class="lg:py-32")
+      .container.mx-auto.max-w-6xl
+        .grid.gap-12.items-center(class="lg:grid-cols-2")
+          
+          // Left Content
+          .space-y-6(class="lg:pr-8")
+            .glass-card.p-8.rounded-3xl
+              h1.text-4xl.font-bold.mb-6(class="lg:text-6xl")
+                span.text-gray-900 SignumLBRI
+                br
+                span.text-blue-600.text-3xl(class="lg:text-4xl") Platforma Edukacyjna
+              
+              p.text-lg.text-gray-600.mb-8.leading-relaxed
+                | Nowoczesne rozwiązanie dla szkół, uczniów i rodziców. 
+                | Zarządzaj podręcznikami, sprzedawaj i kupuj książki w jednym miejscu.
+              
+              // CTA Buttons
+              .flex.flex-col.gap-4(class="sm:flex-row")
+                a.glass-modern.px-8.py-4.bg-blue-500.text-white.rounded-xl.font-semibold.text-center.transition-all.duration-300(
+                  href="/register"
+                  class="hover:bg-blue-600 hover:scale-105"
+                )
+                  | 🚀 Rozpocznij za darmo
                 
+                a.glass-modern.px-8.py-4.bg-white.text-blue-500.border-2.border-blue-500.rounded-xl.font-semibold.text-center.transition-all.duration-300(
+                  href="/login"
+                  class="hover:bg-blue-50 hover:scale-105"
+                )
+                  | 👤 Mam już konto
+          
+          // Right Visual
+          .relative.text-center(class="lg:pl-8")
+            .glass-card.p-8.rounded-3xl
+              .text-6xl.mb-4 📚
+              h3.text-xl.font-semibold.text-gray-900.mb-2
+                | Łatwe zarządzanie
+              p.text-gray-600
+                | Wszystko czego potrzebujesz w jednym miejscu
+    
+    // How It Works Section
+    section.py-20.px-4.bg-white
+      .container.mx-auto.max-w-6xl
+        .text-center.mb-16
+          h2.text-3xl.font-bold.text-gray-900.mb-4(class="lg:text-4xl")
+            | Jak to działa?
+          p.text-xl.text-gray-600
+            | Prosty proces w 3 krokach
+        
+        .grid.gap-8(class="md:grid-cols-3")
+          
+          // Step 1
+          .glass-card.p-8.text-center.rounded-2xl
+            .w-16.h-16.bg-green-500.rounded-full.flex.items-center.justify-center.mb-6.mx-auto.text-white.text-2xl.font-bold
+              | 1
+            h3.text-xl.font-bold.text-gray-900.mb-4
+              | Zarejestruj się
+            p.text-gray-600.mb-6
+              | Stwórz bezpłatne konto dla swojej szkoły, jako uczeń lub rodzic
+            a.inline-block.px-6.py-3.bg-green-500.text-white.rounded-lg.font-medium.transition-colors.duration-300(
+              href="/register"
+              class="hover:bg-green-600"
+            )
+              | Załóż konto
+          
+          // Step 2  
+          .glass-card.p-8.text-center.rounded-2xl
+            .w-16.h-16.bg-blue-500.rounded-full.flex.items-center.justify-center.mb-6.mx-auto.text-white.text-2xl.font-bold
+              | 2
+            h3.text-xl.font-bold.text-gray-900.mb-4
+              | Przeglądaj książki
+            p.text-gray-600.mb-6
+              | Znajdź potrzebne podręczniki w naszej bazie danych tysięcy tytułów
+            a.inline-block.px-6.py-3.bg-blue-500.text-white.rounded-lg.font-medium.transition-colors.duration-300(
+              href="/library"
+              class="hover:bg-blue-600"
+            )
+              | Zobacz bibliotekę
+          
+          // Step 3
+          .glass-card.p-8.text-center.rounded-2xl
+            .w-16.h-16.bg-purple-500.rounded-full.flex.items-center.justify-center.mb-6.mx-auto.text-white.text-2xl.font-bold
+              | 3
+            h3.text-xl.font-bold.text-gray-900.mb-4
+              | Kup lub sprzedaj
+            p.text-gray-600.mb-6
+              | Bezpieczne transakcje między użytkownikami z pełną kontrolą
+            a.inline-block.px-6.py-3.bg-purple-500.text-white.rounded-lg.font-medium.transition-colors.duration-300(
+              href="/book/sell"
+              class="hover:bg-purple-600"
+            )
+              | Sprzedaj książkę
+    
+    // Features Section
+    section.py-20.px-4.bg-gray-50
+      .container.mx-auto.max-w-6xl
+        .text-center.mb-16
+          h2.text-3xl.font-bold.text-gray-900.mb-4(class="lg:text-4xl")
+            | Dlaczego SignumLBRI?
+          p.text-xl.text-gray-600
+            | Wszystko czego potrzebujesz dla sukcesu edukacyjnego
+        
+        .grid.gap-8(class="md:grid-cols-2 lg:grid-cols-3")
+          
+          // Feature 1
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 🏫
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Dla szkół
+            p.text-gray-600.text-sm
+              | Zarządzaj zasobami, śledź dostępność książek
+          
+          // Feature 2  
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 🎓
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Dla uczniów
+            p.text-gray-600.text-sm
+              | Znajdź tanie podręczniki, sprzedaj niepotrzebne
+          
+          // Feature 3
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 👨‍👩‍👧‍👦
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Dla rodziców
+            p.text-gray-600.text-sm
+              | Kontroluj wydatki, pomagaj dzieciom
+          
+          // Feature 4
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 🔒
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Bezpieczeństwo
+            p.text-gray-600.text-sm
+              | Verified users, bezpieczne płatności
+          
+          // Feature 5
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 📱
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Mobile first
+            p.text-gray-600.text-sm
+              | Działa na telefonie i komputerze
+          
+          // Feature 6
+          .glass-card.p-6.rounded-2xl.text-center
+            .text-4xl.mb-4 💰
+            h3.text-lg.font-bold.text-gray-900.mb-3
+              | Oszczędności
+            p.text-gray-600.text-sm
+              | Do 70% taniej niż nowe książki
+    
+    // Stats Section
+    section.py-20.px-4.bg-blue-600.text-white
+      .container.mx-auto.max-w-6xl
+        .text-center.mb-16
+          h2.text-3xl.font-bold.mb-4(class="lg:text-4xl")
+            | SignumLBRI w liczbach
+        
+        .grid.gap-8.text-center(class="md:grid-cols-3")
+          .glass-modern.p-8.rounded-2xl(style="background: rgba(255,255,255,0.1);")
+            .text-4xl.font-bold.mb-2(class="lg:text-5xl")
+              | 10k+
+            p.text-xl.text-blue-100
+              | Aktywnych użytkowników
+          
+          .glass-modern.p-8.rounded-2xl(style="background: rgba(255,255,255,0.1);")
+            .text-4xl.font-bold.mb-2(class="lg:text-5xl")
+              | 50k+
+            p.text-xl.text-blue-100
+              | Książek w bazie
+          
+          .glass-modern.p-8.rounded-2xl(style="background: rgba(255,255,255,0.1);")
+            .text-4xl.font-bold.mb-2(class="lg:text-5xl")
+              | 95%
+            p.text-xl.text-blue-100
+              | Zadowolonych klientów
+    
+    // CTA Final Section
+    section.py-20.px-4.bg-gray-900.text-white
+      .container.mx-auto.max-w-4xl.text-center
+        h2.text-3xl.font-bold.mb-6(class="lg:text-4xl")
+          | Gotowy zacząć?
+        p.text-xl.text-gray-300.mb-8
+          | Dołącz do tysięcy użytkowników którzy już oszczędzają na podręcznikach
+        
+        .flex.flex-col.gap-4.max-w-md.mx-auto(class="sm:flex-row sm:max-w-none")
+          a.glass-modern.px-8.py-4.bg-blue-500.text-white.rounded-xl.font-bold.text-center.transition-all.duration-300.flex-1(
+            href="/register"
+            class="hover:bg-blue-600 hover:scale-105"
+          )
+            | 🚀 Zacznij teraz - za darmo
+          
+          a.glass-modern.px-8.py-4.bg-transparent.border-2.border-white.text-white.rounded-xl.font-bold.text-center.transition-all.duration-300.flex-1(
+            href="/library"
+            class="hover:bg-white hover:text-gray-900"
+          )
+            | 📚 Przeglądaj książki
