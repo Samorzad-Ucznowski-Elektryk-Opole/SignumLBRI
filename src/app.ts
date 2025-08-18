@@ -1,5 +1,5 @@
 import express, { RequestHandler, Response, Request } from "express";
-import compression from "compression"; // compresses requests
+import compression from "compression";
 import session from "express-session";
 import bodyParser from "body-parser";
 import lusca from "lusca";
@@ -11,26 +11,34 @@ import passport from "passport";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET, version } from "./util/secrets";
 import MobileDetect from "mobile-detect";
-// Controllers (route handlers)
+
+// Import configuration for modern setup
+import { getConfig } from "./config/app.config";
+
+// Enhanced performance and security
+import { setupSecurityStack } from "./validators/securityIntegration";
+
+// Controllers (route handlers) - organized and consolidated
 import * as performanceController from "./controllers/performance";
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as adminController from "./controllers/admin";
+import * as adminPublicManagementController from "./controllers/adminPublicManagement";
 import * as schoolController from "./controllers/school";
 import * as errorController from "./controllers/errors";
-// import * as apiController from "./controllers/api";
-// import * as contactController from "./controllers/contact";
 import * as bookController from "./controllers/book";
-
+import * as bookAdController from "./controllers/bookAd";
+import * as publicUserController from "./controllers/publicUser";
+import * as shoppingCartController from "./controllers/shoppingCart";
 import * as imageController from "./controllers/image";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
-// import { languageMiddleware } from "./controllers/language";
 import { languageMiddleware, changeLanguage } from "./controllers/language";
 
-// Create Express server
+// Create Express server with enhanced configuration
 const app = express();
+const config = getConfig();
 
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
@@ -48,35 +56,57 @@ mongoose
     // process.exit();
   });
 
-// Express configuration
-app.set("port", process.env.PORT || 3000);
+// Express configuration with optimized settings
+app.set("port", process.env.PORT || config.server.port);
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "pug");
-app.use(compression());
-app.use(bodyParser.json() as RequestHandler);
-app.use(bodyParser.urlencoded({ extended: true }) as RequestHandler);
+
+// Enhanced middleware stack for better performance
+app.use(compression({ level: 6, threshold: 1024 }));
+app.use(bodyParser.json({ limit: '10mb' }) as RequestHandler);
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }) as RequestHandler);
+
+// Optimized session configuration
 app.use(
   session({
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: false,
     secret: SESSION_SECRET,
     store: new MongoStore({
       mongoUrl,
     }),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'strict'
+    }
   }),
 );
+
+// Enhanced security middleware
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
-app.use((req, res, next) => {
+
+// Apply security stack (if available)
+if (typeof setupSecurityStack === 'function') {
+  setupSecurityStack(app);
+}
+
+// Enhanced request context middleware
+app.use((req: Request, res: Response, next: any) => {
   res.locals.user = req.user;
+  res.locals.config = config;
   next();
 });
-app.use((req, res, next) => {
+
+app.use((req: Request, res: Response, next: any) => {
   res.locals.device = new MobileDetect(req.headers["user-agent"]);
-  res.locals.version = version.hash;
+  res.locals.version = version.build || version.version;
+  res.locals.isProduction = process.env.NODE_ENV === 'production';
   next();
 });
 app.use((req, res, next) => {
@@ -115,46 +145,48 @@ app.use(
 );
 app.use(performanceController.registerPerformance);
 /**
- * Primary app routes.
+ * ========================================
+ * MODERN ROUTE ORGANIZATION - 2025 Edition
+ * Consolidated and optimized route structure
+ * ========================================
  */
-// app.get("/contact", contactController.getContact);
-// app.post("/contact", contactController.postContact);
+
+// Public routes (no authentication required)
 app.get("/", passportConfig.isAnonymous, homeController.index);
+app.get("/library", bookController.getLibrary);
 app.get("/privacy", homeController.policy);
 app.get("/tos", homeController.tos);
+
+// Error reporting
 app.post("/error/send", errorController.postError);
-app.get("/library", bookController.getLibrary);
+
+// Language support
 app.post("/language", changeLanguage);
+
+// Authentication routes - optimized flow
 app.get("/login", userController.getLogin);
 app.post("/login", userController.postLogin);
 app.get("/logout", passportConfig.isAuthenticated, userController.logout);
+
+// Password recovery flow
 app.get("/forgot", userController.getForgot);
 app.post("/forgot", userController.postForgot);
 app.get("/reset/:token", userController.getReset);
 app.post("/reset/:token", userController.postReset);
+
+// User registration and verification
 app.get("/verify/:token", userController.getVerify);
 app.get("/resendverify", userController.getResendVerify);
 app.get("/setup", userController.getSetUp);
 app.post("/setup", userController.postSignup);
 app.get("/signup", userController.getSignup);
 app.post("/signup", userController.postSignup);
+
+// Account management
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
-app.post(
-  "/account/profile",
-  passportConfig.isAuthenticated,
-  userController.postUpdateProfile,
-);
-app.post(
-  "/account/password",
-  passportConfig.isAuthenticated,
-  userController.postUpdatePassword,
-);
-app.post(
-  "/account/delete",
-  passportConfig.isAuthenticated,
-  userController.postDeleteAccount,
-);
-app.get("/account/unlink/:provider", passportConfig.isAuthenticated);
+app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
+app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
+app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 
 /**
  * API examples routes.
@@ -384,6 +416,53 @@ adminRoutes.get(
 
 // Import public routes
 import publicRoutes from "./routes/public";
+
+/**
+ * ========================================
+ * NEW E-COMMERCE ROUTES - 2025 Book Marketplace
+ * Modern public user system and shopping cart
+ * ========================================
+ */
+
+// Public User Registration & Authentication
+app.get("/public/register", publicUserController.getPublicRegister);
+app.post("/public/register", publicUserController.postPublicRegister);
+app.get("/public/login", publicUserController.getPublicLogin);
+app.post("/public/login", publicUserController.postPublicLogin);
+app.get("/public/logout", publicUserController.getPublicLogout);
+
+// Public User Dashboard & Profile
+app.get("/public/dashboard", publicUserController.isPublicAuthenticated, publicUserController.getPublicUserDashboard);
+app.get("/public/profile", publicUserController.isPublicAuthenticated, publicUserController.getPublicProfile);
+app.post("/public/profile", publicUserController.isPublicAuthenticated, publicUserController.postUpdatePublicProfile);
+
+// Book Ads Management
+app.get("/public/ads/create", publicUserController.isPublicAuthenticated, bookAdController.getCreateBookAd);
+app.post("/public/ads/create", publicUserController.isPublicAuthenticated, bookAdController.postCreateBookAd);
+app.get("/public/ads/my", publicUserController.isPublicAuthenticated, bookAdController.getMyAds);
+app.get("/public/ads/:id", publicUserController.isPublicAuthenticated, bookAdController.getBookAdDetails);
+app.get("/public/ads/:id/edit", publicUserController.isPublicAuthenticated, bookAdController.getEditBookAd);
+app.post("/public/ads/:id/edit", publicUserController.isPublicAuthenticated, bookAdController.postEditBookAd);
+app.post("/public/ads/:id/delete", publicUserController.isPublicAuthenticated, bookAdController.postDeleteBookAd);
+
+// Browse Available Books (public access)
+app.get("/public/browse", bookAdController.getBrowseAds);
+app.get("/public/search", bookAdController.getSearchAds);
+
+// Shopping Cart System
+app.get("/public/cart", publicUserController.isPublicAuthenticated, shoppingCartController.getShoppingCart);
+app.post("/public/cart/add", publicUserController.isPublicAuthenticated, shoppingCartController.postAddToCart);
+app.post("/public/cart/remove", publicUserController.isPublicAuthenticated, shoppingCartController.postRemoveFromCart);
+app.post("/public/cart/reserve", publicUserController.isPublicAuthenticated, shoppingCartController.postReserveCart);
+app.get("/public/cart/reserved", publicUserController.isPublicAuthenticated, shoppingCartController.getReservedCarts);
+app.get("/public/cart/history", publicUserController.isPublicAuthenticated, shoppingCartController.getReservationHistory);
+app.post("/public/cart/:cartId/cancel", publicUserController.isPublicAuthenticated, shoppingCartController.postCancelReservation);
+
+// API endpoints for book ad images
+app.get("/api/bookads/:id/images/:filename", bookAdController.getBookAdImage);
+
+// Admin management for public users and book ads
+app.use("/admin/public-management", passportConfig.isAuthenticated, passportConfig.isAdmin, adminPublicManagementController.getAdminDashboard);
 
 app.use("/admin", adminRoutes);
 app.use("/public", publicRoutes);

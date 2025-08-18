@@ -7,6 +7,11 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import sharp from "sharp";
+import { cache, CacheKeys, invalidateCache } from "../util/cache";
+
+/**
+ * Performance-optimized BookAd controller with advanced caching
+ */
 
 /**
  * Configure multer for image uploads
@@ -156,6 +161,10 @@ export const postCreateBookAd = [
       user.totalAdsPosted += 1;
       await user.save();
 
+      // Invalidate relevant caches
+      await invalidateCache.user(user._id.toString());
+      await invalidateCache.school(user.school.toString());
+
       req.flash("success", { 
         msg: "Ogłoszenie zostało dodane i oczekuje weryfikacji przez administratora." 
       });
@@ -208,7 +217,7 @@ export const getMyAds = async (req: Request, res: Response) => {
 };
 
 /**
- * Get public ads browser for school
+ * Get public ads browser for school with advanced caching
  */
 export const getBrowseAds = async (req: Request, res: Response) => {
   try {
@@ -250,30 +259,41 @@ export const getBrowseAds = async (req: Request, res: Response) => {
     if (req.query.sort === 'price-desc') sort = { sellPrice: -1 };
     if (req.query.sort === 'title') sort = { 'book.title': 1 };
 
-    const [ads, totalCount, subjects, classes] = await Promise.all([
-      BookAd.find(filter)
-        .populate('book owner')
-        .sort(sort)
-        .skip(skip)
-        .limit(limit),
-      BookAd.countDocuments(filter),
-      BookAd.distinct('subject', { school: req.publicUser!.school, status: 'published' }),
-      BookAd.distinct('class', { school: req.publicUser!.school, status: 'published' })
-    ]);
+    // Create cache key for this specific query
+    const cacheKey = `browse:${req.publicUser!.school}:${page}:${JSON.stringify(req.query)}`;
 
-    const totalPages = Math.ceil(totalCount / limit);
+    // Try cache first
+    const cachedData = await cache.getOrSet(cacheKey, async () => {
+      const [ads, totalCount, subjects, classes] = await Promise.all([
+        BookAd.find(filter)
+          .populate('book owner', 'title authors publisher isbn profile.name profile.surname') // Selective population
+          .sort(sort)
+          .skip(skip)
+          .limit(limit)
+          .lean(), // Use lean for performance
+        BookAd.countDocuments(filter),
+        BookAd.distinct('subject', { school: req.publicUser!.school, status: 'published' }),
+        BookAd.distinct('class', { school: req.publicUser!.school, status: 'published' })
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        ads,
+        currentPage: page,
+        totalPages,
+        totalCount,
+        subjects: subjects.filter(s => s),
+        classes: classes.filter(c => c),
+        filters: req.query
+      };
+    }, 300); // Cache for 5 minutes
 
     res.render("public/ads/browse", {
       title: "Przeglądaj Książki - Targi Książkowe",
       layout: "public/layout",
       user: req.publicUser,
-      ads,
-      currentPage: page,
-      totalPages,
-      totalCount,
-      subjects: subjects.filter(s => s),
-      classes: classes.filter(c => c),
-      filters: req.query
+      ...cachedData
     });
 
   } catch (error) {
@@ -512,5 +532,74 @@ export const getBookAdImage = (req: Request, res: Response) => {
   } catch (error) {
     console.error("Image serve error:", error);
     res.status(500).send('Error serving image');
+  }
+};
+
+/**
+ * Search book ads with advanced filters
+ */
+export const getSearchAds = async (req: Request, res: Response) => {
+  try {
+    const query = req.query.q as string || '';
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 20;
+    const skip = (page - 1) * limit;
+
+    if (!query.trim()) {
+      return res.redirect("/public/browse");
+    }
+
+    // Build search filter
+    const filter: any = {
+      school: req.publicUser!.school,
+      status: 'published',
+      deliveredToPoint: true,
+      $text: { $search: query }
+    };
+
+    // Additional filters
+    if (req.query.subject) {
+      filter.subject = new RegExp(req.query.subject as string, 'i');
+    }
+
+    if (req.query.class) {
+      filter.class = new RegExp(req.query.class as string, 'i');
+    }
+
+    if (req.query.condition) {
+      filter.condition = req.query.condition;
+    }
+
+    if (req.query.maxPrice) {
+      filter.sellPrice = { $lte: parseFloat(req.query.maxPrice as string) };
+    }
+
+    const [ads, totalCount] = await Promise.all([
+      BookAd.find(filter)
+        .populate('book owner')
+        .sort({ score: { $meta: 'textScore' } })
+        .skip(skip)
+        .limit(limit),
+      BookAd.countDocuments(filter)
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.render("public/ads/search-results", {
+      title: `Wyniki wyszukiwania: "${query}" - Targi Książkowe`,
+      layout: "public/layout",
+      user: req.publicUser,
+      ads,
+      query,
+      currentPage: page,
+      totalPages,
+      totalCount,
+      filters: req.query
+    });
+
+  } catch (error) {
+    console.error("Search ads error:", error);
+    req.flash("errors", { msg: "Wystąpił błąd podczas wyszukiwania." });
+    res.redirect("/public/browse");
   }
 };

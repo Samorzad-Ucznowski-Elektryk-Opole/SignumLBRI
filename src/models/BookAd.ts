@@ -270,22 +270,39 @@ bookAdSchema.methods.getImageUrls = function() {
 };
 
 /**
- * Indexes for performance and queries
+ * Performance-optimized indexes for 2025 standards
  */
-bookAdSchema.index({ school: 1, status: 1 });
-bookAdSchema.index({ owner: 1, status: 1 });
-bookAdSchema.index({ status: 1, createdAt: -1 });
-bookAdSchema.index({ subject: 1, class: 1 });
-bookAdSchema.index({ sellPrice: 1 });
-bookAdSchema.index({ reservationCode: 1 });
-bookAdSchema.index({ reservationExpires: 1 });
+// Core business queries - compound indexes for maximum efficiency
+bookAdSchema.index({ school: 1, status: 1, createdAt: -1 }); // School browsing with sorting
+bookAdSchema.index({ owner: 1, status: 1, createdAt: -1 }); // User's ads management
+bookAdSchema.index({ status: 1, school: 1, subject: 1 }); // Subject filtering
+bookAdSchema.index({ status: 1, school: 1, class: 1 }); // Class filtering
+bookAdSchema.index({ status: 1, sellPrice: 1 }); // Price range queries
+
+// E-commerce specific indexes
+bookAdSchema.index({ reservationCode: 1 }, { unique: true, sparse: true }); // Quick QR lookups
+bookAdSchema.index({ reservedBy: 1, reservationExpires: 1 }); // Reservation management
+bookAdSchema.index({ status: 1, reservationExpires: 1 }); // Expired cleanup jobs
+
+// Search and analytics indexes
+bookAdSchema.index({ condition: 1, sellPrice: 1 }); // Condition-price analytics
+bookAdSchema.index({ createdAt: -1 }); // Timeline queries
+bookAdSchema.index({ 'book': 1, status: 1 }); // Book popularity tracking
 
 /**
- * Text search index
+ * Advanced text search index with weights
  */
 bookAdSchema.index({
   description: 'text',
-  subject: 'text'
+  subject: 'text',
+  class: 'text'
+}, {
+  weights: {
+    subject: 10,
+    class: 5,
+    description: 1
+  },
+  name: 'BookAdSearchIndex'
 });
 
 export const BookAd = mongoose.model<BookAdDocument>("BookAd", bookAdSchema);

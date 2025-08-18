@@ -1,21 +1,54 @@
 doctype html
-html(lang='')
+html(lang='pl')
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title #{title} - SignumLBRI
-    meta(name='description', content='')
-    meta(name='theme-color' content='#4DA5F4')
-    link(rel='stylesheet', href=`/css/tailwind.${version}.css`)
-    link(rel='stylesheet', href='/css/modern-ui.css')
+    meta(name='description', content='Nowoczesny marketplace do sprzedaży i kupna używanych książek szkolnych')
+    meta(name='theme-color', content='#2563eb')
+    
+    // PWA Manifest
+    link(rel='manifest', href='/manifest.json')
+    
+    // PWA Icons
+    link(rel='icon', type='image/png', sizes='192x192', href='/images/pwa/icon-192x192.png')
+    link(rel='apple-touch-icon', href='/images/pwa/icon-192x192.png')
+    
+    // Preload critical resources
+    link(rel='preload', href='/css/tailwind.css', as='style')
+    link(rel='preload', href='/js/modern-ui.js', as='script')
+    
+    // Stylesheets
+    link(rel='stylesheet', href=`/css/tailwind.${version || 'latest'}.css`)
+    link(rel='stylesheet', href='/css/pwa.css')
     if (title && title.includes && title.includes('Library')) || (typeof isLandingPage !== 'undefined' && isLandingPage)
       link(rel='stylesheet', href='/css/landing.css')
-  body.bg-back-blue.using-tailwindcss.p-2.flex.flex-col.min-h-screen
+    if title === 'Home'
+      link(rel='stylesheet', href='/css/landing-modern.css')
+      link(rel='stylesheet', href='/css/advanced-animations.css')
+      link(rel='stylesheet', href='/css/ultra-modern.css')
+      link(rel='stylesheet', href='/css/ultra-master.css')
+      
+  body.bg-back-blue.using-tailwindcss.p-2.flex.flex-col.min-h-screen(data-theme='light')
     include partials/flash_tailwindcss
     if !disableLogin
       include partials/header_tailwindcss
     block content
     include partials/footer_tailwindcss
-    script(defer, src=`/js/main.${version}.js`)
+    
+    // Core Scripts
+    script(defer, src=`/js/main.${version || 'latest'}.js`)
+    script(defer, src='/js/lazy-images.js')
+    script(defer, src='/js/modern-ui.js')
+    script(defer, src='/js/notifications.js')
+    script(defer, src='/js/pwa-manager.js')
+    
+    // Service Worker Registration
+    script.
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
   

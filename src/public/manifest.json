@@ -1,0 +1,120 @@
+{
+  "name": "SignumLBRI - Marketplace Szkolnych Książek",
+  "short_name": "SignumLBRI",
+  "description": "Nowoczesny marketplace do sprzedaży i kupna używanych książek szkolnych",
+  "theme_color": "#2563eb",
+  "background_color": "#f8fafc",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "pl",
+  "categories": ["education", "books", "marketplace"],
+  "icons": [
+    {
+      "src": "/images/pwa/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/pwa/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Przeglądaj książki",
+      "short_name": "Książki",
+      "description": "Przeglądaj dostępne książki",
+      "url": "/library/books",
+      "icons": [
+        {
+          "src": "/images/pwa/shortcut-books.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Sprzedaj książkę",
+      "short_name": "Sprzedaj",
+      "description": "Dodaj ogłoszenie o sprzedaży książki",
+      "url": "/book/sell",
+      "icons": [
+        {
+          "src": "/images/pwa/shortcut-sell.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Koszyk",
+      "short_name": "Koszyk",
+      "description": "Zobacz swój koszyk",
+      "url": "/shopping-cart",
+      "icons": [
+        {
+          "src": "/images/pwa/shortcut-cart.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": [
+    {
+      "src": "/images/pwa/screenshot-desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/images/pwa/screenshot-mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}

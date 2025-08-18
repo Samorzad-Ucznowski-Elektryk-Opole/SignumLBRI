@@ -1,0 +1,405 @@
+extends ../layout
+
+block content
+    // Modern Book Library Interface
+    .modern-book-library.container.mx-auto.px-4.py-8.space-y-8
+        
+        // Header Section with Search and Filters
+        .library-header.glassmorphism.p-6.rounded-2xl.mb-8
+            .flex.flex-col.gap-6(class="lg:flex-row lg:items-center lg:justify-between")
+                
+                // Title and Stats
+                .space-y-2
+                    h1.text-3xl.font-bold.text-gray-900.dark:text-white
+                        = language.library.title || 'Biblioteka Książek'
+                    p.text-gray-600.dark:text-gray-300
+                        | Znajdź idealną książkę spośród #{totalBooks || 0} dostępnych pozycji
+                
+                // Search Bar with Modern Design
+                .search-container.relative.w-full(class="lg:w-96")
+                    input.modern-search-input#bookSearch(
+                        type="search"
+                        placeholder="Szukaj książek, autorów, wydawnictw..."
+                        autocomplete="off"
+                    )
+                    .search-icon.absolute.left-4.top-1/2.transform.-translate-y-1/2
+                        svg.w-5.h-5.text-gray-400(fill="none", stroke="currentColor", viewBox="0 0 24 24")
+                            path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+                    
+                    // Search suggestions dropdown
+                    .search-suggestions.hidden.absolute.top-full.left-0.right-0.bg-white.dark:bg-gray-800.border.border-gray-200.dark:border-gray-700.rounded-lg.shadow-xl.mt-2.z-50
+                        // Filled by JavaScript
+        
+        // Filter Controls
+        .filter-controls.flex.flex-wrap.gap-4.mb-6
+            .filter-group
+                label.text-sm.font-medium.text-gray-700.dark:text-gray-300 Klasa
+                select.modern-select#classFilter
+                    option(value="") Wszystkie klasy
+                    each classNum in [1,2,3,4,5,6,7,8]
+                        option(value=classNum)= classNum
+            
+            .filter-group
+                label.text-sm.font-medium.text-gray-700.dark:text-gray-300 Przedmiot
+                select.modern-select#subjectFilter
+                    option(value="") Wszystkie przedmioty
+                    option(value="matematyka") Matematyka
+                    option(value="jezyk-polski") Język Polski
+                    option(value="historia") Historia
+                    option(value="biologia") Biologia
+                    option(value="chemia") Chemia
+                    option(value="fizyka") Fizyka
+            
+            .filter-group
+                label.text-sm.font-medium.text-gray-700.dark:text-gray-300 Stan
+                select.modern-select#conditionFilter
+                    option(value="") Wszystkie stany
+                    option(value="nowy") Nowy
+                    option(value="bardzo-dobry") Bardzo dobry
+                    option(value="dobry") Dobry
+                    option(value="zadowalajacy") Zadowalający
+            
+            button.modern-btn.modern-btn-outline#clearFilters
+                | Wyczyść filtry
+        
+        // Loading State
+        .book-loading.hidden.text-center.py-12
+            .loading-spinner.mx-auto.mb-4
+            p.text-gray-600.dark:text-gray-300 Ładowanie książek...
+        
+        // Books Grid
+        .books-grid.grid.gap-6(class="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4")
+            if bookAds && bookAds.length > 0
+                each bookAd in bookAds
+                    .book-card.modern-card.group.cursor-pointer(
+                        data-book-id=bookAd._id
+                        data-title=bookAd.book.title.toLowerCase()
+                        data-author=(bookAd.book.author || '').toLowerCase()
+                        data-class=bookAd.book.class
+                        data-subject=(bookAd.book.subject || '').toLowerCase()
+                        data-condition=bookAd.condition
+                        data-price=bookAd.price
+                    )
+                        // Image Container with Lazy Loading
+                        .book-image-container.relative.aspect-[3/4].overflow-hidden.rounded-t-lg.bg-gray-100.dark:bg-gray-800
+                            if bookAd.images && bookAd.images.length > 0
+                                img.book-image.w-full.h-full.object-cover.transition-transform.duration-300.group-hover:scale-110(
+                                    data-src=`/api/bookads/${bookAd._id}/images/${bookAd.images[0]}?width=300`
+                                    alt=`Okładka książki: ${bookAd.book.title}`
+                                    loading="lazy"
+                                )
+                            else
+                                .placeholder-image.w-full.h-full.flex.items-center.justify-center.bg-gradient-to-br.from-blue-50.to-indigo-100.dark:from-gray-700.dark:to-gray-800
+                                    svg.w-16.h-16.text-gray-400(fill="none", stroke="currentColor", viewBox="0 0 24 24")
+                                        path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253")
+                            
+                            // Status Badges
+                            .absolute.top-2.left-2.space-y-1
+                                if bookAd.condition
+                                    .condition-badge.px-2.py-1.text-xs.font-medium.rounded-full.bg-white.bg-opacity-90.text-gray-800
+                                        = bookAd.condition
+                                if bookAd.reserved
+                                    .reserved-badge.px-2.py-1.text-xs.font-medium.rounded-full.bg-yellow-100.text-yellow-800
+                                        | Zarezerwowana
+                            
+                            // Quick Actions
+                            .book-actions.absolute.top-2.right-2.space-y-2.opacity-0.transition-opacity.duration-300.group-hover:opacity-100
+                                button.action-btn.w-8.h-8.rounded-full.bg-white.bg-opacity-90.hover:bg-opacity-100.flex.items-center.justify-center.transition-all.duration-200(
+                                    data-action="favorite"
+                                    title="Dodaj do ulubionych"
+                                )
+                                    svg.w-4.h-4.text-gray-700(fill="none", stroke="currentColor", viewBox="0 0 24 24")
+                                        path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+                                
+                                button.action-btn.w-8.h-8.rounded-full.bg-white.bg-opacity-90.hover:bg-opacity-100.flex.items-center.justify-center.transition-all.duration-200(
+                                    data-action="share"
+                                    title="Udostępnij"
+                                )
+                                    svg.w-4.h-4.text-gray-700(fill="none", stroke="currentColor", viewBox="0 0 24 24")
+                                        path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z")
+                        
+                        // Book Info
+                        .book-info.p-4.space-y-3
+                            // Title and Author
+                            .space-y-1
+                                h3.book-title.font-semibold.text-gray-900.dark:text-white.line-clamp-2.group-hover:text-blue-600.transition-colors.duration-200
+                                    = bookAd.book.title
+                                if bookAd.book.author
+                                    p.book-author.text-sm.text-gray-600.dark:text-gray-400.line-clamp-1
+                                        | by #{bookAd.book.author}
+                            
+                            // Book Details
+                            .book-details.flex.flex-wrap.gap-2.text-xs.text-gray-500.dark:text-gray-400
+                                if bookAd.book.class
+                                    span.detail-tag.px-2.py-1.bg-gray-100.dark:bg-gray-700.rounded-full
+                                        | Klasa #{bookAd.book.class}
+                                if bookAd.book.subject
+                                    span.detail-tag.px-2.py-1.bg-blue-100.dark:bg-blue-900.text-blue-800.dark:text-blue-200.rounded-full
+                                        = bookAd.book.subject
+                                if bookAd.book.publisher
+                                    span.detail-tag.px-2.py-1.bg-gray-100.dark:bg-gray-700.rounded-full
+                                        = bookAd.book.publisher
+                            
+                            // Price and Action
+                            .flex.items-center.justify-between.pt-2.border-t.border-gray-100.dark:border-gray-700
+                                .price-container
+                                    .price.text-lg.font-bold.text-green-600.dark:text-green-400
+                                        = bookAd.price ? `${bookAd.price} zł` : 'Cena do uzgodnienia'
+                                    if bookAd.originalPrice && bookAd.originalPrice > bookAd.price
+                                        .original-price.text-sm.text-gray-400.line-through
+                                            = `${bookAd.originalPrice} zł`
+                                
+                                .action-buttons.space-x-2
+                                    button.modern-btn.modern-btn-sm.modern-btn-outline(
+                                        data-action="view-details"
+                                        data-book-id=bookAd._id
+                                    )
+                                        | Zobacz szczegóły
+                            
+                            // Seller Info
+                            if bookAd.seller
+                                .seller-info.pt-2.border-t.border-gray-100.dark:border-gray-700
+                                    .flex.items-center.gap-2
+                                        .seller-avatar.w-6.h-6.rounded-full.bg-gradient-to-r.from-blue-400.to-purple-500.flex.items-center.justify-center
+                                            span.text-xs.text-white.font-medium
+                                                = bookAd.seller.firstName ? bookAd.seller.firstName.charAt(0).toUpperCase() : 'U'
+                                        .seller-details.flex-1.min-w-0
+                                            .seller-name.text-sm.font-medium.text-gray-700.dark:text-gray-300.truncate
+                                                = bookAd.seller.firstName || 'Użytkownik'
+                                            .seller-location.text-xs.text-gray-500.dark:text-gray-400
+                                                if bookAd.school && bookAd.school.name
+                                                    = bookAd.school.name
+                                                else
+                                                    | Lokalizacja niedostępna
+            else
+                .no-books.col-span-full.text-center.py-16
+                    .w-24.h-24.mx-auto.mb-6.rounded-full.bg-gray-100.dark:bg-gray-800.flex.items-center.justify-center
+                        svg.w-12.h-12.text-gray-400(fill="none", stroke="currentColor", viewBox="0 0 24 24")
+                            path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253")
+                    h3.text-xl.font-medium.text-gray-900.dark:text-white.mb-2
+                        | Brak dostępnych książek
+                    p.text-gray-500.dark:text-gray-400.mb-6
+                        | Nie znaleziono książek spełniających kryteria wyszukiwania
+                    a.modern-btn.modern-btn-primary(href="/book/add")
+                        | Dodaj pierwszą książkę
+        
+        // Pagination
+        if totalPages && totalPages > 1
+            .pagination.flex.justify-center.mt-12
+                nav.flex.items-center.gap-2
+                    if currentPage > 1
+                        a.pagination-btn.modern-btn.modern-btn-outline(href=`?page=${currentPage - 1}`)
+                            | Poprzednia
+                    
+                    - for (let i = 1; i <= totalPages; i++)
+                        if i === currentPage
+                            span.pagination-btn.modern-btn.modern-btn-primary= i
+                        else
+                            a.pagination-btn.modern-btn.modern-btn-outline(href=`?page=${i}`)= i
+                    
+                    if currentPage < totalPages
+                        a.pagination-btn.modern-btn.modern-btn-outline(href=`?page=${currentPage + 1}`)
+                            | Następna
+
+    // Book Detail Modal
+    #bookModal.modal.fixed.inset-0.z-50.hidden.items-center.justify-center.bg-black.bg-opacity-50
+        .modal-content.bg-white.dark:bg-gray-900.rounded-2xl.max-w-2xl.mx-4.max-h-[90vh].overflow-y-auto
+            // Modal content will be loaded by JavaScript
+    
+    // JavaScript for enhanced functionality
+    script.
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modern book library functionality
+            const bookLibrary = new ModernBookLibrary();
+        });
+        
+        class ModernBookLibrary {
+            constructor() {
+                this.initSearch();
+                this.initFilters();
+                this.initBookCards();
+                this.initModal();
+                this.initInfiniteScroll();
+            }
+            
+            initSearch() {
+                const searchInput = document.getElementById('bookSearch');
+                const suggestionsContainer = document.querySelector('.search-suggestions');
+                let debounceTimer;
+                
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        this.performSearch(e.target.value);
+                        this.showSearchSuggestions(e.target.value);
+                    }, 300);
+                });
+                
+                // Hide suggestions when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.search-container')) {
+                        suggestionsContainer.classList.add('hidden');
+                    }
+                });
+            }
+            
+            performSearch(query) {
+                const cards = document.querySelectorAll('.book-card');
+                const normalizedQuery = query.toLowerCase();
+                
+                cards.forEach(card => {
+                    const title = card.dataset.title || '';
+                    const author = card.dataset.author || '';
+                    const subject = card.dataset.subject || '';
+                    
+                    const matches = title.includes(normalizedQuery) || 
+                                  author.includes(normalizedQuery) || 
+                                  subject.includes(normalizedQuery);
+                    
+                    card.style.display = matches ? 'block' : 'none';
+                });
+                
+                this.updateResultsCount();
+            }
+            
+            initFilters() {
+                const filters = ['classFilter', 'subjectFilter', 'conditionFilter'];
+                
+                filters.forEach(filterId => {
+                    const filter = document.getElementById(filterId);
+                    filter.addEventListener('change', () => this.applyFilters());
+                });
+                
+                document.getElementById('clearFilters').addEventListener('click', () => {
+                    filters.forEach(filterId => {
+                        document.getElementById(filterId).value = '';
+                    });
+                    this.applyFilters();
+                });
+            }
+            
+            applyFilters() {
+                const classFilter = document.getElementById('classFilter').value;
+                const subjectFilter = document.getElementById('subjectFilter').value;
+                const conditionFilter = document.getElementById('conditionFilter').value;
+                const cards = document.querySelectorAll('.book-card');
+                
+                cards.forEach(card => {
+                    const matches = (!classFilter || card.dataset.class === classFilter) &&
+                                  (!subjectFilter || card.dataset.subject.includes(subjectFilter)) &&
+                                  (!conditionFilter || card.dataset.condition === conditionFilter);
+                    
+                    card.style.display = matches ? 'block' : 'none';
+                });
+                
+                this.updateResultsCount();
+            }
+            
+            initBookCards() {
+                const cards = document.querySelectorAll('.book-card');
+                
+                cards.forEach(card => {
+                    // Click to view details
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('.action-btn, .modern-btn')) {
+                            this.showBookDetails(card.dataset.bookId);
+                        }
+                    });
+                    
+                    // Action buttons
+                    const favoriteBtn = card.querySelector('[data-action="favorite"]');
+                    const shareBtn = card.querySelector('[data-action="share"]');
+                    
+                    favoriteBtn?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.toggleFavorite(card.dataset.bookId, favoriteBtn);
+                    });
+                    
+                    shareBtn?.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.shareBook(card.dataset.bookId);
+                    });
+                });
+            }
+            
+            updateResultsCount() {
+                const visibleCards = document.querySelectorAll('.book-card[style*="display: block"], .book-card:not([style*="display: none"])').length;
+                // Update results counter if exists
+                const counter = document.querySelector('.results-counter');
+                if (counter) {
+                    counter.textContent = `Znaleziono ${visibleCards} książek`;
+                }
+            }
+            
+            showBookDetails(bookId) {
+                // Show modal with book details
+                const modal = document.getElementById('bookModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                // Load book details via AJAX
+                fetch(`/api/books/${bookId}`)
+                    .then(response => response.json())
+                    .then(data => this.renderBookDetails(data))
+                    .catch(error => console.error('Error loading book details:', error));
+            }
+            
+            toggleFavorite(bookId, button) {
+                // Toggle favorite status
+                button.classList.toggle('text-red-500');
+                // Make API call to toggle favorite status
+            }
+            
+            shareBook(bookId) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Książka na SignumLBRI',
+                        url: window.location.origin + '/book/' + bookId
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(window.location.origin + '/book/' + bookId);
+                }
+            }
+            
+            initModal() {
+                const modal = document.getElementById('bookModal');
+                
+                // Close modal on background click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    }
+                });
+                
+                // Close on Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    }
+                });
+            }
+            
+            initInfiniteScroll() {
+                // Implement infinite scroll for better UX
+                let loading = false;
+                
+                window.addEventListener('scroll', () => {
+                    if (loading) return;
+                    
+                    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                    
+                    if (scrollTop + clientHeight >= scrollHeight - 1000) {
+                        loading = true;
+                        this.loadMoreBooks();
+                    }
+                });
+            }
+            
+            loadMoreBooks() {
+                // Load more books via AJAX
+                // Implementation depends on backend pagination
+            }
+        }

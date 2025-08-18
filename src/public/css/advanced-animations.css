@@ -1,0 +1,379 @@
+/**
+ * Advanced Animations and Effects for Modern Landing Page
+ * Premium visual enhancements for SignumLBRI 2025
+ */
+
+/* Advanced 3D Book Transformations */
+.book-3d {
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.book-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(0,0,0,0.3) 0%, 
+        rgba(0,0,0,0.1) 50%, 
+        rgba(0,0,0,0) 100%);
+    transform: rotateY(90deg);
+    transform-origin: right;
+}
+
+.book-3d::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(0deg, 
+        rgba(0,0,0,0.3) 0%, 
+        rgba(0,0,0,0.1) 50%, 
+        rgba(0,0,0,0) 100%);
+    transform: rotateX(90deg);
+    transform-origin: bottom;
+}
+
+/* Enhanced Glass Morphism */
+.glass-ultra {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+/* Advanced Particle System */
+@keyframes particle-sparkle {
+    0%, 100% { 
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1) rotate(180deg);
+    }
+}
+
+.particle-sparkle {
+    animation: particle-sparkle 2s ease-in-out infinite;
+}
+
+.particle-sparkle:nth-child(odd) {
+    animation-delay: 0.5s;
+    background: radial-gradient(circle, #3b82f6, transparent);
+}
+
+.particle-sparkle:nth-child(even) {
+    animation-delay: 1s;
+    background: radial-gradient(circle, #8b5cf6, transparent);
+}
+
+/* Magnetic Hover Effects */
+.magnetic-hover {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    cursor: none;
+}
+
+.magnetic-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        rgba(59, 130, 246, 0.1) 0%, 
+        transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.magnetic-hover:hover::before {
+    opacity: 1;
+}
+
+/* Advanced Text Animations */
+@keyframes text-reveal {
+    0% {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+    }
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+.text-reveal {
+    animation: text-reveal 1s ease-out forwards;
+}
+
+/* Liquid Morphing Buttons */
+.liquid-button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.liquid-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transition: all 0.6s ease;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+.liquid-button:hover::before {
+    width: 300%;
+    height: 300%;
+}
+
+/* Advanced Loading States */
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeleton-loading {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 25%, 
+        rgba(255,255,255,0.2) 50%, 
+        rgba(255,255,255,0.1) 75%);
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+/* Holographic Effects */
+@keyframes holographic {
+    0%, 100% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    25% {
+        background-position: 100% 50%;
+        filter: hue-rotate(90deg) brightness(1.2);
+    }
+    50% {
+        background-position: 200% 50%;
+        filter: hue-rotate(180deg) brightness(0.8);
+    }
+    75% {
+        background-position: 300% 50%;
+        filter: hue-rotate(270deg) brightness(1.1);
+    }
+}
+
+.holographic {
+    background: linear-gradient(45deg, 
+        #ff0080, #ff8c00, #40e0d0, #ff0080, #ff8c00, #40e0d0);
+    background-size: 300% 300%;
+    animation: holographic 3s ease-in-out infinite;
+}
+
+/* Neon Glow Effects */
+.neon-glow {
+    text-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 15px currentColor,
+        0 0 20px currentColor;
+    animation: neon-flicker 2s ease-in-out infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.2);
+    }
+}
+
+/* Advanced Card Tilt Effect */
+.card-tilt {
+    transform-style: preserve-3d;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.card-tilt:hover {
+    transform: perspective(1000px) 
+               rotateX(var(--rotate-x, 0deg)) 
+               rotateY(var(--rotate-y, 0deg)) 
+               scale3d(1.05, 1.05, 1.05);
+}
+
+/* Floating Action Buttons */
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    z-index: 1000;
+}
+
+.fab:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Interactive Blob Animations */
+@keyframes blob-morph {
+    0%, 100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    50% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
+}
+
+.morphing-blob {
+    animation: blob-morph 8s ease-in-out infinite;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+/* Enhanced Scroll Indicators */
+.scroll-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+}
+
+.scroll-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    transform-origin: left;
+    animation: progress-glow 2s ease-in-out infinite;
+}
+
+@keyframes progress-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px currentColor;
+    }
+    50% {
+        box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+}
+
+/* Responsive Micro-Interactions */
+@media (hover: hover) and (pointer: fine) {
+    .micro-hover:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+    }
+}
+
+/* Touch-friendly animations for mobile */
+@media (hover: none) and (pointer: coarse) {
+    .touch-bounce:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .morphing-blob,
+    .holographic,
+    .neon-glow {
+        animation: none !important;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .glass-ultra,
+    .glass-card {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid white;
+        backdrop-filter: none;
+    }
+    
+    .text-gradient {
+        background: none !important;
+        color: white !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .particle,
+    .floating-shape,
+    .fab,
+    .scroll-indicator {
+        display: none !important;
+    }
+    
+    .glass-ultra,
+    .glass-card {
+        background: white !important;
+        border: 1px solid #ddd !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+    will-change: transform, opacity;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+}

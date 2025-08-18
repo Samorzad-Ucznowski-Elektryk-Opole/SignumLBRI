@@ -1,7 +1,7 @@
 /**
- * SignumLBRI Application Configuration
- * Centralized configuration file for all application settings
- * Updated for 2025 standards and modern architecture
+ * SignumLBRI Application Configuration - 2025 Edition
+ * High-performance, modern book marketplace configuration
+ * Optimized for scalability and modern UI/UX
  */
 
 export interface ServerConfig {
@@ -9,6 +9,9 @@ export interface ServerConfig {
   host: string;
   env: 'development' | 'production' | 'test';
   corsOrigins: string[];
+  enableCompression: boolean;
+  rateLimitWindow: number;
+  rateLimitMax: number;
 }
 
 export interface DatabaseConfig {
@@ -19,6 +22,9 @@ export interface DatabaseConfig {
       minPoolSize: number;
       maxIdleTimeMS: number;
       serverSelectionTimeoutMS: number;
+      retryWrites: boolean;
+      w: 'majority';
+      readPreference: 'primaryPreferred';
     };
   };
   redis: {
@@ -26,6 +32,8 @@ export interface DatabaseConfig {
     options: {
       maxRetriesPerRequest: number;
       retryDelayOnFailover: number;
+      connectTimeout: number;
+      lazyConnect: boolean;
     };
   };
 }
@@ -164,7 +172,10 @@ const defaultConfig: AppConfig = {
     port: 3000,
     host: 'localhost',
     env: 'development',
-    corsOrigins: ['http://localhost:3000']
+    corsOrigins: ['http://localhost:3000'],
+    enableCompression: true,
+    rateLimitWindow: 15 * 60 * 1000, // 15 minutes
+    rateLimitMax: 100
   },
 
   database: {
@@ -174,14 +185,19 @@ const defaultConfig: AppConfig = {
         maxPoolSize: 10,
         minPoolSize: 2,
         maxIdleTimeMS: 30000,
-        serverSelectionTimeoutMS: 5000
+        serverSelectionTimeoutMS: 5000,
+        retryWrites: true,
+        w: 'majority',
+        readPreference: 'primaryPreferred'
       }
     },
     redis: {
       url: 'redis://redis:6379',
       options: {
         maxRetriesPerRequest: 3,
-        retryDelayOnFailover: 100
+        retryDelayOnFailover: 100,
+        connectTimeout: 10000,
+        lazyConnect: true
       }
     }
   },

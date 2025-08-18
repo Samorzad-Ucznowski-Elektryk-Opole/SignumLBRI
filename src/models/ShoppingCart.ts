@@ -290,12 +290,21 @@ shoppingCartSchema.statics.cleanExpiredCarts = async function() {
 };
 
 /**
- * Indexes for performance
+ * Performance-optimized indexes for shopping cart operations
  */
-shoppingCartSchema.index({ user: 1, status: 1 });
-shoppingCartSchema.index({ school: 1, status: 1 });
-shoppingCartSchema.index({ reservationCode: 1 });
-shoppingCartSchema.index({ reservationExpires: 1 });
-shoppingCartSchema.index({ status: 1, createdAt: -1 });
+// Critical business operations
+shoppingCartSchema.index({ user: 1, status: 1 }); // User's active/reserved carts
+shoppingCartSchema.index({ school: 1, status: 1, createdAt: -1 }); // School analytics
+shoppingCartSchema.index({ status: 1, reservationExpires: 1 }); // Cleanup expired reservations
+
+// E-commerce specific
+shoppingCartSchema.index({ reservationCode: 1 }, { unique: true, sparse: true }); // QR code lookups
+shoppingCartSchema.index({ status: 1, reservedAt: -1 }); // Recent reservations
+shoppingCartSchema.index({ completedBy: 1, completedAt: -1 }); // Admin sales tracking
+
+// Analytics and reporting
+shoppingCartSchema.index({ createdAt: -1 }); // Timeline analysis
+shoppingCartSchema.index({ totalAmount: -1, status: 1 }); // Revenue analytics
+shoppingCartSchema.index({ 'items.bookAd': 1 }); // Book popularity tracking
 
 export const ShoppingCart = mongoose.model<ShoppingCartDocument>("ShoppingCart", shoppingCartSchema);

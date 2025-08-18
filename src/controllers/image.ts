@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import sharp from "sharp";
 import { School } from "../models/School";
 import { Book } from "../models/Book";
+import { BookAd } from "../models/BookAd";
 import { applyRatio } from "../utils";
+import path from "path";
+import fs from "fs";
 
 export const getSchoolLogo = async (req: Request<{ schoolID: string }, null, null, { height?: number; width?: number; quality?: number }>, res: Response) => {
     const { schoolID } = req.params;

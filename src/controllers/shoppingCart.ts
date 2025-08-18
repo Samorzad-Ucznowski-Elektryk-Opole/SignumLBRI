@@ -416,3 +416,54 @@ export const clearExpiredReservations = async () => {
     return 0;
   }
 };
+
+/**
+ * Get user's reserved carts (active reservations)
+ */
+export const getReservedCarts = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const [carts, totalCount] = await Promise.all([
+      ShoppingCart.find({
+        user: req.publicUser!._id,
+        status: 'reserved',
+        reservationExpires: { $gte: new Date() } // Only active reservations
+      })
+      .populate({
+        path: 'items.bookAd',
+        populate: {
+          path: 'book'
+        }
+      })
+      .sort({ reservedAt: -1 })
+      .skip(skip)
+      .limit(limit),
+      
+      ShoppingCart.countDocuments({
+        user: req.publicUser!._id,
+        status: 'reserved',
+        reservationExpires: { $gte: new Date() }
+      })
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.render("public/cart/reserved", {
+      title: "Aktywne Rezerwacje - Targi Książkowe",
+      layout: "public/layout", 
+      user: req.publicUser,
+      carts,
+      currentPage: page,
+      totalPages,
+      totalCount
+    });
+
+  } catch (error) {
+    console.error("Reserved carts error:", error);
+    req.flash("errors", { msg: "Wystąpił błąd podczas ładowania rezerwacji." });
+    res.redirect("/public/dashboard");
+  }
+};
