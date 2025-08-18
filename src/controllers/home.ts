@@ -81,7 +81,7 @@ export const getTermsOfService = (_req: Request, res: Response): void => {
 export const modernPreview = async (req: Request, res: Response): Promise<void> => {
   const config = getConfig();
   
-  return res.render("home-modern", {
+  return res.render("home-modern-simple", {
     title: "SignumLBRI - Modern UI Preview",
     config: config,
     isAuthenticated: req.user ? true : false,

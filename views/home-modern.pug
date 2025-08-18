@@ -47,16 +47,16 @@ block content
   section.quick-access.py-16.px-4.bg-gradient-to-b.from-slate-50.to-white
     .container.mx-auto.max-w-6xl
       .text-center.mb-12
-        h2.text-3xl.md:text-4xl.font-bold.text-gray-900.mb-4
+        h2(class="text-3xl md:text-4xl font-bold text-gray-900 mb-4")
           | Szybki Dostęp
-        p.text-xl.text-gray-600.max-w-3xl.mx-auto
+        p(class="text-xl text-gray-600 max-w-3xl mx-auto")
           | Poznaj nasze rozwiązania dostosowane do potrzeb różnych grup użytkowników
       
-      .grid.md:grid-cols-2.lg:grid-cols-3.gap-8
+      .grid(class="md:grid-cols-2 lg:grid-cols-3 gap-8")
         //- School Card
         .glass-card.group
-          .relative.p-8.bg-white/60.backdrop-blur-sm.rounded-2xl.shadow-lg.border.border-white/20.transition-all.duration-300.hover:shadow-2xl.hover:scale-105.hover:bg-white/70
-            .absolute.inset-0.bg-gradient-to-br.from-blue-500/10.to-purple-500/10.rounded-2xl.opacity-0.group-hover:opacity-100.transition-opacity.duration-300
+          .relative.p-8(class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-white/70")
+            .absolute.inset-0(class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300")
             .relative.z-10
               .w-16.h-16.bg-blue-500.rounded-xl.flex.items-center.justify-center.mb-6.mx-auto.group-hover:scale-110.transition-transform.duration-300
                 svg.w-8.h-8.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
@@ -77,8 +77,8 @@ block content
         
         //- Student Card  
         .glass-card.group
-          .relative.p-8.bg-white/60.backdrop-blur-sm.rounded-2xl.shadow-lg.border.border-white/20.transition-all.duration-300.hover:shadow-2xl.hover:scale-105.hover:bg-white/70
-            .absolute.inset-0.bg-gradient-to-br.from-green-500/10.to-blue-500/10.rounded-2xl.opacity-0.group-hover:opacity-100.transition-opacity.duration-300
+          .relative.p-8(class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-white/70")
+            .absolute.inset-0(class="bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300")
             .relative.z-10
               .w-16.h-16.bg-green-500.rounded-xl.flex.items-center.justify-center.mb-6.mx-auto.group-hover:scale-110.transition-transform.duration-300
                 svg.w-8.h-8.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
@@ -99,8 +99,8 @@ block content
         
         //- Parent Card
         .glass-card.group
-          .relative.p-8.bg-white/60.backdrop-blur-sm.rounded-2xl.shadow-lg.border.border-white/20.transition-all.duration-300.hover:shadow-2xl.hover:scale-105.hover:bg-white/70
-            .absolute.inset-0.bg-gradient-to-br.from-purple-500/10.to-pink-500/10.rounded-2xl.opacity-0.group-hover:opacity-100.transition-opacity.duration-300
+          .relative.p-8(class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-white/70")
+            .absolute.inset-0(class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300")
             .relative.z-10
               .w-16.h-16.bg-purple-500.rounded-xl.flex.items-center.justify-center.mb-6.mx-auto.group-hover:scale-110.transition-transform.duration-300
                 svg.w-8.h-8.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
@@ -123,12 +123,12 @@ block content
   section.features.py-20.px-4.bg-white
     .container.mx-auto.max-w-6xl
       .text-center.mb-16
-        h2.text-3xl.md:text-4xl.font-bold.text-gray-900.mb-4
+        h2(class="text-3xl md:text-4xl font-bold text-gray-900 mb-4")
           | Dlaczego SignumLBRI?
-        p.text-xl.text-gray-600.max-w-3xl.mx-auto
+        p(class="text-xl text-gray-600 max-w-3xl mx-auto")
           | Nowoczesne rozwiązania technologiczne wspierające edukację na każdym poziomie
       
-      .grid.md:grid-cols-2.lg:grid-cols-3.gap-8
+      .grid(class="md:grid-cols-2 lg:grid-cols-3 gap-8")
         //- Feature 1
         .feature-card.text-center.group
           .w-20.h-20.bg-gradient-to-br.from-blue-500.to-blue-600.rounded-2xl.flex.items-center.justify-center.mb-6.mx-auto.group-hover:scale-110.group-hover:rotate-3.transition-all.duration-300
@@ -194,11 +194,11 @@ block content
     .absolute.inset-0.bg-black/20
     .absolute.inset-0.bg-gradient-to-r.from-blue-600/80.to-purple-600/80
     .relative.z-10.container.mx-auto.max-w-4xl.text-center.text-white
-      h2.text-3xl.md:text-5xl.font-bold.mb-6.leading-tight
+      h2(class="text-3xl md:text-5xl font-bold mb-6 leading-tight")
         | Gotowy na Nową Erę Edukacji?
-      p.text-xl.md:text-2xl.mb-8.text-blue-100.max-w-3xl.mx-auto
+      p(class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto")
         | Dołącz do tysięcy szkół i uczniów, którzy już korzystają z SignumLBRI
-      .flex.flex-col.sm:flex-row.gap-4.justify-center.items-center
+      .flex(class="flex-col sm:flex-row gap-4 justify-center items-center")
         a.inline-flex.items-center.px-8.py-4.bg-white.text-blue-600.font-bold.rounded-full.transition-all.duration-300.hover:bg-blue-50.hover:scale-105.hover:shadow-2xl.focus:outline-none.focus:ring-4.focus:ring-white/30(
           href="/register"
           class="group"
