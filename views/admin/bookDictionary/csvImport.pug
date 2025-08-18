@@ -1,0 +1,124 @@
+extends ../layout
+
+block content
+  .min-h-screen.bg-gradient-to-br.from-blue-50.to-indigo-100.py-8
+    .container.mx-auto.px-4.max-w-4xl
+      
+      // Header Section
+      .bg-white.rounded-lg.shadow-md.p-6.mb-8
+        h1.text-3xl.font-bold.text-gray-800.mb-2 📚 Import Książek CSV - Słownik
+        p.text-gray-600.mb-4 
+          | Zaimportuj książki z pliku CSV do słownika systemowego. Wszystkie wpisy wymagają zatwierdzenia przez administratora.
+        
+        // Statistics Cards
+        .grid.grid-cols-3.gap-4.mt-6
+          .bg-yellow-50.p-4.rounded-lg.border.border-yellow-200
+            .text-2xl.font-bold.text-yellow-700= stats.pending
+            .text-sm.text-yellow-600 Oczekujące na zatwierdzenie
+          .bg-green-50.p-4.rounded-lg.border.border-green-200
+            .text-2xl.font-bold.text-green-700= stats.approved
+            .text-sm.text-green-600 Zatwierdzone wpisy
+          .bg-red-50.p-4.rounded-lg.border.border-red-200
+            .text-2xl.font-bold.text-red-700= stats.rejected
+            .text-sm.text-red-600 Odrzucone wpisy
+      
+      // Upload Form
+      .bg-white.rounded-lg.shadow-md.p-6.mb-8
+        h2.text-xl.font-semibold.text-gray-800.mb-4 📤 Prześlij plik CSV
+        
+        .bg-blue-50.p-4.rounded-lg.mb-4
+          h3.font-semibold.text-blue-800.mb-2 ⚠️ Wymagany format CSV:
+          ul.text-sm.text-blue-700.space-y-1
+            li • ISBN - numer ISBN książki
+            li • Tytuł - tytuł książki  
+            li • Wydawca - nazwa wydawnictwa
+            li • Autorzy - autorzy książki (oddzieleni przecinkami)
+            li • Rok Wydania - rok publikacji
+            li • Cena Nowej - cena nowej książki
+            li • Cena Używanej - cena używanej książki
+        
+        form(method="post" action="/admin/book-dictionary/import" enctype="multipart/form-data").space-y-6
+          .form-group
+            label(for="csvFile").block.text-sm.font-medium.text-gray-700.mb-2 Wybierz plik CSV
+            input(type="file" name="csvFile" id="csvFile" accept=".csv" required)
+              .w-full.px-3.py-2.border.border-gray-300.rounded-md.shadow-sm
+              .focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
+          
+          .bg-gray-50.p-4.rounded-lg
+            h4.font-semibold.text-gray-800.mb-2 📝 Uwagi:
+            ul.text-sm.text-gray-600.space-y-1
+              li • Maksymalny rozmiar pliku: 5MB
+              li • Dozwolone tylko pliki CSV
+              li • Duplikaty (książki o tym samym ISBN) będą pominięte
+              li • Wszystkie wpisy przejdą przez proces zatwierdzania
+          
+          .flex.space-x-4
+            button(type="submit").bg-blue-600.hover:bg-blue-700.text-white.px-6.py-2.rounded-md.transition-colors.duration-200
+              | 📤 Prześlij i Importuj
+            
+            a(href="/admin/book-dictionary/pending").bg-yellow-600.hover:bg-yellow-700.text-white.px-6.py-2.rounded-md.transition-colors.duration-200
+              | 👀 Sprawdź oczekujące (#{stats.pending})
+      
+      // Quick Navigation
+      .bg-white.rounded-lg.shadow-md.p-6
+        h2.text-xl.font-semibold.text-gray-800.mb-4 🧭 Nawigacja Szybka
+        .grid.grid-cols-2.md:grid-cols-3.gap-4
+          a(href="/admin/book-dictionary/pending").bg-yellow-500.hover:bg-yellow-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
+            .text-2xl.mb-2 ⏳
+            .font-semibold Oczekujące
+            .text-sm (#{stats.pending} wpisów)
+          
+          a(href="/admin/book-dictionary/approved").bg-green-500.hover:bg-green-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
+            .text-2xl.mb-2 ✅
+            .font-semibold Zatwierdzone
+            .text-sm (#{stats.approved} wpisów)
+          
+          a(href="/admin").bg-gray-500.hover:bg-gray-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
+            .text-2xl.mb-2 🏠
+            .font-semibold Panel Admin
+            .text-sm Powrót do menu głównego
+
+      // Example CSV Format
+      .bg-white.rounded-lg.shadow-md.p-6.mt-8
+        h2.text-xl.font-semibold.text-gray-800.mb-4 📋 Przykład formatu CSV
+        .bg-gray-100.p-4.rounded-lg.overflow-x-auto
+          pre.text-sm.text-gray-700
+            | ISBN,Tytuł,Wydawca,Autorzy,Rok Wydania,Cena Nowej,Cena Używanej
+            | 9788375263435,"Matematyka kl. 8","WSiP","Jan Kowalski, Anna Nowak",2023,45.00,25.00
+            | 9788394567890,"Historia klasa 7","Pearson","Maria Wiśniewska",2022,38.50,20.00
+        
+        .mt-4.text-sm.text-gray-600
+          p 💡 <strong>Wskazówka:</strong> Upewnij się, że plik jest zapisany w kodowaniu UTF-8 z polskimi znakami.
+
+block scripts
+  script.
+    // Auto-hide flash messages
+    setTimeout(function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        alert.style.transition = 'opacity 0.5s';
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 500);
+      });
+    }, 5000);
+    
+    // File upload validation
+    document.getElementById('csvFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const fileSize = file.size / 1024 / 1024; // MB
+        if (fileSize > 5) {
+          alert('⚠️ Plik jest zbyt duży! Maksymalny rozmiar to 5MB.');
+          this.value = '';
+          return;
+        }
+        
+        if (!file.name.toLowerCase().endsWith('.csv')) {
+          alert('⚠️ Proszę wybrać plik CSV!');
+          this.value = '';
+          return;
+        }
+        
+        console.log('📁 Wybrano plik:', file.name, 'Rozmiar:', Math.round(fileSize * 100) / 100, 'MB');
+      }
+    });

@@ -24,6 +24,7 @@ import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as adminController from "./controllers/admin";
 import * as adminPublicManagementController from "./controllers/adminPublicManagement";
+import * as bookDictionaryController from "./controllers/bookDictionary";
 import * as schoolController from "./controllers/school";
 import * as errorController from "./controllers/errors";
 import * as bookController from "./controllers/book";
@@ -463,6 +464,18 @@ app.get("/api/bookads/:id/images/:filename", bookAdController.getBookAdImage);
 
 // Admin management for public users and book ads
 app.use("/admin/public-management", passportConfig.isAuthenticated, passportConfig.isAdmin, adminPublicManagementController.getAdminDashboard);
+
+// Book Dictionary Management Routes
+app.get("/admin/book-dictionary", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getCsvImport);
+app.get("/admin/book-dictionary/import", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getCsvImport);
+app.post("/admin/book-dictionary/import", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.uploadCsvFile, bookDictionaryController.postCsvImport);
+app.get("/admin/book-dictionary/pending", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getPendingEntries);
+app.post("/admin/book-dictionary/approve", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.postApproveEntry);
+app.post("/admin/book-dictionary/reject", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.postRejectEntry);
+app.get("/admin/book-dictionary/approved", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getApprovedEntries);
+
+// Book Dictionary API
+app.get("/api/book-dictionary/search", bookDictionaryController.apiSearchDictionary);
 
 app.use("/admin", adminRoutes);
 app.use("/public", publicRoutes);

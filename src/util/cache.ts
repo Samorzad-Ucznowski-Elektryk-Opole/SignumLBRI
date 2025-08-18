@@ -1,31 +1,16 @@
 import Redis from 'ioredis';
-import { config } from '../config/app.config';
 
 /**
  * High-performance Redis cache system for SignumLBRI 2025
  */
 class CacheManager {
-  private redis: Redis;
+  private redis: Redis | null = null;
   private localCache: Map<string, { data: any; expires: number }> = new Map();
   private readonly LOCAL_CACHE_TTL = 5 * 60 * 1000; // 5 minutes local cache
 
   constructor() {
-    // Initialize Redis if available, fallback to local cache
-    if (config.cache.enabled && config.cache.redis.url) {
-      this.redis = new Redis(config.cache.redis.url, {
-        retryDelayOnFailover: 100,
-        maxRetriesPerRequest: 3,
-        lazyConnect: true
-      });
-
-      this.redis.on('connect', () => {
-        console.log('🔴 Redis cache connected successfully');
-      });
-
-      this.redis.on('error', (err) => {
-        console.error('Redis cache error:', err.message);
-      });
-    }
+    // For now, just use local cache - Redis can be added later
+    console.log('� Using local cache only (Redis disabled)');
 
     // Cleanup local cache periodically
     setInterval(() => this.cleanupLocalCache(), 10 * 60 * 1000); // Every 10 minutes

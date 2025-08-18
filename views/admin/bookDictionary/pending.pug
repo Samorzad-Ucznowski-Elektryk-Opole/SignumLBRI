@@ -1,0 +1,210 @@
+extends ../layout
+
+block content
+  .min-h-screen.bg-gradient-to-br.from-yellow-50.to-orange-100.py-8
+    .container.mx-auto.px-4.max-w-7xl
+      
+      // Header Section
+      .bg-white.rounded-lg.shadow-md.p-6.mb-6
+        .flex.justify-between.items-start
+          div
+            h1.text-3xl.font-bold.text-gray-800.mb-2 ⏳ Oczekujące Wpisy Słownika (#{totalCount})
+            p.text-gray-600 Sprawdź i zatwierdź nowe wpisy książek do słownika systemowego
+          
+          .flex.space-x-3
+            a(href="/admin/book-dictionary/import").bg-blue-600.hover:bg-blue-700.text-white.px-4.py-2.rounded-md
+              | 📤 Importuj CSV
+            a(href="/admin/book-dictionary/approved").bg-green-600.hover:bg-green-700.text-white.px-4.py-2.rounded-md
+              | ✅ Zatwierdzone
+        
+        // Search Form
+        form(method="get").mt-4
+          .flex.space-x-4
+            input(type="text" name="search" value=search placeholder="Szukaj po tytule, wydawcy, autorach, ISBN...").flex-1.px-3.py-2.border.border-gray-300.rounded-md
+            button(type="submit").bg-gray-600.hover:bg-gray-700.text-white.px-6.py-2.rounded-md 🔍 Szukaj
+            if search
+              a(href="/admin/book-dictionary/pending").bg-gray-400.hover:bg-gray-500.text-white.px-4.py-2.rounded-md 🗑️ Wyczyść
+
+      if entries && entries.length > 0
+        // Entries Table
+        .bg-white.rounded-lg.shadow-md.overflow-hidden
+          .overflow-x-auto
+            table.min-w-full.divide-y.divide-gray-200
+              thead.bg-gray-50
+                tr
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider ISBN
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Tytuł
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Wydawca
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Autorzy
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Rok
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Ceny
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Przesłane
+                  th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Akcje
+              tbody.bg-white.divide-y.divide-gray-200
+                each entry in entries
+                  tr.hover:bg-gray-50
+                    td.px-6.py-4.whitespace-nowrap.text-sm.font-mono.text-gray-900= entry.isbn
+                    td.px-6.py-4.text-sm.text-gray-900
+                      .font-semibold= entry.title
+                      if entry.notes
+                        .text-xs.text-gray-500.mt-1= entry.notes
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-900= entry.publisher
+                    td.px-6.py-4.text-sm.text-gray-900= entry.authors
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-900= entry.year
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-900
+                      .text-green-600 Nowa: #{entry.newPrice}zł
+                      .text-blue-600 Używana: #{entry.usedPrice}zł
+                    td.px-6.py-4.whitespace-nowrap.text-sm.text-gray-500
+                      .text-xs= new Date(entry.submittedAt).toLocaleString('pl-PL')
+                      if entry.submittedBy && entry.submittedBy.profile
+                        .text-xs.text-gray-400 przez #{entry.submittedBy.profile.name || ''} #{entry.submittedBy.profile.surname || ''}
+                    td.px-6.py-4.whitespace-nowrap.text-sm.space-x-2
+                      // Approve Button
+                      button.approve-btn(
+                        data-entry-id=entry._id 
+                        data-title=entry.title
+                      ).bg-green-600.hover:bg-green-700.text-white.px-3.py-1.rounded.text-xs.transition-colors
+                        | ✅ Zatwierdź
+                      
+                      // Reject Button  
+                      button.reject-btn(
+                        data-entry-id=entry._id 
+                        data-title=entry.title
+                      ).bg-red-600.hover:bg-red-700.text-white.px-3.py-1.rounded.text-xs.transition-colors
+                        | ❌ Odrzuć
+
+        // Pagination
+        if totalPages > 1
+          .bg-white.px-6.py-4.border-t.border-gray-200
+            .flex.justify-between.items-center
+              .text-sm.text-gray-700 
+                | Strona #{currentPage} z #{totalPages} (#{totalCount} wpisów)
+              
+              .flex.space-x-2
+                if currentPage > 1
+                  a(href=`?page=${currentPage - 1}${search ? '&search=' + encodeURIComponent(search) : ''}`).px-3.py-2.bg-gray-200.text-gray-700.rounded.hover:bg-gray-300
+                    | ← Poprzednia
+                
+                // Page numbers
+                - var startPage = Math.max(1, currentPage - 2)
+                - var endPage = Math.min(totalPages, currentPage + 2)
+                
+                each pageNum in Array.from({length: endPage - startPage + 1}, (_, i) => startPage + i)
+                  if pageNum === currentPage
+                    span.px-3.py-2.bg-blue-600.text-white.rounded= pageNum
+                  else
+                    a(href=`?page=${pageNum}${search ? '&search=' + encodeURIComponent(search) : ''}`).px-3.py-2.bg-gray-200.text-gray-700.rounded.hover:bg-gray-300= pageNum
+                
+                if currentPage < totalPages
+                  a(href=`?page=${currentPage + 1}${search ? '&search=' + encodeURIComponent(search) : ''}`).px-3.py-2.bg-gray-200.text-gray-700.rounded.hover:bg-gray-300
+                    | Następna →
+
+      else
+        // Empty State
+        .bg-white.rounded-lg.shadow-md.p-12.text-center
+          .text-gray-400.text-6xl.mb-4 📚
+          h3.text-xl.font-semibold.text-gray-700.mb-2 Brak oczekujących wpisów
+          p.text-gray-500.mb-6 
+            if search 
+              | Nie znaleziono wpisów pasujących do wyszukiwania "#{search}"
+            else
+              | Wszystkie wpisy zostały już przetworzone lub nie dodano jeszcze żadnych książek.
+          
+          .space-x-4
+            if search
+              a(href="/admin/book-dictionary/pending").bg-blue-600.hover:bg-blue-700.text-white.px-6.py-2.rounded-md
+                | 🔄 Pokaż wszystkie
+            a(href="/admin/book-dictionary/import").bg-green-600.hover:bg-green-700.text-white.px-6.py-2.rounded-md
+              | 📤 Importuj nowe książki
+
+  // Approval Modal
+  #approvalModal.fixed.inset-0.bg-gray-600.bg-opacity-50.hidden.z-50
+    .flex.items-center.justify-center.min-h-screen.p-4
+      .bg-white.rounded-lg.max-w-md.w-full.p-6
+        h3.text-lg.font-semibold.text-gray-900.mb-4 ✅ Zatwierdź wpis
+        p.text-gray-600.mb-4 Czy chcesz zatwierdzić książkę: <span id="approveTitle" class="font-semibold"></span>?
+        
+        form#approveForm(method="post" action="/admin/book-dictionary/approve")
+          input(type="hidden" name="entryId" id="approveEntryId")
+          
+          .mb-4
+            label.flex.items-center
+              input(type="checkbox" name="addToMainBooks" value="true").mr-2
+              | Dodaj również do głównej bazy książek (Book model)
+          
+          .flex.space-x-4
+            button(type="button" onclick="closeModal('approvalModal')").bg-gray-400.hover:bg-gray-500.text-white.px-4.py-2.rounded
+              | Anuluj
+            button(type="submit").bg-green-600.hover:bg-green-700.text-white.px-4.py-2.rounded
+              | ✅ Zatwierdź
+
+  // Rejection Modal
+  #rejectionModal.fixed.inset-0.bg-gray-600.bg-opacity-50.hidden.z-50
+    .flex.items-center.justify-center.min-h-screen.p-4
+      .bg-white.rounded-lg.max-w-md.w-full.p-6
+        h3.text-lg.font-semibold.text-gray-900.mb-4 ❌ Odrzuć wpis
+        p.text-gray-600.mb-4 Podaj powód odrzucenia książki: <span id="rejectTitle" class="font-semibold"></span>
+        
+        form#rejectForm(method="post" action="/admin/book-dictionary/reject")
+          input(type="hidden" name="entryId" id="rejectEntryId")
+          
+          .mb-4
+            label.block.text-sm.font-medium.text-gray-700.mb-2 Powód odrzucenia:
+            textarea(name="reason" required).w-full.px-3.py-2.border.border-gray-300.rounded-md.rows-3
+              | placeholder="np. Nieprawidłowe dane, duplikat, brak dostępności..."
+          
+          .flex.space-x-4
+            button(type="button" onclick="closeModal('rejectionModal')").bg-gray-400.hover:bg-gray-500.text-white.px-4.py-2.rounded
+              | Anuluj
+            button(type="submit").bg-red-600.hover:bg-red-700.text-white.px-4.py-2.rounded
+              | ❌ Odrzuć
+
+block scripts
+  script.
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+    
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+    
+    // Approve button handlers
+    document.querySelectorAll('.approve-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const entryId = this.dataset.entryId;
+        const title = this.dataset.title;
+        
+        document.getElementById('approveEntryId').value = entryId;
+        document.getElementById('approveTitle').textContent = title;
+        openModal('approvalModal');
+      });
+    });
+    
+    // Reject button handlers
+    document.querySelectorAll('.reject-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const entryId = this.dataset.entryId;
+        const title = this.dataset.title;
+        
+        document.getElementById('rejectEntryId').value = entryId;
+        document.getElementById('rejectTitle').textContent = title;
+        openModal('rejectionModal');
+      });
+    });
+    
+    // Close modal when clicking outside
+    document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeModal(this.id);
+        }
+      });
+    });
+    
+    // Auto refresh every 30 seconds to show new entries
+    setTimeout(() => {
+      if (#{entries.length} > 0) {
+        location.reload();
+      }
+    }, 30000);
