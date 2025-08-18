@@ -1,0 +1,179 @@
+extends ../layout
+
+block content
+  .container.my-5
+    .card.shadow-sm
+      .card-header.bg-secondary.text-white
+        h4.mb-0
+          i.fas.fa-history.me-2
+          | Historia Rezerwacji
+
+      .card-body
+        if carts && carts.length > 0
+          each cart in carts
+            .card.mb-3.border-0.shadow-sm
+              .card-header.d-flex.justify-content-between.align-items-center(
+                class=cart.status === 'completed' ? 'bg-success text-white' : 
+                      cart.status === 'reserved' ? 'bg-warning text-dark' :
+                      cart.status === 'expired' ? 'bg-danger text-white' :
+                      cart.status === 'cancelled' ? 'bg-secondary text-white' : 'bg-light'
+              )
+                .d-flex.align-items-center
+                  if cart.status === 'completed'
+                    i.fas.fa-check-circle.me-2
+                  else if cart.status === 'reserved'  
+                    i.fas.fa-clock.me-2
+                  else if cart.status === 'expired'
+                    i.fas.fa-times-circle.me-2
+                  else if cart.status === 'cancelled'
+                    i.fas.fa-ban.me-2
+                  
+                  div
+                    .fw-bold= cart.reservationCode || `Koszyk z ${cart.createdAt.toLocaleDateString('pl')}`
+                    .small
+                      if cart.status === 'completed'
+                        | Zrealizowana
+                      else if cart.status === 'reserved'
+                        | Aktywna rezerwacja
+                      else if cart.status === 'expired'
+                        | Wygasła
+                      else if cart.status === 'cancelled'
+                        | Anulowana
+                      
+                      if cart.reservationExpires && cart.status === 'reserved'
+                        | &nbsp;• Wygasa: #{cart.reservationExpires.toLocaleString('pl')}
+                
+                .text-end
+                  .fw-bold #{cart.totalAmount} zł
+                  .small #{cart.items.length} książek
+
+              .card-body
+                .row
+                  .col-md-8
+                    if cart.items.length <= 3
+                      // Show all books if 3 or less
+                      each item in cart.items
+                        - const bookAd = item.bookAd
+                        if bookAd && bookAd.book
+                          .d-flex.align-items-center.mb-2
+                            if bookAd.images && bookAd.images.length > 0
+                              img.me-3.rounded(src=`/uploads/book-ads/${bookAd.images[0]}` alt=bookAd.book.title style="width: 40px; height: 40px; object-fit: cover")
+                            else
+                              .me-3.bg-light.rounded.d-flex.align-items-center.justify-content-center(style="width: 40px; height: 40px")
+                                i.fas.fa-book.text-muted.fa-sm
+                            
+                            div
+                              .fw-semibold.small= bookAd.book.title
+                              .text-muted.small= bookAd.book.authors.join(', ')
+                              .text-primary.small #{bookAd.sellingPrice} zł
+                    else
+                      // Show first 2 books and "X więcej"
+                      each item, index in cart.items.slice(0, 2)
+                        - const bookAd = item.bookAd
+                        if bookAd && bookAd.book
+                          .d-flex.align-items-center.mb-2
+                            if bookAd.images && bookAd.images.length > 0
+                              img.me-3.rounded(src=`/uploads/book-ads/${bookAd.images[0]}` alt=bookAd.book.title style="width: 40px; height: 40px; object-fit: cover")
+                            else
+                              .me-3.bg-light.rounded.d-flex.align-items-center.justify-content-center(style="width: 40px; height: 40px")
+                                i.fas.fa-book.text-muted.fa-sm
+                            
+                            div
+                              .fw-semibold.small= bookAd.book.title
+                              .text-muted.small= bookAd.book.authors.join(', ')
+                              .text-primary.small #{bookAd.sellingPrice} zł
+                      
+                      - const remaining = cart.items.length - 2
+                      if remaining > 0
+                        .text-muted.small.ms-5
+                          i.fas.fa-plus.me-2
+                          | i #{remaining} więcej książek...
+
+                  .col-md-4.text-md-end
+                    .small.text-muted.mb-2
+                      i.fas.fa-calendar.me-2
+                      | #{cart.createdAt.toLocaleDateString('pl')} #{cart.createdAt.toLocaleTimeString('pl')}
+                    
+                    if cart.status === 'reserved'
+                      .btn-group-vertical.btn-group-sm
+                        a.btn.btn-outline-primary.btn-sm(href=`/public/cart/reservation/${cart._id}`)
+                          i.fas.fa-qrcode.me-2
+                          | Pokaż QR
+                        
+                        form.d-inline(method="POST" action=`/public/cart/cancel/${cart._id}`)
+                          button.btn.btn-outline-danger.btn-sm(type="submit")
+                            i.fas.fa-times.me-2
+                            | Anuluj
+                    
+                    else if cart.status === 'completed'
+                      .text-success.small
+                        i.fas.fa-check.me-2
+                        | Zrealizowane
+                        if cart.completedAt
+                          br
+                          | #{cart.completedAt.toLocaleDateString('pl')}
+                    
+                    else if cart.status === 'expired'
+                      .text-danger.small
+                        i.fas.fa-clock.me-2
+                        | Wygasła
+                    
+                    else if cart.status === 'cancelled'
+                      .text-secondary.small
+                        i.fas.fa-ban.me-2
+                        | Anulowana
+
+          // Pagination
+          if totalPages > 1
+            nav.mt-4
+              ul.pagination.justify-content-center
+                if currentPage > 1
+                  li.page-item
+                    a.page-link(href=`?page=${currentPage - 1}`)
+                      i.fas.fa-chevron-left
+                
+                - for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++)
+                  li.page-item(class=i === currentPage ? 'active' : '')
+                    a.page-link(href=`?page=${i}`)= i
+                
+                if currentPage < totalPages
+                  li.page-item
+                    a.page-link(href=`?page=${currentPage + 1}`)
+                      i.fas.fa-chevron-right
+
+        else
+          .text-center.py-5
+            i.fas.fa-history.fa-3x.text-muted.mb-3
+            h5.text-muted Brak historii rezerwacji
+            p.text-muted Gdy dokonasz pierwszej rezerwacji, pojawi się tutaj jej historia.
+            a.btn.btn-primary(href="/public/books")
+              i.fas.fa-book.me-2
+              | Przeglądaj Książki
+
+    .text-center.mt-4
+      a.btn.btn-outline-primary(href="/public/dashboard")
+        i.fas.fa-home.me-2
+        | Powrót do Dashboardu
+      
+      a.btn.btn-outline-success.ms-2(href="/public/cart")
+        i.fas.fa-shopping-cart.me-2
+        | Aktualny Koszyk
+
+block scripts
+  script.
+    // Confirmation for canceling reservations
+    document.querySelectorAll('form[action*="/cancel/"]').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        if (!confirm('Czy na pewno chcesz anulować tę rezerwację? Książki staną się ponownie dostępne dla innych.')) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    // Auto-refresh active reservations every minute
+    setInterval(() => {
+      const activeReservations = document.querySelectorAll('.bg-warning');
+      if (activeReservations.length > 0) {
+        location.reload();
+      }
+    }, 60000);

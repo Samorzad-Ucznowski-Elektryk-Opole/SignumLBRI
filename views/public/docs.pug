@@ -1,0 +1,127 @@
+extends layout
+
+block content
+  .container.my-5
+    .row
+      .col-12
+        .card
+          .card-header
+            h3.mb-0 
+              .d-flex.align-items-center
+                span.me-2 📚
+                | Open Data API Documentation
+          .card-body
+            p.lead Programowy dostęp do anonimizowanych statystyk targów książkowych
+
+  .container.my-4
+    .row
+      .col-md-8
+        h4 Endpoints
+
+        .card.mb-4
+          .card-header
+            h5 
+              code GET /public/api/opendata
+              .badge.bg-success.ms-2 Public
+          .card-body
+            p Główny endpoint zwracający zagregowane statystyki wszystkich szkół
+            
+            h6 Parametry zapytania:
+            table.table.table-sm
+              tr
+                td
+                  code format
+                td 
+                  span.badge.bg-info json
+                  | (default), 
+                  span.badge.bg-info csv
+                  |, 
+                  span.badge.bg-info xml
+                td Format odpowiedzi
+            
+            h6 Przykładowa odpowiedź (JSON):
+            pre.bg-light.p-3
+              code.
+                {
+                  "meta": {
+                    "version": "1.0.0",
+                    "generated": "2025-01-18T10:00:00.000Z",
+                    "description": "Open data API for school book fairs transparency",
+                    "license": "CC BY 4.0"
+                  },
+                  "summary": {
+                    "totalSchools": 5,
+                    "totalBooks": 1250,
+                    "totalSold": 890,
+                    "totalValue": 25430.50
+                  },
+                  "data": [...]
+                }
+
+        .card.mb-4
+          .card-header
+            h5 
+              code GET /public/api/school/:schoolId
+              .badge.bg-success.ms-2 Public
+          .card-body
+            p Statystyki konkretnej szkoły (zidentyfikowanej przez ID)
+            
+            h6 Przykład:
+            pre.bg-light.p-3
+              code GET /public/api/school/507f1f77bcf86cd799439011
+
+        .card.mb-4
+          .card-header  
+            h5 
+              code GET /public/api/timeseries
+              .badge.bg-success.ms-2 Public
+          .card-body
+            p Dane czasowe pokazujące trendy rejestracji i sprzedaży
+            
+            h6 Parametry:
+            table.table.table-sm
+              tr
+                td
+                  code days
+                td
+                  span.badge.bg-info 30
+                  | (default)
+                td Liczba dni wstecz
+
+      .col-md-4
+        .card.bg-light
+          .card-body
+            h5 Licencja
+            p
+              | Dane dostępne na licencji 
+              strong CC BY 4.0
+            
+            h5 Rate Limiting
+            p Brak ograniczeń dla publicznych danych
+            
+            h5 CORS
+            p Wszystkie domeny obsługiwane dla Open Data
+            
+            h5 Formaty
+            ul.list-unstyled
+              li ✓ JSON (application/json)
+              li ✓ CSV (text/csv) 
+              li ✓ XML (application/xml)
+            
+            h5 Wsparcie
+            p
+              | Pytania: 
+              a(href='mailto:samorzad@elektryk.opole.pl') samorzad@elektryk.opole.pl
+
+  .container.my-4
+    .row
+      .col-12
+        .card.border-warning
+          .card-header.bg-warning.text-dark
+            h5.mb-0 Prywatność i RODO
+          .card-body
+            ul
+              li Wszystkie dane osobowe są anonimizowane
+              li Publikowane są tylko zagregowane statystyki
+              li Brak dostępu do danych indywidualnych użytkowników
+              li Zgodność z RODO - użytkownicy mogą zażądać usunięcia danych

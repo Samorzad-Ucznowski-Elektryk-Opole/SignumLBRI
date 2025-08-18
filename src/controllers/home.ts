@@ -2,16 +2,12 @@ import { Request, Response } from "express";
 import { Book } from "../models/Book";
 import { BookListing } from "../models/BookListing";
 import { UserDocument } from "../models/User";
+import { getConfig } from "../config/app.config";
 
 /**
- * Home page.
+ * Home page with modern UI support.
  * @route GET /
  */
-// export const index = (req: Request, res: Response) => {
-//     res.render("home", {
-//         title: "Home"
-//     });
-// };
 
 async function fetchTopBooks(): Promise<
   { _id: number; title?: string; publisher?: string; count: number }[]
@@ -76,25 +72,49 @@ export const tos = (req: Request, res: Response) => {
 
 
 export const index = async (req: Request, res: Response): Promise<void> => {
-  if ((req.user as UserDocument).role != "student") {
-    res.render("homeStaff", {
-      title: "Home",
+  const config = getConfig();
+  
+  // Check if user is authenticated
+  const user = req.user as UserDocument;
+  
+  if (!user) {
+    // For non-authenticated users, show modern landing page
+    return res.render("home-modern", {
+      title: "SignumLBRI - Nowoczesna Platforma Edukacyjna",
+      config: config,
+      isAuthenticated: false,
+      user: null
+    });
+  }
+
+  if (user.role !== "student") {
+    // For staff users, show admin dashboard
+    return res.render("homeStaff", {
+      title: "Dashboard - SignumLBRI",
       availableBooks: await fetchTopBooks(),
+      config: config,
+      isAuthenticated: true,
+      user: user
     });
   } else {
+    // For students, show personal book listings
     const bookListings = await BookListing.find({ bookOwner: req.user })
       .populate("book", "-image")
       .catch((err: Error) => {
         req.flash("errors", { msg: JSON.stringify(err) });
         return res.redirect("/");
       });
-    res.render("home", {
-      title: "Home",
+      
+    return res.render("home", {
+      title: "Moje Książki - SignumLBRI",
       bookListings: bookListings
         ? bookListings.length > 0
           ? bookListings
           : undefined
         : undefined,
+      config: config,
+      isAuthenticated: true,
+      user: user
     });
   }
 };

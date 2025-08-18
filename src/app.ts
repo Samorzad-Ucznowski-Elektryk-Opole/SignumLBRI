@@ -124,6 +124,10 @@ app.get("/privacy", homeController.policy);
 app.get("/tos", homeController.tos);
 app.post("/error/send", errorController.postError);
 app.get("/library", bookController.getLibrary);
+app.get("/library/classic", (req, res, next) => {
+  req.query.modern = 'false';
+  bookController.getLibrary(req, res);
+});
 app.post("/language", changeLanguage);
 app.get("/login", userController.getLogin);
 app.post("/login", userController.postLogin);
@@ -382,7 +386,11 @@ adminRoutes.get(
 // applicationRoutes.get("/find", passportConfig.isAuthenticatedApp, passportConfig.isSeller, bookController.getFindListingApp)
 // applicationRoutes.post("/:itemID/sell", passportConfig.isAuthenticatedApp, passportConfig.isSeller, bookController.sellBookApp);
 
+// Import public routes
+import publicRoutes from "./routes/public";
+
 app.use("/admin", adminRoutes);
+app.use("/public", publicRoutes);
 
 // app.get("/print", showPDF);
 // app.get("/print/fetch", showPDF);

@@ -462,10 +462,15 @@ export const getLibrary = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  return res.render("library/books", {
-    
+  const data = await fetchAnonTopBooks();
+  
+  // Check for modern UI preference or default to modern
+  const useModern = req.query.modern !== 'false';
+  
+  return res.render(useModern ? "library/books-modern" : "library/books", {
     title: req.language.titles.library,
-    data: await fetchAnonTopBooks()
+    data: data,
+    isLandingPage: useModern
   });
 };
 

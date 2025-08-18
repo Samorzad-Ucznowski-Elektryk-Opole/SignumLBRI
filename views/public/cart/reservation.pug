@@ -1,0 +1,163 @@
+extends ../layout
+
+block content
+  .container.my-5
+    .row.justify-content-center
+      .col-lg-8
+        .card.shadow
+          .card-header.bg-success.text-white.text-center
+            h4.mb-0
+              i.fas.fa-check-circle.me-2
+              | Rezerwacja Potwierdzona!
+
+          .card-body.text-center.py-5
+            .mb-4
+              h5.text-success Kod Rezerwacji: <span class="badge bg-success fs-6">#{cart.reservationCode}</span>
+            
+            .row.mb-4
+              .col-md-6.mx-auto
+                .qr-code-container.p-3.bg-light.rounded
+                  img(src=qrCodeUrl alt="QR Code Rezerwacji" style="max-width: 200px; height: auto")
+                  
+            .alert.alert-warning
+              i.fas.fa-exclamation-triangle.me-2
+              | <strong>Ważne:</strong> Masz <strong>24 godziny</strong> na odebranie książek!
+              br
+              | Rezerwacja wygasa: <strong>#{cart.reservationExpires.toLocaleString('pl')}</strong>
+
+        .card.shadow-sm.mt-4
+          .card-header.bg-primary.text-white
+            h5.mb-0
+              i.fas.fa-book.me-2
+              | Zarezerwowane Książki
+
+          .card-body
+            each item in cart.items
+              - const bookAd = item.bookAd
+              - const book = bookAd.book
+              .row.border-bottom.py-3
+                .col-md-2
+                  if bookAd.images && bookAd.images.length > 0
+                    img.img-fluid.rounded(src=`/uploads/book-ads/${bookAd.images[0]}` alt=book.title style="max-height: 80px")
+                  else
+                    .bg-light.rounded.d-flex.align-items-center.justify-content-center(style="height: 80px; width: 60px")
+                      i.fas.fa-book.text-muted
+
+                .col-md-7
+                  h6.mb-1= book.title
+                  p.text-muted.mb-1.small
+                    | Autor: #{book.authors.join(', ')}
+                  p.text-muted.mb-1.small
+                    | Wydawnictwo: #{book.publisher}
+                  if bookAd.condition !== 'nowa'
+                    span.badge.bg-warning.text-dark.me-2= bookAd.condition
+                  p.small.text-primary.mb-0
+                    i.fas.fa-user.me-1
+                    | #{bookAd.owner.firstName} #{bookAd.owner.lastName}
+
+                .col-md-3.text-end
+                  .fw-bold.text-primary #{bookAd.sellingPrice} zł
+
+            hr
+            .row
+              .col-md-8
+                .text-muted.small
+                  i.fas.fa-info-circle.me-2
+                  | Łączna liczba książek: <strong>#{cart.items.length}</strong>
+
+              .col-md-4.text-end
+                .fs-5.fw-bold.text-success
+                  | Razem do zapłaty: #{cart.totalAmount} zł
+
+        .card.shadow-sm.mt-4
+          .card-header.bg-info.text-white
+            h5.mb-0
+              i.fas.fa-map-marker-alt.me-2
+              | Jak odebrać książki?
+
+          .card-body
+            ol
+              li <strong>Przyjdź do punktu odbioru</strong> w Twojej szkole w godzinach pracy
+              li <strong>Pokaż kod QR</strong> (wydrukuj tę stronę lub pokaż na telefonie)
+              li <strong>Zapłać gotówką</strong> sprzedawcy za książki (#{cart.totalAmount} zł)
+              li <strong>Odbierz książki</strong> i ciesz się zakupem!
+
+            .alert.alert-info.mt-3
+              i.fas.fa-phone.me-2
+              | <strong>Pytania?</strong> Skontaktuj się z administratorem szkoły lub sprzedawcą.
+
+        .text-center.mt-4
+          .btn-group(role="group")
+            a.btn.btn-outline-primary(href="/public/dashboard")
+              i.fas.fa-home.me-2
+              | Powrót do Dashboardu
+            
+            a.btn.btn-outline-secondary(href="/public/cart/history")
+              i.fas.fa-history.me-2
+              | Historia Rezerwacji
+            
+            if cart.status === 'reserved'
+              form.d-inline(method="POST" action=`/public/cart/cancel/${cart._id}`)
+                button.btn.btn-outline-danger(type="submit")
+                  i.fas.fa-times.me-2
+                  | Anuluj Rezerwację
+
+        // Print button for QR code
+        .text-center.mt-3
+          button.btn.btn-secondary(onclick="window.print()")
+            i.fas.fa-print.me-2
+            | Wydrukuj Kod QR
+
+block scripts
+  script.
+    // Cancel reservation confirmation
+    const cancelForm = document.querySelector('form[action*="/cancel/"]');
+    if (cancelForm) {
+      cancelForm.addEventListener('submit', (e) => {
+        if (!confirm('Czy na pewno chcesz anulować tę rezerwację? Książki staną się ponownie dostępne dla innych.')) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    // Countdown timer to expiration
+    const expiresAt = new Date('#{cart.reservationExpires}');
+    
+    function updateCountdown() {
+      const now = new Date();
+      const timeDiff = expiresAt - now;
+      
+      if (timeDiff <= 0) {
+        document.body.innerHTML = '<div class="container text-center mt-5"><div class="alert alert-danger"><h4>Rezerwacja wygasła</h4><p>Ta rezerwacja już nie jest aktywna.</p><a href="/public/dashboard" class="btn btn-primary">Powrót do Dashboardu</a></div></div>';
+        return;
+      }
+      
+      const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      
+      const countdownEl = document.getElementById('countdown');
+      if (countdownEl) {
+        countdownEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Change color as time runs out
+        if (hours < 2) {
+          countdownEl.className = 'text-danger fw-bold';
+        } else if (hours < 6) {
+          countdownEl.className = 'text-warning fw-bold';
+        }
+      }
+    }
+    
+    // Add countdown display
+    const alertElement = document.querySelector('.alert-warning');
+    if (alertElement) {
+      const countdownDiv = document.createElement('div');
+      countdownDiv.className = 'mt-2 text-center';
+      countdownDiv.innerHTML = '<span class="text-muted">Pozostało: </span><span id="countdown" class="text-success fw-bold"></span>';
+      alertElement.appendChild(countdownDiv);
+      
+      // Update immediately and then every second
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }

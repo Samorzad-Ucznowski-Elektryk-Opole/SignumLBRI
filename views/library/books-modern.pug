@@ -1,0 +1,245 @@
+extends ../layout_tailwindcss
+include ../mixins/a.pug
+include ../mixins/modern-carousel.pug
+
+block content
+    // Hero Section with Carousel
+    section.hero-landing.relative.min-h-screen.flex.items-center.justify-center.overflow-hidden
+        // Background Effects
+        .absolute.inset-0.bg-gradient-to-br.from-blue-900.via-purple-900.to-indigo-900
+        .absolute.inset-0.opacity-20
+            .absolute.top-10.left-10.w-72.h-72.bg-purple-500.rounded-full.filter.blur-3xl.animate-pulse
+            .absolute.bottom-10.right-10.w-96.h-96.bg-blue-500.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 2s")
+            .absolute.top-1/3.right-1/4.w-64.h-64.bg-indigo-500.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 4s")
+
+        .container.mx-auto.px-4.relative.z-10
+            .grid.lg:grid-cols-2.gap-12.items-center
+                // Left Side - Content
+                .text-left.space-y-6(class="lg:pr-8")
+                    .glassmorphism-light.p-8.rounded-2xl.backdrop-blur-xl.border.border-white.border-opacity-20
+                        h1.text-5xl.md:text-7xl.font-bold.mb-6
+                            span.bg-gradient-to-r.from-white.to-blue-200.bg-clip-text.text-transparent
+                                = language.website.title
+                        
+                        h2.text-2xl.md:text-3xl.font-serif.text-blue-200.mb-6.leading-relaxed
+                            = language.website.signature
+                        
+                        p.text-lg.text-gray-200.leading-relaxed.mb-8
+                            = language.website.description
+                            br
+                            small.text-gray-400.italic= language.website.creator
+
+                        .flex.flex-col.sm:flex-row.gap-4.mt-8
+                            +a-button("/book/add").modern-btn.modern-btn-primary.text-lg.px-8.py-4
+                                = language.website.button.addBook
+                            a(href="#books").modern-btn.modern-btn-secondary.text-lg.px-8.py-4.no-underline.text-center
+                                = language.website.button.availableBook
+
+                // Right Side - Hero Visual
+                .relative.flex.justify-center.items-center
+                    .glassmorphism.p-8.rounded-3xl.w-full.max-w-md.transform.hover:scale-105.transition-transform.duration-500
+                        .text-center.space-y-6
+                            .w-32.h-32.mx-auto.rounded-full.bg-gradient-to-r.from-blue-400.to-purple-500.flex.items-center.justify-center.mb-6
+                                svg.w-16.h-16.text-white(fill="currentColor", viewBox="0 0 20 20")
+                                    path(d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+                            
+                            h3.text-xl.font-semibold.text-white Trusted Platform
+                            p.text-gray-300 Your books, safely managed with modern technology
+                            
+                            .grid.grid-cols-3.gap-4.mt-6
+                                .text-center
+                                    .text-2xl.font-bold.text-blue-400 24/7
+                                    .text-sm.text-gray-400 Available
+                                .text-center
+                                    .text-2xl.font-bold.text-purple-400 100%
+                                    .text-sm.text-gray-400 Secure
+                                .text-center
+                                    .text-2xl.font-bold.text-indigo-400 Fast
+                                    .text-sm.text-gray-400 Processing
+
+    // Available Books Section
+    if data && data.length
+        section#books.py-20.bg-gradient-to-b.from-gray-900.to-black.min-h-screen
+            .container.mx-auto.px-4
+                // Section Header
+                .text-center.mb-16
+                    .glassmorphism-light.inline-block.p-3.rounded-2xl.mb-6
+                        svg.w-8.h-8.text-blue-400(fill="currentColor", viewBox="0 0 20 20")
+                            path(d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+                    
+                    h2.text-4xl.md:text-5xl.font-bold.mb-6
+                        span.bg-gradient-to-r.from-white.to-blue-200.bg-clip-text.text-transparent
+                            Available Books by School
+                    
+                    p.text-xl.text-gray-300.max-w-3xl.mx-auto.leading-relaxed
+                        Browse our collection of textbooks and educational materials from verified schools.
+
+                // Schools Grid
+                .space-y-16
+                    each schoolEntry in data
+                        .glassmorphism.rounded-3xl.p-8.hover:shadow-2xl.transition-all.duration-500
+                            // School Header
+                            .flex.items-center.mb-8
+                                .w-16.h-16.rounded-full.overflow-hidden.mr-4.ring-4.ring-blue-400.ring-opacity-50
+                                    img(src=`/school/${schoolEntry.school._id}/logo?width=80&height=80&quality=60`, 
+                                        alt=schoolEntry.school.name,
+                                        class="w-full h-full object-cover")
+                                
+                                div
+                                    h3.text-2xl.font-bold.text-white.mb-2= schoolEntry.school.name
+                                    p.text-gray-400 #{schoolEntry.book.length} books available
+
+                            // Books Grid
+                            .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.xl:grid-cols-4.gap-6
+                                each bookEntry in schoolEntry.book
+                                    .book-card.glassmorphism-light.rounded-2xl.p-6.hover:scale-105.transform.transition-all.duration-300.cursor-pointer
+                                        // Book Cover
+                                        .relative.mb-4.rounded-xl.overflow-hidden.bg-gradient-to-br.from-gray-700.to-gray-800
+                                            .aspect-w-3.aspect-h-4.h-48
+                                                if bookEntry.book.image
+                                                    img.w-full.h-full.object-cover(src=`/book/${bookEntry.book._id}/image`, alt=bookEntry.book.title)
+                                                else
+                                                    .flex.items-center.justify-center.h-full.bg-gradient-to-br.from-blue-500.to-purple-600
+                                                        svg.w-12.h-12.text-white(fill="currentColor", viewBox="0 0 20 20")
+                                                            path(d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+                                            
+                                            // Availability Badge
+                                            .absolute.top-2.right-2.glassmorphism-light.px-3.py-1.rounded-full
+                                                .flex.items-center.space-x-1
+                                                    .w-2.h-2.bg-green-400.rounded-full.animate-pulse
+                                                    .text-xs.font-semibold.text-green-200= bookEntry.available + " available"
+
+                                        // Book Info
+                                        .space-y-3
+                                            h4.font-bold.text-white.line-clamp-2.text-sm.leading-tight
+                                                = bookEntry.book.title || "Untitled Book"
+                                            
+                                            .flex.items-center.justify-between.text-xs
+                                                .text-gray-400
+                                                    if bookEntry.book.authors && bookEntry.book.authors.length
+                                                        = bookEntry.book.authors[0]
+                                                    else
+                                                        | Unknown Author
+                                                
+                                                if bookEntry.book.pubDate
+                                                    .text-gray-500= bookEntry.book.pubDate
+
+                                        // Action Buttons
+                                        .pt-4.border-t.border-white.border-opacity-10.mt-4
+                                            .flex.space-x-2
+                                                button.modern-btn.modern-btn-primary.text-xs.py-2.px-4.flex-1
+                                                    | View Details
+                                                button.modern-btn.modern-btn-secondary.text-xs.py-2.px-4.flex-1
+                                                    | Contact
+
+    else
+        // No Books Available
+        section#books.py-20.bg-gradient-to-b.from-gray-900.to-black.min-h-screen.flex.items-center.justify-center
+            .container.mx-auto.px-4.text-center
+                .glassmorphism.p-12.rounded-3xl.max-w-md.mx-auto
+                    .w-24.h-24.mx-auto.rounded-full.bg-gradient-to-r.from-gray-600.to-gray-700.flex.items-center.justify-center.mb-6
+                        svg.w-12.h-12.text-gray-400(fill="currentColor", viewBox="0 0 20 20")
+                            path(d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+                    
+                    h3.text-2xl.font-bold.text-white.mb-4 No Books Available
+                    p.text-gray-400.mb-8 Be the first to add books to our platform!
+                    
+                    +a-button("/book/add").modern-btn.modern-btn-primary
+                        | Add First Book
+
+    // CTA Section
+    section.py-20.bg-gradient-to-r.from-blue-600.via-purple-600.to-indigo-600.relative.overflow-hidden
+        .absolute.inset-0.bg-black.bg-opacity-20
+        .absolute.inset-0.opacity-30
+            .absolute.top-0.left-0.w-64.h-64.bg-white.rounded-full.filter.blur-3xl.animate-pulse
+            .absolute.bottom-0.right-0.w-80.h-80.bg-yellow-300.rounded-full.filter.blur-3xl.animate-pulse(style="animation-delay: 1s")
+
+        .container.mx-auto.px-4.relative.z-10
+            .glassmorphism.rounded-3xl.p-12.text-center
+                h2.text-4xl.md:text-5xl.font-bold.text-white.mb-6
+                    Join Our Community
+                
+                p.text-xl.text-gray-200.mb-8.max-w-2xl.mx-auto.leading-relaxed
+                    Start buying and selling textbooks today. Connect with students from verified schools.
+                
+                .flex.flex-col.sm:flex-row.justify-center.gap-6
+                    +a-button("/book/add").modern-btn.modern-btn-primary.text-lg.px-8.py-4
+                        | Add Your Books
+                    a(href="/login").modern-btn.modern-btn-secondary.text-lg.px-8.py-4.no-underline
+                        | Sign In to Start
+
+    // Footer
+    footer.bg-black.bg-opacity-90.py-12.border-t.border-gray-800
+        .container.mx-auto.px-4
+            .glassmorphism-light.rounded-2xl.p-8
+                .grid.md:grid-cols-3.gap-8.text-center.md:text-left
+                    div
+                        h3.text-lg.font-bold.text-white.mb-4= language.website.title
+                        p.text-gray-400.text-sm.leading-relaxed
+                            = language.website.description
+
+                    div
+                        h4.font-semibold.text-white.mb-4 Quick Links
+                        .space-y-2
+                            a(href="/book/add").text-gray-400.hover:text-white.transition-colors.text-sm Add Books
+                            a(href="/library").text-gray-400.hover:text-white.transition-colors.text-sm Browse Books
+                            a(href="/login").text-gray-400.hover:text-white.transition-colors.text-sm Sign In
+
+                    div
+                        h4.font-semibold.text-white.mb-4 Information
+                        .space-y-2
+                            a(href="/privacy").text-gray-400.hover:text-white.transition-colors.text-sm Privacy Policy
+                            a(href="/tos").text-gray-400.hover:text-white.transition-colors.text-sm Terms of Service
+                            
+                .mt-8.pt-8.border-t.border-gray-700.text-center
+                    p.text-gray-500.text-sm
+                        | © 2024 #{language.website.title}. All rights reserved.
+                        br
+                        small.italic= language.website.creator
+
+//- Smooth Scrolling JavaScript
+script.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Book card hover effects
+        document.querySelectorAll('.book-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05) translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) translateY(0)';
+            });
+        });
+        
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        // Observe all glassmorphism elements
+        document.querySelectorAll('.glassmorphism, .glassmorphism-light').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    });

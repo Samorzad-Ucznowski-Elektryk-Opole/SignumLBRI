@@ -1,0 +1,208 @@
+extends layout
+
+block content
+  // Hero Section
+  .hero-section
+    .container
+      .row.text-center
+        .col-12
+          h1.display-4.fw-bold Transparentność Targów Książkowych
+          p.lead Otwarte dane i statystyki z targów książek w szkołach
+          .last-update Ostatnia aktualizacja: #{lastUpdate.toLocaleString('pl-PL')}
+
+  // Main Statistics
+  .container.my-5
+    .row.g-4
+      .col-md-3
+        .card.stats-card.text-center.p-3
+          .card-body
+            .stat-value #{stats.totalBooks || 0}
+            h5.card-title Książek Zarejestrowanych
+            p.card-text Łączna liczba książek w systemie
+            
+      .col-md-3
+        .card.stats-card.text-center.p-3
+          .card-body
+            .stat-value #{stats.soldBooks || 0}
+            h5.card-title Książek Sprzedanych  
+            p.card-text Pomyślnie sprzedane książki
+            
+      .col-md-3
+        .card.stats-card.text-center.p-3
+          .card-body
+            .stat-value #{sellRate}%
+            h5.card-title Wskaźnik Sprzedaży
+            p.card-text Procent sprzedanych książek
+            
+      .col-md-3  
+        .card.stats-card.text-center.p-3
+          .card-body
+            .stat-value #{(stats.totalRevenue || 0).toFixed(0)} zł
+            h5.card-title Łączny Obrót
+            p.card-text Suma wszystkich transakcji
+
+  // Charts Section
+  .container.my-5
+    .row
+      .col-md-6
+        .card
+          .card-header
+            h5 Statystyki Szkół
+          .card-body
+            if schools && schools.length > 0
+              .chart-container
+                canvas#schoolsChart
+            else
+              .text-center.py-5.text-muted
+                p Brak danych do wyświetlenia
+                
+      .col-md-6
+        .card  
+          .card-header
+            h5 Trendy Czasowe (30 dni)
+          .card-body
+            if dailyTrends && dailyTrends.length > 0
+              .chart-container
+                canvas#trendsChart  
+            else
+              .text-center.py-5.text-muted
+                p Brak danych do wyświetlenia
+
+  // Schools Table
+  if schools && schools.length > 0
+    .container.my-5
+      .row
+        .col-12
+          .card
+            .card-header.d-flex.justify-content-between.align-items-center
+              h5.mb-0 Statystyki per Szkoła
+              small.text-muted #{schools.length} szkół aktywnych
+            .card-body
+              .table-responsive
+                table.table.table-hover
+                  thead.table-light
+                    tr
+                      th Szkoła
+                      th.text-center Książek
+                      th.text-center Sprzedanych  
+                      th.text-center Wskaźnik
+                      th.text-end Przychód
+                  tbody
+                    each school in schools
+                      tr
+                        td
+                          strong #{school.schoolName}
+                        td.text-center
+                          span.badge.bg-primary #{school.totalBooks}
+                        td.text-center
+                          span.badge.bg-success #{school.soldBooks}
+                        td.text-center
+                          - var rate = school.totalBooks > 0 ? ((school.soldBooks / school.totalBooks) * 100).toFixed(1) : 0
+                          span.badge(class=rate > 70 ? 'bg-success' : rate > 40 ? 'bg-warning' : 'bg-danger') #{rate}%
+                        td.text-end
+                          strong #{school.revenue.toFixed(2)} zł
+
+  // API Info Section
+  .container.my-5
+    .row
+      .col-12
+        .card.border-info
+          .card-header.bg-info.text-white
+            .d-flex.align-items-center
+              .me-2 📊
+              h5.mb-0 Open Data API
+          .card-body
+            p.card-text Dostęp programowy do danych w formatach JSON, CSV i XML
+            
+            .row.g-3
+              .col-md-4
+                .card.border-0.bg-light
+                  .card-body.text-center
+                    .mb-2
+                      code.bg-white.px-2.py-1.rounded GET /public/api/opendata
+                    a.btn.btn-outline-primary.btn-sm(href='/public/api/opendata') JSON
+                    
+              .col-md-4  
+                .card.border-0.bg-light
+                  .card-body.text-center
+                    .mb-2
+                      code.bg-white.px-2.py-1.rounded ?format=csv
+                    a.btn.btn-outline-success.btn-sm(href='/public/api/opendata?format=csv') CSV
+                    
+              .col-md-4
+                .card.border-0.bg-light
+                  .card-body.text-center  
+                    .mb-2
+                      code.bg-white.px-2.py-1.rounded ?format=xml
+                    a.btn.btn-outline-warning.btn-sm(href='/public/api/opendata?format=xml') XML
+
+  script.
+    // School Statistics Chart
+    if (#{JSON.stringify(schools || [])}.length > 0) {
+      const schoolsData = !{JSON.stringify(schools || [])};
+      const ctx1 = document.getElementById('schoolsChart').getContext('2d');
+      
+      new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: schoolsData.map(s => s.schoolName),
+          datasets: [{
+            label: 'Książki sprzedane',
+            data: schoolsData.map(s => s.soldBooks),
+            backgroundColor: [
+              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+              '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+    
+    // Daily Trends Chart  
+    if (#{JSON.stringify(dailyTrends || [])}.length > 0) {
+      const trendsData = !{JSON.stringify(dailyTrends || [])};
+      const ctx2 = document.getElementById('trendsChart').getContext('2d');
+      
+      new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: trendsData.map(d => d._id),
+          datasets: [{
+            label: 'Zarejestrowane',
+            data: trendsData.map(d => d.registered),
+            borderColor: '#36A2EB',
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            fill: true
+          }, {
+            label: 'Sprzedane', 
+            data: trendsData.map(d => d.sold),
+            borderColor: '#4BC0C0',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          }
+        }
+      });
+    }

@@ -1,0 +1,401 @@
+//- Modern Carousel Component for 2025 UI Standards
+//- Glassmorphism design with animations and accessibility
+
+mixin modern-carousel(config)
+  - const slides = config.slides || []
+  - const carouselId = config.id || 'main-carousel'
+  - const autoAdvance = config.autoAdvance !== false
+  - const showDots = config.showDots !== false
+  - const showArrows = config.showArrows !== false
+
+  .carousel-container(
+    id=carouselId
+    class="relative w-full h-96 md:h-[32rem] lg:h-[40rem] overflow-hidden rounded-2xl shadow-2xl"
+    data-auto-advance=autoAdvance
+    data-transition-duration=(config.transitionDuration || 500)
+    role="region"
+    aria-label="Image carousel"
+    aria-roledescription="carousel"
+  )
+    //- Carousel Track
+    .carousel-track.relative.w-full.h-full.flex.transition-transform.duration-500.ease-in-out(
+      style="transform: translateX(0%)"
+      aria-live="polite"
+    )
+      each slide, index in slides
+        .carousel-slide.relative.w-full.h-full.flex-shrink-0(
+          data-slide-index=index
+          aria-hidden=(index !== 0 ? "true" : "false")
+          role="tabpanel"
+          aria-labelledby=`${carouselId}-dot-${index}`
+        )
+          //- Background Image/Video
+          if slide.type === 'image' && slide.imageUrl
+            .absolute.inset-0.bg-cover.bg-center.bg-no-repeat(
+              style=`background-image: url('${slide.imageUrl}')`
+            )
+          else if slide.type === 'video' && slide.videoUrl
+            video.absolute.inset-0.w-full.h-full.object-cover(
+              src=slide.videoUrl
+              autoplay
+              muted
+              loop
+              playsinline
+            )
+          
+          //- Gradient Overlay
+          .absolute.inset-0.bg-gradient-to-r.from-black/60.via-black/30.to-transparent
+          
+          //- Content Container
+          .relative.z-10.flex.items-center.justify-start.h-full.px-6.md:px-12.lg:px-20
+            .max-w-2xl.text-white.animate-fade-in-up(
+              class=`slide-content-${index}`
+            )
+              //- Subtitle
+              if slide.subtitle
+                .text-sm.md:text-base.font-medium.text-blue-200.mb-2.tracking-wide.uppercase
+                  = slide.subtitle
+              
+              //- Title
+              h2.text-3xl.md:text-5xl.lg:text-6xl.font-bold.mb-4.leading-tight.drop-shadow-lg
+                = slide.title
+              
+              //- Description
+              if slide.description
+                p.text-lg.md:text-xl.text-gray-200.mb-6.md:mb-8.leading-relaxed.max-w-xl
+                  = slide.description
+              
+              //- Call to Action
+              if slide.ctaText && slide.ctaUrl
+                a.inline-flex.items-center.px-8.py-4.bg-white/10.backdrop-blur-sm.text-white.font-semibold.rounded-full.border.border-white/20.transition-all.duration-300.hover:bg-white/20.hover:scale-105.hover:shadow-xl.focus:outline-none.focus:ring-4.focus:ring-white/30(
+                  href=slide.ctaUrl
+                  class="group"
+                )
+                  = slide.ctaText
+                  svg.ml-2.w-5.h-5.transition-transform.duration-300.group-hover:translate-x-1(
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  )
+                    path(
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    )
+    
+    //- Navigation Arrows
+    if showArrows
+      button.carousel-prev.absolute.left-4.md:left-6.top-1/2.-translate-y-1/2.w-12.h-12.md:w-14.md:h-14.bg-white/10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.hover:bg-white/20.hover:scale-110.focus:outline-none.focus:ring-4.focus:ring-white/30.z-20(
+        type="button"
+        aria-label="Previous slide"
+        tabindex="0"
+      )
+        svg.w-6.h-6.md:w-7.md:h-7(
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        )
+          path(
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          )
+      
+      button.carousel-next.absolute.right-4.md:right-6.top-1/2.-translate-y-1/2.w-12.h-12.md:w-14.md:h-14.bg-white/10.backdrop-blur-sm.rounded-full.flex.items-center.justify-center.text-white.transition-all.duration-300.hover:bg-white/20.hover:scale-110.focus:outline-none.focus:ring-4.focus:ring-white/30.z-20(
+        type="button"
+        aria-label="Next slide"
+        tabindex="0"
+      )
+        svg.w-6.h-6.md:w-7.md:h-7(
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        )
+          path(
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          )
+    
+    //- Dots Indicator
+    if showDots && slides.length > 1
+      .absolute.bottom-4.md:bottom-6.left-1/2.-translate-x-1/2.z-20
+        .flex.items-center.space-x-3.px-4.py-2.bg-black/20.backdrop-blur-sm.rounded-full(
+          role="tablist"
+          aria-label="Slide selection"
+        )
+          each slide, index in slides
+            button.carousel-dot.w-3.h-3.md:w-4.md:h-4.rounded-full.transition-all.duration-300.focus:outline-none.focus:ring-2.focus:ring-white/50(
+              type="button"
+              data-slide=index
+              class=(index === 0 ? 'bg-white shadow-lg' : 'bg-white/40 hover:bg-white/60')
+              role="tab"
+              aria-selected=(index === 0 ? "true" : "false")
+              aria-controls=`${carouselId}-slide-${index}`
+              aria-label=`Go to slide ${index + 1}`
+              id=`${carouselId}-dot-${index}`
+            )
+
+    //- Accessibility: Screen Reader Announcements
+    .sr-only(
+      aria-live="polite"
+      aria-atomic="true"
+      id=`${carouselId}-announcements`
+    )
+
+mixin carousel-script()
+  script.
+    class ModernCarousel {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        if (!this.container) return;
+        
+        this.track = this.container.querySelector('.carousel-track');
+        this.slides = this.container.querySelectorAll('.carousel-slide');
+        this.dots = this.container.querySelectorAll('.carousel-dot');
+        this.prevButton = this.container.querySelector('.carousel-prev');
+        this.nextButton = this.container.querySelector('.carousel-next');
+        this.announcements = this.container.querySelector('[aria-live="polite"]');
+        
+        this.currentSlide = 0;
+        this.totalSlides = this.slides.length;
+        this.autoAdvance = this.container.dataset.autoAdvance === 'true';
+        this.transitionDuration = parseInt(this.container.dataset.transitionDuration) || 500;
+        this.autoAdvanceTimer = null;
+        this.isPaused = false;
+        
+        this.init();
+      }
+      
+      init() {
+        if (this.totalSlides <= 1) return;
+        
+        // Add event listeners
+        this.prevButton?.addEventListener('click', () => this.goToPrevious());
+        this.nextButton?.addEventListener('click', () => this.goToNext());
+        
+        this.dots.forEach((dot, index) => {
+          dot.addEventListener('click', () => this.goToSlide(index));
+        });
+        
+        // Keyboard navigation
+        this.container.addEventListener('keydown', (e) => {
+          switch (e.key) {
+            case 'ArrowLeft':
+              e.preventDefault();
+              this.goToPrevious();
+              break;
+            case 'ArrowRight':
+              e.preventDefault();
+              this.goToNext();
+              break;
+            case ' ':
+              e.preventDefault();
+              this.toggleAutoAdvance();
+              break;
+          }
+        });
+        
+        // Pause on hover
+        this.container.addEventListener('mouseenter', () => this.pause());
+        this.container.addEventListener('mouseleave', () => this.resume());
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        this.container.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        this.container.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          this.handleSwipe();
+        });
+        
+        const handleSwipe = () => {
+          const swipeThreshold = 50;
+          const diff = touchStartX - touchEndX;
+          
+          if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+              this.goToNext();
+            } else {
+              this.goToPrevious();
+            }
+          }
+        };
+        
+        this.handleSwipe = handleSwipe;
+        
+        // Start auto-advance
+        if (this.autoAdvance) {
+          this.startAutoAdvance();
+        }
+        
+        // Intersection Observer for performance
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.resume();
+            } else {
+              this.pause();
+            }
+          });
+        });
+        
+        observer.observe(this.container);
+      }
+      
+      goToSlide(index) {
+        if (index === this.currentSlide) return;
+        
+        const previousSlide = this.currentSlide;
+        this.currentSlide = index;
+        
+        // Update transform
+        this.track.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+        
+        // Update dots
+        this.dots.forEach((dot, i) => {
+          const isActive = i === this.currentSlide;
+          dot.classList.toggle('bg-white', isActive);
+          dot.classList.toggle('shadow-lg', isActive);
+          dot.classList.toggle('bg-white/40', !isActive);
+          dot.setAttribute('aria-selected', isActive);
+        });
+        
+        // Update slides aria-hidden
+        this.slides.forEach((slide, i) => {
+          slide.setAttribute('aria-hidden', i !== this.currentSlide);
+        });
+        
+        // Announce slide change
+        if (this.announcements) {
+          const slideTitle = this.slides[this.currentSlide].querySelector('h2')?.textContent;
+          this.announcements.textContent = `Slide ${this.currentSlide + 1} of ${this.totalSlides}: ${slideTitle}`;
+        }
+        
+        // Animate slide content
+        this.animateSlideContent();
+        
+        // Reset auto-advance timer
+        if (this.autoAdvance && !this.isPaused) {
+          this.startAutoAdvance();
+        }
+      }
+      
+      goToNext() {
+        const nextSlide = (this.currentSlide + 1) % this.totalSlides;
+        this.goToSlide(nextSlide);
+      }
+      
+      goToPrevious() {
+        const prevSlide = this.currentSlide === 0 ? this.totalSlides - 1 : this.currentSlide - 1;
+        this.goToSlide(prevSlide);
+      }
+      
+      animateSlideContent() {
+        const currentContent = this.slides[this.currentSlide].querySelector('[class*="slide-content"]');
+        if (currentContent) {
+          currentContent.classList.remove('animate-fade-in-up');
+          setTimeout(() => {
+            currentContent.classList.add('animate-fade-in-up');
+          }, 50);
+        }
+      }
+      
+      startAutoAdvance() {
+        this.stopAutoAdvance();
+        this.autoAdvanceTimer = setTimeout(() => {
+          if (!this.isPaused) {
+            this.goToNext();
+          }
+        }, 5000); // 5 seconds per slide
+      }
+      
+      stopAutoAdvance() {
+        if (this.autoAdvanceTimer) {
+          clearTimeout(this.autoAdvanceTimer);
+          this.autoAdvanceTimer = null;
+        }
+      }
+      
+      pause() {
+        this.isPaused = true;
+        this.stopAutoAdvance();
+      }
+      
+      resume() {
+        this.isPaused = false;
+        if (this.autoAdvance) {
+          this.startAutoAdvance();
+        }
+      }
+      
+      toggleAutoAdvance() {
+        this.autoAdvance = !this.autoAdvance;
+        if (this.autoAdvance) {
+          this.resume();
+        } else {
+          this.pause();
+        }
+      }
+    }
+    
+    // Initialize all carousels
+    document.addEventListener('DOMContentLoaded', () => {
+      const carousels = document.querySelectorAll('.carousel-container');
+      carousels.forEach(carousel => {
+        new ModernCarousel(carousel.id);
+      });
+    });
+
+//- CSS Animations (to be included in main CSS)
+mixin carousel-styles()
+  style.
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .carousel-track,
+      .carousel-dot,
+      .animate-fade-in-up {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+    
+    /* Glassmorphism effects */
+    .carousel-container .bg-white\/10 {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .carousel-container .bg-white\/20 {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .carousel-container .bg-black\/20 {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }

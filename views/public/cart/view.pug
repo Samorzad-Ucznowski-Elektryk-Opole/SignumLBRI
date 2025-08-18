@@ -1,0 +1,166 @@
+extends ../layout
+
+block content
+  .container.my-5
+    .row
+      .col-lg-8
+        .card.shadow-sm
+          .card-header.bg-primary.text-white.d-flex.justify-content-between.align-items-center
+            h4.mb-0
+              i.fas.fa-shopping-cart.me-2
+              | Mój Koszyk
+            if cart && cart.items.length > 0
+              span.badge.bg-light.text-dark #{cart.items.length} pozycji
+          
+          .card-body
+            if cart && cart.items.length > 0
+              - const cartItems = cart.items
+              each item in cartItems
+                - const bookAd = item.bookAd
+                - const book = bookAd.book
+                .row.border-bottom.py-3
+                  .col-md-2
+                    if bookAd.images && bookAd.images.length > 0
+                      img.img-fluid.rounded(src=`/uploads/book-ads/${bookAd.images[0]}` alt=book.title style="max-height: 80px")
+                    else
+                      .bg-light.rounded.d-flex.align-items-center.justify-content-center(style="height: 80px; width: 60px")
+                        i.fas.fa-book.text-muted
+                  
+                  .col-md-6
+                    h6.mb-1= book.title
+                    p.text-muted.mb-1.small
+                      | Autor: #{book.authors.join(', ')}
+                    p.text-muted.mb-1.small
+                      | Wydawnictwo: #{book.publisher}
+                    if bookAd.condition !== 'nowa'
+                      span.badge.bg-warning.text-dark.me-2= bookAd.condition
+                    if bookAd.description
+                      p.small.text-muted.mb-1= bookAd.description.length > 100 ? bookAd.description.substring(0, 100) + '...' : bookAd.description
+                    p.small.text-primary.mb-0
+                      i.fas.fa-user.me-1
+                      | #{bookAd.owner.firstName} #{bookAd.owner.lastName}
+                  
+                  .col-md-2.text-end
+                    .fw-bold.text-primary #{bookAd.sellingPrice} zł
+                    if item.reservationExpires
+                      .small.text-warning
+                        i.fas.fa-clock.me-1
+                        | Wygasa: #{item.reservationExpires.toLocaleString('pl')}
+                  
+                  .col-md-2.text-end
+                    form(method="POST" action="/public/cart/remove")
+                      input(type="hidden" name="bookAdId" value=bookAd._id)
+                      button.btn.btn-outline-danger.btn-sm(type="submit")
+                        i.fas.fa-trash.me-1
+                        | Usuń
+
+              hr.my-4
+              
+              .row
+                .col-md-8
+                  .alert.alert-info
+                    i.fas.fa-info-circle.me-2
+                    | Po potwierdzeniu rezerwacji będziesz mieć <strong>24 godziny</strong> na odebranie książek w punkcie szkolnym.
+                
+                .col-md-4.text-end
+                  .card.bg-light
+                    .card-body.p-3
+                      .d-flex.justify-content-between.mb-2
+                        span Razem:
+                        strong.text-primary #{cart.totalAmount} zł
+                      
+                      if cart.status === 'active'
+                        form(method="POST" action="/public/cart/reserve")
+                          button.btn.btn-success.w-100(type="submit")
+                            i.fas.fa-check.me-2
+                            | Potwierdź Rezerwację
+                      else
+                        .text-muted.small
+                          | Status: #{cart.status}
+
+            else
+              .text-center.py-5
+                i.fas.fa-shopping-cart.fa-3x.text-muted.mb-3
+                h5.text-muted Twój koszyk jest pusty
+                p.text-muted Przejdź do <a href="/public/books" class="text-decoration-none">listy książek</a> aby dodać pozycje do koszyka.
+                a.btn.btn-primary(href="/public/books")
+                  i.fas.fa-book.me-2
+                  | Przeglądaj Książki
+
+      .col-lg-4
+        .card.shadow-sm.mb-4
+          .card-header.bg-info.text-white
+            h6.mb-0
+              i.fas.fa-lightbulb.me-2
+              | Jak to działa?
+          
+          .card-body
+            ol.small
+              li <strong>Dodaj książki</strong> do koszyka przeglądając dostępne ogłoszenia
+              li <strong>Potwierdź rezerwację</strong> - otrzymasz kod QR
+              li <strong>Przyjdź do punktu odbioru</strong> w ciągu 24h z kodem
+              li <strong>Zapłać i odbierz</strong> książki u sprzedawcy
+            
+            .mt-3
+              .alert.alert-warning.small
+                i.fas.fa-exclamation-triangle.me-2
+                | <strong>Ważne:</strong> Niezrealizowane rezerwacje wygasają po 24 godzinach.
+
+        if user
+          .card.shadow-sm
+            .card-header.bg-secondary.text-white
+              h6.mb-0
+                i.fas.fa-history.me-2
+                | Moje Aktywności
+            
+            .card-body.small
+              .row.text-center
+                .col-6
+                  .text-primary.fw-bold #{user.totalBooksReserved}
+                  .text-muted Zarezerwowane
+                
+                .col-6
+                  .text-success.fw-bold #{user.totalBooksPurchased || 0}
+                  .text-muted Kupione
+              
+              hr
+              
+              a.btn.btn-outline-primary.btn-sm.w-100(href="/public/cart/history")
+                i.fas.fa-list.me-2
+                | Historia Rezerwacji
+
+block scripts
+  script.
+    // Auto-refresh cart count in navigation
+    setInterval(async () => {
+      try {
+        const response = await fetch('/public/api/cart/count');
+        const data = await response.json();
+        const cartCountEl = document.getElementById('cart-count');
+        if (cartCountEl && data.count !== undefined) {
+          cartCountEl.textContent = data.count;
+          cartCountEl.style.display = data.count > 0 ? 'inline' : 'none';
+        }
+      } catch (error) {
+        console.error('Error updating cart count:', error);
+      }
+    }, 30000); // Check every 30 seconds
+
+    // Confirmation for removing items
+    document.querySelectorAll('form[action="/public/cart/remove"]').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        if (!confirm('Czy na pewno chcesz usunąć tę książkę z koszyka?')) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    // Confirmation for reservation
+    const reserveForm = document.querySelector('form[action="/public/cart/reserve"]');
+    if (reserveForm) {
+      reserveForm.addEventListener('submit', (e) => {
+        if (!confirm('Czy na pewno chcesz potwierdzić rezerwację? Będziesz mieć 24 godziny na odebranie książek.')) {
+          e.preventDefault();
+        }
+      });
+    }

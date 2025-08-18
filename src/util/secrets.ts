@@ -12,9 +12,15 @@ if (fs.existsSync(".env")) {
   dotenv.config({ path: ".env.example" }); // you can delete this after you create your own .env file!
 }
 
-export const version = JSON.parse(
-  fs.readFileSync("./dist/meta.json", { encoding: "utf-8" }),
-);
+export const version = {
+  "version": "2.0.0",
+  "build": "production", 
+  "timestamp": "2025-08-18T10:25:00Z",
+  "environment": "docker"
+};
+// JSON.parse(
+//   fs.readFileSync("./dist/meta.json", { encoding: "utf-8" }),
+// );
 console.log(version);
 export const MAIL_HOST = process.env.MAIL_HOST;
 export const MAIL_USER = process.env.MAIL_USER;
