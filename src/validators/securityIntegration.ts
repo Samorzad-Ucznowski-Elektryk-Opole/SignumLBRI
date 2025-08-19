@@ -55,7 +55,7 @@ export function setupSecurityStack(app: any) {
   app.use(SecurityMiddleware.sanitizeInput());
   app.use(SecurityMiddleware.sqlInjectionProtection());
   
-  console.log('🛡️  Complete security stack initialized');
+  console.log('Complete security stack initialized');
 }
 
 /**
@@ -66,7 +66,7 @@ export function setupFileUploadSecurity(app: any) {
   app.use('/api/upload/*', SecurityMiddleware.fileUploadSecurity());
   app.use('/api/upload/*', SecurityMiddleware.rateLimit(10, 5 * 60 * 1000)); // 10 uploads per 5 minutes
   
-  console.log('📁 File upload security initialized');
+  console.log('File upload security initialized');
 }
 
 /**
@@ -92,7 +92,7 @@ export const secureUserRegistrationRoute = [
       const { email, password, firstName, lastName, phone, school } = req.sanitizedData;
       
       // Your business logic here
-      console.log('✅ Validated user registration data:', req.sanitizedData);
+      console.log('Validated user registration data:', req.sanitizedData);
       
       res.json({
         success: true,
@@ -150,7 +150,7 @@ export const secureFileUploadRoute = [
         });
       }
       
-      console.log('📁 Secure file upload:', req.files.map((f: any) => ({
+      console.log('Secure file upload:', req.files.map((f: any) => ({
         name: f.originalname,
         size: f.size,
         type: f.mimetype

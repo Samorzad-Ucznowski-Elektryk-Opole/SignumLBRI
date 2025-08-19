@@ -16,6 +16,8 @@ RUN npm install && npm cache clean --force
 # Copy source code
 COPY src/ ./src/
 COPY views/ ./views/
+COPY tests/ ./tests/
+COPY jest.config.js ./
 
 # Build application (skip linting and TS errors for now)
 RUN npm run build-webpack || true
@@ -43,6 +45,8 @@ COPY --from=builder --chown=signumlbri:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=signumlbri:nodejs /app/package*.json ./
 COPY --from=builder --chown=signumlbri:nodejs /app/views ./views
 COPY --from=builder --chown=signumlbri:nodejs /app/src/public ./public
+COPY --from=builder --chown=signumlbri:nodejs /app/tests ./tests
+COPY --from=builder --chown=signumlbri:nodejs /app/jest.config.js ./
 
 # Create uploads directory with proper permissions
 RUN mkdir -p /app/public/uploads/book-ads && \

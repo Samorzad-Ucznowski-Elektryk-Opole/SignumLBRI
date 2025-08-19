@@ -32,6 +32,27 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
                 a.nav-link(class=(title === 'Earnings') ? 'active' : undefined, aria-current='page' href=`/admin/school/${requestData.params.schoolID || ""}/earnings`)
                     span.align-text-bottom(data-feather='dollar-sign')
                     |               #{language.website.headers.earnings}
+        
+        // Book Dictionary Section for Head Admins
+        if user && user.isHeadAdmin()
+            hr.my-3
+            h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
+                span Słownik Książek
+            ul.nav.flex-column.mb-2
+                li.nav-item
+                    a.nav-link(class=(title === 'Import Książek CSV - Słownik' || title === 'CSV Import') ? 'active' : undefined, href='/admin/book-dictionary/import')
+                        span.align-text-bottom(data-feather='upload')
+                        |               Import CSV
+                li.nav-item
+                    a.nav-link(class=(title === 'Oczekujące Wpisy Słownika Książek') ? 'active' : undefined, href='/admin/book-dictionary/pending')
+                        span.align-text-bottom(data-feather='clock')
+                        |               Oczekujące (
+                        span#pendingCount -
+                        | )
+                li.nav-item
+                    a.nav-link(class=(title === 'Zatwierdzone Wpisy Słownika Książek') ? 'active' : undefined, href='/admin/book-dictionary/approved')
+                        span.align-text-bottom(data-feather='check-circle')
+                        |               Zatwierdzone
         div.nav.m-3
             form.d-flex.flex-column.my-auto.justify-center(action="/language", method="POST")
                 button.btn.btn-link(name="language", value="uk") Ukrainian

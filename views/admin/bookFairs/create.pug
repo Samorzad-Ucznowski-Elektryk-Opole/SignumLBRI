@@ -1,0 +1,264 @@
+extends ../admin/layout
+
+block title
+  title Create Book Fair - SignumLBRI Admin
+
+block content
+  .max-w-4xl.mx-auto.bg-white.rounded-lg.shadow-lg.p-6
+    .flex.justify-between.items-center.mb-6
+      h1.text-3xl.font-bold.text-gray-800 Create New Book Fair
+      a.text-gray-600.hover:text-gray-800.transition-colors(href="/admin/book-fairs")
+        i.fas.fa-arrow-left.mr-2
+        | Back to Book Fairs
+
+    form#bookFairForm.space-y-6(action="/api/admin/book-fairs" method="POST")
+      // Basic Information
+      .bg-gray-50.rounded-lg.p-6
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Basic Information
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="name") Fair Name *
+            input#name.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="text" 
+              name="name" 
+              required 
+              maxlength="100"
+              placeholder="e.g. Spring Book Fair 2024"
+            )
+          
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="theme") Theme
+            input#theme.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="text" 
+              name="theme" 
+              maxlength="100"
+              placeholder="e.g. Reading Adventures"
+            )
+        
+        .mt-4
+          label.block.text-sm.font-medium.text-gray-700.mb-2(for="description") Description *
+          textarea#description.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+            name="description" 
+            rows="4" 
+            required 
+            maxlength="1000"
+            placeholder="Describe the book fair, its goals, and what visitors can expect..."
+          )
+
+      // Date and Location
+      .bg-gray-50.rounded-lg.p-6
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Date & Location
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="startDate") Start Date *
+            input#startDate.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="datetime-local" 
+              name="startDate" 
+              required
+            )
+          
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="endDate") End Date *
+            input#endDate.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="datetime-local" 
+              name="endDate" 
+              required
+            )
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6.mt-4
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="location") Location *
+            input#location.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="text" 
+              name="location" 
+              required 
+              maxlength="200"
+              placeholder="e.g. City Convention Center"
+            )
+          
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="venue") Venue Details
+            input#venue.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="text" 
+              name="venue" 
+              maxlength="200"
+              placeholder="e.g. Main Hall, Building A"
+            )
+        
+        .mt-4
+          label.block.text-sm.font-medium.text-gray-700.mb-2(for="address") Full Address
+          textarea#address.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+            name="address" 
+            rows="3" 
+            maxlength="300"
+            placeholder="Full street address including city, postal code..."
+          )
+
+      // Registration Settings
+      .bg-gray-50.rounded-lg.p-6
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Registration Settings
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="registrationStart") Registration Opens
+            input#registrationStart.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="datetime-local" 
+              name="registrationStart"
+            )
+          
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="registrationEnd") Registration Closes
+            input#registrationEnd.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="datetime-local" 
+              name="registrationEnd"
+            )
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6.mt-4
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="maxExhibitors") Max Exhibitors
+            input#maxExhibitors.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="number" 
+              name="maxExhibitors" 
+              min="1" 
+              max="1000"
+              placeholder="e.g. 50"
+            )
+          
+          div
+            label.block.text-sm.font-medium.text-gray-700.mb-2(for="registrationFee") Registration Fee
+            input#registrationFee.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+              type="number" 
+              name="registrationFee" 
+              min="0" 
+              step="0.01"
+              placeholder="0.00"
+            )
+
+      // Features and Contact
+      .bg-gray-50.rounded-lg.p-6
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Features & Contact
+        
+        .grid.grid-cols-1.md:grid-cols-2.gap-6
+          div
+            h3.text-lg.font-medium.text-gray-700.mb-3 Digital Features
+            .space-y-2
+              label.flex.items-center
+                input.mr-2(type="checkbox" name="features" value="mobile_app")
+                span.text-sm.text-gray-700 Mobile App Integration
+              label.flex.items-center
+                input.mr-2(type="checkbox" name="features" value="virtual_tours")
+                span.text-sm.text-gray-700 Virtual Booth Tours
+              label.flex.items-center
+                input.mr-2(type="checkbox" name="features" value="ar_navigation")
+                span.text-sm.text-gray-700 AR Navigation
+              label.flex.items-center
+                input.mr-2(type="checkbox" name="features" value="ai_recommendations")
+                span.text-sm.text-gray-700 AI Book Recommendations
+              label.flex.items-center
+                input.mr-2(type="checkbox" name="features" value="gamification")
+                span.text-sm.text-gray-700 Gamification System
+          
+          div
+            h3.text-lg.font-medium.text-gray-700.mb-3 Contact Information
+            .space-y-4
+              div
+                label.block.text-sm.font-medium.text-gray-700.mb-1(for="contactName") Contact Name
+                input#contactName.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+                  type="text" 
+                  name="contactName" 
+                  maxlength="100"
+                )
+              div
+                label.block.text-sm.font-medium.text-gray-700.mb-1(for="contactEmail") Contact Email
+                input#contactEmail.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+                  type="email" 
+                  name="contactEmail"
+                )
+              div
+                label.block.text-sm.font-medium.text-gray-700.mb-1(for="contactPhone") Contact Phone
+                input#contactPhone.w-full.px-3.py-2.border.border-gray-300.rounded-md.focus:outline-none.focus:ring-2.focus:ring-indigo-500.focus:border-transparent(
+                  type="tel" 
+                  name="contactPhone"
+                )
+
+      // Action Buttons
+      .flex.justify-end.space-x-4.pt-6.border-t.border-gray-200
+        button.bg-gray-300.hover:bg-gray-400.text-gray-700.font-medium.py-2.px-6.rounded-lg.transition-colors(type="button" onclick="history.back()")
+          | Cancel
+        button#saveButton.bg-indigo-600.hover:bg-indigo-700.text-white.font-medium.py-2.px-6.rounded-lg.transition-colors(type="submit")
+          | Create Book Fair
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('bookFairForm');
+      const startDate = document.getElementById('startDate');
+      const endDate = document.getElementById('endDate');
+      const registrationStart = document.getElementById('registrationStart');
+      const registrationEnd = document.getElementById('registrationEnd');
+      
+      // Set minimum dates to today
+      const now = new Date();
+      const minDateTime = now.toISOString().slice(0, 16);
+      startDate.min = minDateTime;
+      endDate.min = minDateTime;
+      registrationStart.min = minDateTime;
+      registrationEnd.min = minDateTime;
+      
+      // Update end date minimum when start date changes
+      startDate.addEventListener('change', function() {
+        endDate.min = this.value;
+        if (endDate.value && endDate.value <= this.value) {
+          endDate.value = '';
+        }
+      });
+      
+      // Update registration end minimum when registration start changes
+      registrationStart.addEventListener('change', function() {
+        registrationEnd.min = this.value;
+        if (registrationEnd.value && registrationEnd.value <= this.value) {
+          registrationEnd.value = '';
+        }
+      });
+      
+      // Form submission handling
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = {};
+        
+        // Convert form data to object
+        for (let [key, value] of formData.entries()) {
+          if (key === 'features') {
+            if (!data.features) data.features = [];
+            data.features.push(value);
+          } else {
+            data[key] = value;
+          }
+        }
+        
+        try {
+          const response = await fetch('/api/admin/book-fairs', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            window.location.href = `/admin/book-fairs/${result.bookFair._id}`;
+          } else {
+            alert('Error: ' + (result.error || 'Failed to create book fair'));
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Network error. Please try again.');
+        }
+      });
+    });

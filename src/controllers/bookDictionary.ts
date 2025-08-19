@@ -320,6 +320,36 @@ export const postRejectEntry = async (req: Request, res: Response) => {
 };
 
 /**
+ * API endpoint for getting count of pending book dictionary entries
+ * Used by admin sidebar to show pending items badge
+ */
+export const getPendingCount = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Check if user is head admin
+        if (!req.user?.isHeadAdmin()) {
+            res.status(403).json({ error: 'Access denied. Head admin required.' });
+            return;
+        }
+
+        const pendingCount = await BookDictionary.countDocuments({ 
+            status: 'pending' 
+        });
+
+        res.json({ 
+            count: pendingCount,
+            lastUpdated: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('Error fetching pending count:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            count: 0 
+        });
+    }
+};
+
+/**
  * Search approved dictionary entries (API endpoint)
  */
 export const apiSearchDictionary = async (req: Request, res: Response) => {

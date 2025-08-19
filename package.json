@@ -19,7 +19,11 @@
     "start": "npm run serve",
     "watch-ts": "tsc -w",
     "watch-webpack": "webpack --watch --progress --mode=development",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Webpack,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-webpack\" \"npm run watch-ts\" \"npm run serve\""
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Webpack,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-webpack\" \"npm run watch-ts\" \"npm run serve\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
     "@csstools/postcss-sass": "^5.0.1",

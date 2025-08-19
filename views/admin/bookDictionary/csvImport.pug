@@ -6,7 +6,7 @@ block content
       
       // Header Section
       .bg-white.rounded-lg.shadow-md.p-6.mb-8
-        h1.text-3xl.font-bold.text-gray-800.mb-2 📚 Import Książek CSV - Słownik
+        h1.text-3xl.font-bold.text-gray-800.mb-2 Import Książek CSV - Słownik
         p.text-gray-600.mb-4 
           | Zaimportuj książki z pliku CSV do słownika systemowego. Wszystkie wpisy wymagają zatwierdzenia przez administratora.
         
@@ -24,10 +24,10 @@ block content
       
       // Upload Form
       .bg-white.rounded-lg.shadow-md.p-6.mb-8
-        h2.text-xl.font-semibold.text-gray-800.mb-4 📤 Prześlij plik CSV
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Prześlij plik CSV
         
         .bg-blue-50.p-4.rounded-lg.mb-4
-          h3.font-semibold.text-blue-800.mb-2 ⚠️ Wymagany format CSV:
+          h3.font-semibold.text-blue-800.mb-2 Wymagany format CSV:
           ul.text-sm.text-blue-700.space-y-1
             li • ISBN - numer ISBN książki
             li • Tytuł - tytuł książki  
@@ -45,7 +45,7 @@ block content
               .focus:outline-none.focus:ring-2.focus:ring-blue-500.focus:border-blue-500
           
           .bg-gray-50.p-4.rounded-lg
-            h4.font-semibold.text-gray-800.mb-2 📝 Uwagi:
+            .h4.font-semibold.text-gray-800.mb-2 Uwagi:
             ul.text-sm.text-gray-600.space-y-1
               li • Maksymalny rozmiar pliku: 5MB
               li • Dozwolone tylko pliki CSV
@@ -54,33 +54,33 @@ block content
           
           .flex.space-x-4
             button(type="submit").bg-blue-600.hover:bg-blue-700.text-white.px-6.py-2.rounded-md.transition-colors.duration-200
-              | 📤 Prześlij i Importuj
+              | Prześlij i Importuj
             
             a(href="/admin/book-dictionary/pending").bg-yellow-600.hover:bg-yellow-700.text-white.px-6.py-2.rounded-md.transition-colors.duration-200
-              | 👀 Sprawdź oczekujące (#{stats.pending})
+              | Sprawdź oczekujące (#{stats.pending})
       
       // Quick Navigation
       .bg-white.rounded-lg.shadow-md.p-6
-        h2.text-xl.font-semibold.text-gray-800.mb-4 🧭 Nawigacja Szybka
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Nawigacja Szybka
         .grid.grid-cols-2.md:grid-cols-3.gap-4
           a(href="/admin/book-dictionary/pending").bg-yellow-500.hover:bg-yellow-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
-            .text-2xl.mb-2 ⏳
+            .text-2xl.mb-2 OCZEK
             .font-semibold Oczekujące
             .text-sm (#{stats.pending} wpisów)
           
           a(href="/admin/book-dictionary/approved").bg-green-500.hover:bg-green-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
-            .text-2xl.mb-2 ✅
+            .text-2xl.mb-2 OK
             .font-semibold Zatwierdzone
             .text-sm (#{stats.approved} wpisów)
           
           a(href="/admin").bg-gray-500.hover:bg-gray-600.text-white.p-4.rounded-lg.text-center.transition-colors.duration-200
-            .text-2xl.mb-2 🏠
+            .text-2xl.mb-2 HOME
             .font-semibold Panel Admin
             .text-sm Powrót do menu głównego
 
       // Example CSV Format
       .bg-white.rounded-lg.shadow-md.p-6.mt-8
-        h2.text-xl.font-semibold.text-gray-800.mb-4 📋 Przykład formatu CSV
+        h2.text-xl.font-semibold.text-gray-800.mb-4 Przykład formatu CSV
         .bg-gray-100.p-4.rounded-lg.overflow-x-auto
           pre.text-sm.text-gray-700
             | ISBN,Tytuł,Wydawca,Autorzy,Rok Wydania,Cena Nowej,Cena Używanej
@@ -88,7 +88,7 @@ block content
             | 9788394567890,"Historia klasa 7","Pearson","Maria Wiśniewska",2022,38.50,20.00
         
         .mt-4.text-sm.text-gray-600
-          p 💡 <strong>Wskazówka:</strong> Upewnij się, że plik jest zapisany w kodowaniu UTF-8 z polskimi znakami.
+          p Wskazówka: Upewnij się, że plik jest zapisany w kodowaniu UTF-8 z polskimi znakami.
 
 block scripts
   script.
@@ -108,17 +108,17 @@ block scripts
       if (file) {
         const fileSize = file.size / 1024 / 1024; // MB
         if (fileSize > 5) {
-          alert('⚠️ Plik jest zbyt duży! Maksymalny rozmiar to 5MB.');
+          alert('Plik jest zbyt duży! Maksymalny rozmiar to 5MB.');
           this.value = '';
           return;
         }
         
         if (!file.name.toLowerCase().endsWith('.csv')) {
-          alert('⚠️ Proszę wybrać plik CSV!');
+          alert('Proszę wybrać plik CSV!');
           this.value = '';
           return;
         }
         
-        console.log('📁 Wybrano plik:', file.name, 'Rozmiar:', Math.round(fileSize * 100) / 100, 'MB');
+        console.log('Wybrano plik:', file.name, 'Rozmiar:', Math.round(fileSize * 100) / 100, 'MB');
       }
     });

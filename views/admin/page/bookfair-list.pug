@@ -1,0 +1,84 @@
+extends ../layout
+include ../../mixins/a
+
+block content
+  .admin-container.p-6
+    .header-section.mb-8
+      h1.text-3xl.font-bold.text-gray-800.mb-2 Targi książki - Lista wydarzeń
+      p.text-gray-600 Zarządzanie targami książki i wydarzeniami literackimi
+      
+      .mt-4
+        +a("/admin/bookfair/create", "btn btn-primary")
+          | + Utwórz nowe targi
+
+    .content-section
+      if bookFairs && bookFairs.length > 0
+        .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+          each bookFair in bookFairs
+            .book-fair-card.bg-white.rounded-lg.shadow-md.overflow-hidden.border.border-gray-200
+              .p-6
+                .flex.justify-between.items-start.mb-4
+                  h3.text-xl.font-semibold.text-gray-800= bookFair.name
+                  span.status-badge(class=`status-${bookFair.status}`)= bookFair.status
+                
+                .mb-4
+                  p.text-gray-600.text-sm.mb-2 📍 #{bookFair.location.venue}
+                  p.text-gray-500.text-xs #{bookFair.location.address}, #{bookFair.location.city}
+                
+                .date-range.mb-4
+                  p.text-sm.text-gray-600
+                    strong Termin: 
+                    | #{bookFair.startDate.toLocaleDateString('pl-PL')} - #{bookFair.endDate.toLocaleDateString('pl-PL')}
+                
+                .booth-info.mb-4
+                  .flex.justify-between.text-sm
+                    span Dostępne stoiska:
+                    span.font-medium #{bookFair.boothConfiguration.availableBooths}/#{bookFair.boothConfiguration.totalBooths}
+                  .flex.justify-between.text-sm
+                    span Cena stoiska:
+                    span.font-medium #{bookFair.boothConfiguration.boothPrice} PLN
+                
+                if bookFair.description
+                  .description.mb-4
+                    p.text-gray-600.text-sm.line-clamp-3= bookFair.description.substring(0, 150) + (bookFair.description.length > 150 ? '...' : '')
+                
+                .exhibitors-count
+                  p.text-xs.text-gray-500
+                    | Wystawcy: #{bookFair.exhibitors ? bookFair.exhibitors.length : 0}
+                
+                .actions.mt-6.flex.gap-2
+                  +a(`/admin/bookfair/${bookFair._id}`, "btn btn-sm btn-outline-primary")
+                    | Szczegóły
+                  +a(`/admin/bookfair/${bookFair._id}/edit`, "btn btn-sm btn-outline-secondary")
+                    | Edytuj
+
+      else
+        .empty-state.text-center.py-12
+          .text-6xl.text-gray-300.mb-4 📚
+          h3.text-xl.text-gray-600.mb-2 Brak targów książki
+          p.text-gray-500.mb-6 Nie utworzono jeszcze żadnych targów książki
+          +a("/admin/bookfair/create", "btn btn-primary")
+            | Utwórz pierwsze targi
+
+    .statistics.mt-8.bg-gray-50.rounded-lg.p-6
+      h3.text-lg.font-semibold.text-gray-800.mb-4 Statystyki
+      .grid.grid-cols-2.md:grid-cols-4.gap-4.text-center
+        .stat-item
+          .text-2xl.font-bold.text-blue-600= bookFairs ? bookFairs.length : 0
+          .text-sm.text-gray-600 Łącznie targów
+        .stat-item
+          .text-2xl.font-bold.text-green-600= bookFairs ? bookFairs.filter(bf => bf.status === 'active').length : 0
+          .text-sm.text-gray-600 Aktywne
+        .stat-item
+          .text-2xl.font-bold.text-yellow-600= bookFairs ? bookFairs.filter(bf => bf.status === 'planning').length : 0
+          .text-sm.text-gray-600 Planowane
+        .stat-item
+          .text-2xl.font-bold.text-gray-600= bookFairs ? bookFairs.filter(bf => bf.status === 'completed').length : 0
+          .text-sm.text-gray-600 Zakończone
+
+  style.
+    .status-planning { @apply bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full; }
+    .status-active { @apply bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full; }
+    .status-completed { @apply bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full; }
+    .status-cancelled { @apply bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

@@ -401,6 +401,15 @@ adminRoutes.get(
   adminController.getBuyerDetails,
 );
 
+// Book Fair Routes
+adminRoutes.get("/bookfair", adminController.getBookFairList);
+adminRoutes.get("/bookfair/create", adminController.getCreateBookFair);
+adminRoutes.post("/bookfair/create", adminController.postCreateBookFair);
+
+// CSV Import Routes
+adminRoutes.get("/import-books", adminController.getImportBooks);
+adminRoutes.post("/import-books", adminController.postImportBooks);
+
 // adminRoutes.post(
 //   "/:userID/delete",
 //   passportConfig.isAuthenticated,
@@ -474,7 +483,27 @@ app.post("/admin/book-dictionary/approve", passportConfig.isAuthenticated, passp
 app.post("/admin/book-dictionary/reject", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.postRejectEntry);
 app.get("/admin/book-dictionary/approved", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getApprovedEntries);
 
+// Book Fair Management Routes
+app.get("/admin/book-fairs", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.getBookFairs);
+app.get("/admin/book-fairs/create", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.getCreateBookFair);
+app.post("/admin/book-fairs/create", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.postCreateBookFair);
+app.get("/admin/book-fairs/:id", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.getBookFair);
+app.get("/admin/book-fairs/:id/edit", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.getEditBookFair);
+app.post("/admin/book-fairs/:id/edit", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.postEditBookFair);
+app.post("/admin/book-fairs/:id/delete", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.postDeleteBookFair);
+
+// Book Fair Exhibitor Management
+app.get("/admin/book-fairs/:id/exhibitors", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.getBookFairExhibitors);
+app.post("/admin/book-fairs/:id/exhibitors/:exhibitorId/approve", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.postApproveExhibitor);
+app.post("/admin/book-fairs/:id/exhibitors/:exhibitorId/reject", passportConfig.isAuthenticated, passportConfig.isAdmin, adminController.postRejectExhibitor);
+
+// Public Book Fair Routes (for exhibitor registration)
+app.get("/book-fairs", adminController.getPublicBookFairs);
+app.get("/book-fairs/:id/register", passportConfig.isAuthenticated, adminController.getRegisterForBookFair);
+app.post("/book-fairs/:id/register", passportConfig.isAuthenticated, adminController.postRegisterForBookFair);
+
 // Book Dictionary API
+app.get("/admin/book-dictionary/api/pending-count", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getPendingCount);
 app.get("/api/book-dictionary/search", bookDictionaryController.apiSearchDictionary);
 
 app.use("/admin", adminRoutes);

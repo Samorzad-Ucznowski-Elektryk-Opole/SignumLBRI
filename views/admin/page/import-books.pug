@@ -1,0 +1,105 @@
+extends ../layout
+include ../../mixins/a
+
+block content
+  .admin-container.p-6
+    .header-section.mb-8
+      +a("/admin", "btn btn-outline-secondary btn-sm mb-4")
+        | ← Powrót do panelu admin
+      
+      h1.text-3xl.font-bold.text-gray-800.mb-2 Import książek z pliku CSV
+      p.text-gray-600 Zaimportuj dane o książkach z przygotowanego pliku CSV
+
+    .content-section
+      .max-w-4xl
+        
+        // Information Section
+        .info-panel.bg-blue-50.border.border-blue-200.rounded-lg.p-6.mb-8
+          .flex.items-start
+            .text-blue-600.text-2xl.mr-4 ℹ️
+            div
+              h3.text-lg.font-semibold.text-blue-800.mb-2 Informacje o imporcie
+              ul.text-sm.text-blue-700.space-y-1
+                li • Plik CSV zawiera dane o podręcznikach szkolnych dla klas 2-4
+                li • Import sprawdzi duplikaty na podstawie ISBN
+                li • Automatycznie przypisze przedmiot i klasę na podstawie tytułu
+                li • Proces może potrwać kilka minut dla dużej ilości książek
+
+        // Import Form
+        .import-section.bg-white.rounded-lg.shadow-md.p-6.mb-8
+          h2.text-xl.font-semibold.text-gray-800.mb-4 Rozpocznij import
+          
+          form(method="post", action="/admin/import-books")
+            .form-group.mb-6
+              label.block.text-sm.font-medium.text-gray-700.mb-2 Plik do importu
+              .file-info.bg-gray-50.border.border-gray-200.rounded.p-4
+                .flex.items-center
+                  .text-gray-600.text-lg.mr-3 📄
+                  div
+                    p.font-medium.text-gray-800 podręczniki_szkolne_2025.csv
+                    p.text-sm.text-gray-500 Przygotowany plik z danymi podręczników
+            
+            .warning.bg-yellow-50.border.border-yellow-200.rounded-lg.p-4.mb-6
+              .flex.items-start
+                .text-yellow-600.text-xl.mr-3 ⚠️
+                div
+                  h4.font-medium.text-yellow-800 Uwagi przed importem:
+                  ul.text-sm.text-yellow-700.mt-2.space-y-1
+                    li • Sprawdź czy baza danych jest zabezpieczona
+                    li • Import może dodać dużą ilość nowych pozycji
+                    li • Istniejące książki (po ISBN) będą pominięte
+                    li • Proces jest nieodwracalny - utwórz kopię zapasową
+
+            .form-actions.flex.justify-end.gap-4
+              +a("/admin", "btn btn-outline-secondary")
+                | Anuluj
+              
+              button.btn.btn-warning(type="submit", onclick="return confirmImport()")
+                | 📚 Rozpocznij import danych
+
+        // Preview Section
+        .preview-section.bg-gray-50.rounded-lg.p-6
+          h3.text-lg.font-semibold.text-gray-800.mb-4 Podgląd danych do importu
+          
+          .sample-data.overflow-x-auto
+            table.min-w-full.text-sm
+              thead.bg-gray-100
+                tr
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 ISBN
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 Tytuł
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 Wydawca
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 Autorzy
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 Rok
+                  th.px-3.py-2.text-left.font-medium.text-gray-700 Cena nowa
+              tbody.bg-white
+                tr.border-t
+                  td.px-3.py-2.text-gray-800 9788326736568
+                  td.px-3.py-2.text-gray-800 Ponad słowami 2 (cz. 1)
+                  td.px-3.py-2.text-gray-600 Nowa Era
+                  td.px-3.py-2.text-gray-600 Małgorzata Chmiel, Anna Cisowska...
+                  td.px-3.py-2.text-gray-600 2020
+                  td.px-3.py-2.text-gray-600 52.90 PLN
+                tr.border-t
+                  td.px-3.py-2.text-gray-800 9788302187636
+                  td.px-3.py-2.text-gray-800 Oblicza epok 2.1
+                  td.px-3.py-2.text-gray-600 WSiP
+                  td.px-3.py-2.text-gray-600 Dariusz Chemperek, Adam Kalbarczyk...
+                  td.px-3.py-2.text-gray-600 2020
+                  td.px-3.py-2.text-gray-600 58.50 PLN
+                tr.border-t.bg-gray-50
+                  td.px-3.py-2.text-gray-500.italic(colspan="6") ... i pozostałe 45+ pozycji
+
+          .mt-4.text-center
+            p.text-sm.text-gray-500 Łączna liczba książek do importu: ~47 pozycji
+
+  script.
+    function confirmImport() {
+      return confirm('Czy jesteś pewny, że chcesz rozpocząć import danych z pliku CSV?\n\nTen proces:\n• Doda nowe książki do bazy danych\n• Pominie duplikaty (po ISBN)\n• Nie można go cofnąć\n\nKliknij OK aby kontynuować.');
+    }
+    
+    // Show loading state on form submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const submitBtn = document.querySelector('button[type="submit"]');
+      submitBtn.innerHTML = '⏳ Importowanie...';
+      submitBtn.disabled = true;
+    });

@@ -254,7 +254,7 @@ export class SecurityMiddleware {
       ];
       
       if (botPatterns.some(pattern => pattern.test(userAgent))) {
-        console.warn(`🤖 BOT DETECTED: ${clientId} - ${userAgent}`);
+        console.warn(`BOT DETECTED: ${clientId} - ${userAgent}`);
         
         // Allow legitimate bots but with rate limiting
         req.isBot = true;
@@ -426,8 +426,8 @@ export class SecurityMiddleware {
   static initialize() {
     this.cleanup();
     
-    console.log('🛡️  Security middleware initialized with maximum protection');
-    console.log('📊 Features enabled:');
+    console.log('Security middleware initialized with maximum protection');
+    console.log('Features enabled:');
     console.log('   - Rate limiting with IP blocking');
     console.log('   - Security headers (CSP, HSTS, etc.)');
     console.log('   - Input sanitization');
