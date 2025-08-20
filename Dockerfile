@@ -1,17 +1,36 @@
-# Multi-stage build for production optimization
-FROM node:18-alpine AS builder
+# SignumLBRI Ultra-Modern Dockerfile - 2025 Edition
+# Multi-stage build for maximum performance and security
+# Features: Node.js 20, advanced caching, compression, health checks
+
+# Build stage - Create optimized application build
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Install system dependencies for building
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev
+
+# Copy package files for dependency installation
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY webpack.config.js ./
 COPY copyStaticAssets.ts ./
 
-# Install all dependencies for building
-RUN npm install && npm cache clean --force
+# Install all dependencies (including dev dependencies for build)
+RUN npm install
 
 # Copy source code
 COPY src/ ./src/

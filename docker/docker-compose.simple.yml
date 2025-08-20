@@ -1,0 +1,78 @@
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:7-jammy
+    restart: unless-stopped
+    container_name: signum-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: signum_admin
+      MONGO_INITDB_ROOT_PASSWORD: signum_password123
+      MONGO_INITDB_DATABASE: signum_books
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./data/mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - signum_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    container_name: signum-redis
+    command: redis-server --appendonly yes --requirepass redis_password123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - signum_network
+
+  # Simple App (without build complexity)
+  simple-app:
+    image: node:20-alpine
+    restart: unless-stopped
+    container_name: signum-simple-app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      MONGODB_URI: mongodb://signum_admin:signum_password123@mongo:27017/signum_books?authSource=admin
+      REDIS_URL: redis://:redis_password123@redis:6379
+      SESSION_SECRET: super-secret-session-key-2025
+      PORT: 3000
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - signum_network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    container_name: signum-nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx-simple.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+    depends_on:
+      - simple-app
+    networks:
+      - signum_network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  signum_network:
+    driver: bridge

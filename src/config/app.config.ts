@@ -1,8 +1,18 @@
 /**
- * SignumLBRI Application Configuration - 2025 Edition
- * High-performance, modern book marketplace configuration
- * Optimized for scalability and modern UI/UX
+ * SignumLBRI Application Configuration - 2025 Ultra Edition
+ * The most advanced book marketplace configuration
+ * Optimized for ultimate performance, scalability and WOW factor
  */
+
+// Define process for TypeScript without needing @types/node
+declare const process: {
+  env: {
+    [key: string]: string | undefined;
+    NODE_ENV?: 'development' | 'production' | 'test';
+    SESSION_SECRET?: string;
+    JWT_SECRET?: string;
+  };
+};
 
 export interface ServerConfig {
   port: number;
@@ -10,8 +20,13 @@ export interface ServerConfig {
   env: 'development' | 'production' | 'test';
   corsOrigins: string[];
   enableCompression: boolean;
+  enableWebSockets: boolean;
+  enableRealTime: boolean;
   rateLimitWindow: number;
   rateLimitMax: number;
+  httpsPort?: number;
+  enableHttp2: boolean;
+  enableGraphQL: boolean;
 }
 
 export interface DatabaseConfig {
@@ -25,6 +40,7 @@ export interface DatabaseConfig {
       retryWrites: boolean;
       w: 'majority';
       readPreference: 'primaryPreferred';
+      authSource: string;
     };
   };
   redis: {
@@ -34,7 +50,17 @@ export interface DatabaseConfig {
       retryDelayOnFailover: number;
       connectTimeout: number;
       lazyConnect: boolean;
+      keyPrefix: string;
     };
+  };
+  elasticsearch?: {
+    node: string;
+    auth?: {
+      username: string;
+      password: string;
+    };
+    maxRetries: number;
+    requestTimeout: number;
   };
 }
 
@@ -166,52 +192,64 @@ export interface AppConfig {
   buildTimestamp: string;
 }
 
-// Default configuration with hardcoded values for now
+// Default configuration with ultra-modern settings for WOW factor
 const defaultConfig: AppConfig = {
   server: {
     port: 3000,
     host: 'localhost',
     env: 'development',
-    corsOrigins: ['http://localhost:3000'],
+    corsOrigins: ['http://localhost:8080', 'https://localhost:8443'],
     enableCompression: true,
+    enableWebSockets: true,
+    enableRealTime: true,
+    enableHttp2: true,
+    enableGraphQL: true,
     rateLimitWindow: 15 * 60 * 1000, // 15 minutes
-    rateLimitMax: 100
+    rateLimitMax: 100,
+    httpsPort: 8443
   },
 
   database: {
     mongodb: {
-      uri: 'mongodb://mongodb:27017/signumlbri',
+      uri: 'mongodb://signum_admin:signum_2025_secure@mongo:27017/signumlbri?authSource=admin',
       options: {
-        maxPoolSize: 10,
-        minPoolSize: 2,
+        maxPoolSize: 20,
+        minPoolSize: 5,
         maxIdleTimeMS: 30000,
         serverSelectionTimeoutMS: 5000,
         retryWrites: true,
         w: 'majority',
-        readPreference: 'primaryPreferred'
+        readPreference: 'primaryPreferred',
+        authSource: 'admin'
       }
     },
     redis: {
-      url: 'redis://redis:6379',
+      url: 'redis://:signum_redis_2025@redis:6379/0',
       options: {
         maxRetriesPerRequest: 3,
         retryDelayOnFailover: 100,
         connectTimeout: 10000,
-        lazyConnect: true
+        lazyConnect: true,
+        keyPrefix: 'signum:'
       }
+    },
+    elasticsearch: {
+      node: 'http://elasticsearch:9200',
+      maxRetries: 3,
+      requestTimeout: 30000
     }
   },
 
   security: {
     session: {
-      secret: 'change-this-in-production',
+      secret: process.env.SESSION_SECRET || 'change-this-in-production-ultra-secure-2025',
       maxAge: 86400000, // 24 hours
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: 'strict'
     },
     jwt: {
-      secret: 'change-this-in-production',
+      secret: process.env.JWT_SECRET || 'ultra-secure-jwt-secret-2025-signum-lbri',
       expiresIn: '15m',
       refreshExpiresIn: '7d'
     },

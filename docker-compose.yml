@@ -1,49 +1,169 @@
-version: "3.4"
-
 services:
+  # MongoDB Database
   mongo:
-    image: mongo
-    restart: always
+    image: mongo:7-jammy
+    restart: unless-stopped
+    container_name: signum-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: signum_admin
+      MONGO_INITDB_ROOT_PASSWORD: signum_2025_secure
+      MONGO_INITDB_DATABASE: signumlbri
     volumes:
       - './data:/data/db'
-    # ports:
-    #  - 22222:27017
+      - './mongo-init:/docker-entrypoint-initdb.d'
+    networks:
+      - signum-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    container_name: signum-redis
+    command: redis-server --appendonly yes --requirepass signum_redis_2025
+    volumes:
+      - './redis-data:/data'
+    networks:
+      - signum-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Nginx Reverse Proxy with SSL Support
   nginx:
-    image: nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    container_name: signum-nginx
     environment:
       PROXY_IP: http://signumlbri:3000/
     ports:
-      - 800:80
-      - 4430:443
-    command: |
-      sh -c "echo 'server {
-        listen 80;
-        server_name localhost;
-        location / {
-          proxy_pass http://signumlbri:3000;
-          proxy_set_header Host \$$host;
-          proxy_set_header X-Real-IP \$$remote_addr;
-          proxy_set_header X-Forwarded-For \$$proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto \$$scheme;
-          proxy_read_timeout 90;
-        }
-      }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-      # - /etc/letsencrypt/live/targi.zsel.opole.pl/fullchain.pem:/etc/nginx/ssl/cert.crt
-      # - /etc/letsencrypt/live/targi.zsel.opole.pl/privkey.pem:/etc/nginx/ssl/cert.key
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./public:/var/www/static:ro
+    depends_on:
+      signumlbri:
+        condition: service_healthy
+    networks:
+      - signum-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Main Application
   signumlbri:
-    image: signumlbri
+    image: signumlbri:2025
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        NODE_VERSION: "20"
+        BUILD_ENV: "production"
+    restart: unless-stopped
+    container_name: signum-app
     environment:
-      SESSION_SECRET: "A"
-      MAIL_HOST:
-      MAIL_USER:
-      MAIL_SHOWMAIL:
-      MAIL_PASSWORD:
-      # NODE_ENV: production
-      NODE_ENV: developement
-      MONGODB_URI: mongodb://mongo:27017/
-      MONGODB_URI_LOCAL: mongodb://mongo:27017/
+      # Server Configuration
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      
+      # Security
+      SESSION_SECRET: "Signum-LBRI-2025-Super-Secure-Session-Key-${RANDOM_SESSION_KEY:-default-dev-key}"
+      JWT_SECRET: "Signum-JWT-2025-Ultra-Secure-${RANDOM_JWT_KEY:-default-jwt-key}"
+      
+      # Database
+      MONGODB_URI: mongodb://signum_admin:signum_2025_secure@mongo:27017/signumlbri?authSource=admin
+      REDIS_URI: redis://:signum_redis_2025@redis:6379/0
+      
+      # Mail Configuration
+      MAIL_HOST: ${MAIL_HOST:-localhost}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_SHOWMAIL: true
+      
+      # Performance Settings
+      ENABLE_COMPRESSION: true
+      ENABLE_CACHING: true
+      ENABLE_WEBSOCKETS: true
+      
+      # Features
+      ENABLE_REAL_TIME: true
+      ENABLE_ANALYTICS: true
+      ENABLE_API_V2: true
+      ENABLE_ADVANCED_SEARCH: true
+      
+      # Development Tools
+      ENABLE_DEBUG: ${DEBUG:-false}
+      ENABLE_PROFILING: ${PROFILING:-false}
+    volumes:
+      - ./public/uploads:/app/public/uploads
+      - ./logs:/app/logs
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - signum-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Elasticsearch for Advanced Search (Optional but WOW factor)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: signum-elasticsearch
+    restart: unless-stopped
+    environment:
+      - node.name=signum-es-node
+      - cluster.name=signum-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - './elasticsearch-data:/usr/share/elasticsearch/data'
+    networks:
+      - signum-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  signum-network:
+    driver: bridge
+    name: signum-network
+
+volumes:
+  mongo-data:
+    driver: local
+  redis-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
     # ports:
     #   - 3000:3000

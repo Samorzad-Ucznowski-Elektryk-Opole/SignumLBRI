@@ -1,47 +1,68 @@
-lib-cov
-*.seed
+# Dependencies
+node_modules/
+bower_components/
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+public/css/main.css
+lib-cov/
+coverage/
+
+# Logs and runtime files
+logs/
 *.log
+*.pid
+pids/
+results/
+tmp/
+
+# Database and cache data
+redis-data/
+mongo-init/
+elasticsearch-data/
+mongo-data/
+data/
+
+# SSL certificates
+ssl/*.crt
+ssl/*.key
+ssl/*.pem
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+
+# Test files
+*.seed
 *.csv
 *.dat
 *.out
-*.pid
 *.gz
-*.swp
 
-pids
-logs
-results
-tmp
-certs
+# Docker volumes and temp data
+docker-data/
+.docker/
 
-# Build
-public/css/main.css
-
-# Coverage reports
-coverage
-
-# API keys and secrets
-.env
-.env.example
-
-# Dependency directory
-node_modules
-bower_components
-
-# Editors
-.idea
-*.iml
-
-# OS metadata
-.DS_Store
-Thumbs.db
-
-# Ignore built ts files
-dist/**/*
-
-# ignore yarn.lock
+# Yarn
 yarn.lock
-.env.example
-
-node_modules
-data
+yarn-error.log
