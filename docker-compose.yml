@@ -9,8 +9,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: signum_2025_secure
       MONGO_INITDB_DATABASE: signumlbri
     volumes:
-      - './data:/data/db'
-      - './mongo-init:/docker-entrypoint-initdb.d'
+      - mongodb_data:/data/db
     networks:
       - signum-network
     healthcheck:
@@ -30,7 +29,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     container_name: signum-redis
-    command: redis-server --appendonly yes --requirepass signum_redis_2025
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-temp_password_change_me}
     volumes:
       - './redis-data:/data'
     networks:
@@ -88,8 +87,9 @@ services:
       JWT_SECRET: "Signum-JWT-2025-Ultra-Secure-${RANDOM_JWT_KEY:-default-jwt-key}"
       
       # Database
-      MONGODB_URI: mongodb://signum_admin:signum_2025_secure@mongo:27017/signumlbri?authSource=admin
-      REDIS_URI: redis://:signum_redis_2025@redis:6379/0
+      MONGODB_URI: mongodb://admin:admin123@mongo:27017/signumlbri?authSource=admin
+      REDIS_URI: redis://:${REDIS_PASSWORD:-temp_password_change_me}@redis:6379/0
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-SignumRedis2025_1710221175}
       
       # Mail Configuration
       MAIL_HOST: ${MAIL_HOST:-localhost}
@@ -160,6 +160,8 @@ networks:
     name: signum-network
 
 volumes:
+  mongodb_data:
+    driver: local
   mongo-data:
     driver: local
   redis-data:

@@ -211,7 +211,7 @@ const defaultConfig: AppConfig = {
 
   database: {
     mongodb: {
-      uri: 'mongodb://signum_admin:signum_2025_secure@mongo:27017/signumlbri?authSource=admin',
+      uri: process.env.MONGODB_URI || 'mongodb://admin:admin123@mongo:27017/signumlbri?authSource=admin',
       options: {
         maxPoolSize: 20,
         minPoolSize: 5,
@@ -224,7 +224,7 @@ const defaultConfig: AppConfig = {
       }
     },
     redis: {
-      url: 'redis://:signum_redis_2025@redis:6379/0',
+      url: process.env.REDIS_URI || `redis://:${process.env.REDIS_PASSWORD || ''}@redis:6379/0`,
       options: {
         maxRetriesPerRequest: 3,
         retryDelayOnFailover: 100,

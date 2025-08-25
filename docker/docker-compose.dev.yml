@@ -37,7 +37,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     container_name: signum-redis-dev
-    command: redis-server --appendonly yes --requirepass dev_redis_2025
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-dev_redis_secure_2025}
     ports:
       - "6379:6379"  # Exposed for development tools
     volumes:
