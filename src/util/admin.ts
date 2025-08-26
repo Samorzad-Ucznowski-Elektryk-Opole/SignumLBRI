@@ -1,4 +1,4 @@
-import { ObjectID } from "bson";
+import { ObjectId } from "mongoose";
 import { School } from "../models/School";
 import { UserPerformance } from "../models/Performance";
 import { User } from "../models/User";
@@ -7,7 +7,7 @@ import { Book } from "../models/Book";
 import { median } from "./math";
 import { BookListing } from "../models/BookListing";
 
-export function getUser(userID: ObjectID){
+export function getUser(userID: ObjectId){
     return User.aggregate([
         {
           $match: {
@@ -77,7 +77,7 @@ export function getUser(userID: ObjectID){
       ]);
 }
 
-export async function getUserGraph(from: string, to: string, exact: boolean, schoolID?: ObjectID){
+export async function getUserGraph(from: string, to: string, exact: boolean, schoolID?: ObjectId){
     const res:any = User.aggregate([
           ...(schoolID ? [{
             $match: {
@@ -183,7 +183,7 @@ export async function getUserGraph(from: string, to: string, exact: boolean, sch
       return (res as [Error|null, { date: Date; count: number }[]|null]);
 }
 
-export async function getBookGraph(from: string, to: string, exact: boolean, schoolID?: ObjectID){
+export async function getBookGraph(from: string, to: string, exact: boolean, schoolID?: ObjectId){
 
     const aggregateRes: any = await BookListing.aggregate([
           ...(schoolID ? [{
@@ -470,7 +470,7 @@ export async function getBookGraph(from: string, to: string, exact: boolean, sch
     
 }
 
-export async function getBookStats(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted")[] = ["canceled", "deleted"], schoolID?: ObjectID){
+export async function getBookStats(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted")[] = ["canceled", "deleted"], schoolID?: ObjectId){
     const result = await Book.aggregate<{avgCost: number, median: number, sold: number, available: number, title: string, publisher: string, costTable: number[]}>([
         {
           $lookup: {
@@ -563,7 +563,7 @@ export async function getBookStats(filter: ("registered"|"printed_label"|"accept
       return result;
 }
 
-export function getBuyerStats(schoolID?:ObjectID){
+export function getBuyerStats(schoolID?:ObjectId){
     return Buyer.aggregate([
         {
           $lookup: {
@@ -627,8 +627,8 @@ export function getBuyerStats(schoolID?:ObjectID){
       ]);
 }
 
-export function getStaffStatistics(includeAdmin = false, schoolID?: ObjectID){
-    return User.aggregate<{_id: ObjectID, email: string, password: string, role: string, school:ObjectID, profile: {name:string, surname: string, phone: string}, createdAt: Date, updatedAt: Date, verifiedBooks:number, soldBooks: number, deletedBooks: number }>([
+export function getStaffStatistics(includeAdmin = false, schoolID?: ObjectId){
+    return User.aggregate<{_id: ObjectId, email: string, password: string, role: string, school:ObjectId, profile: {name:string, surname: string, phone: string}, createdAt: Date, updatedAt: Date, verifiedBooks:number, soldBooks: number, deletedBooks: number }>([
         ...(schoolID ? [{
             $match: {
                 "school": schoolID
@@ -688,8 +688,8 @@ export function getStaffStatistics(includeAdmin = false, schoolID?: ObjectID){
       ]);
 }
 
-export async function getStatsPerUser(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted")[] = ["accepted", "sold"],schoolID?: ObjectID){
-    const query = await User.aggregate<{_id: ObjectID, email: string, profile: {name: string, surname: string, phone: string}, mustGive: number, earnings: number, books: number, totalCost: number, query: {[key: string]: boolean}}>([
+export async function getStatsPerUser(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted")[] = ["accepted", "sold"],schoolID?: ObjectId){
+    const query = await User.aggregate<{_id: ObjectId, email: string, profile: {name: string, surname: string, phone: string}, mustGive: number, earnings: number, books: number, totalCost: number, query: {[key: string]: boolean}}>([
         ...(schoolID ? [{
             $match: {
                 "school": schoolID
@@ -781,7 +781,7 @@ export async function getStatsPerUser(filter: ("registered"|"printed_label"|"acc
   return query;
 }
 
-export function getGlobalStats(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted"|"returned")[] = ["canceled", "deleted"],schoolID?: ObjectID){
+export function getGlobalStats(filter: ("registered"|"printed_label"|"accepted"|"sold"|"given_money"|"canceled"|"deleted"|"returned")[] = ["canceled", "deleted"],schoolID?: ObjectId){
     return User.aggregate<{bookDebt: number, earnings: number, bookAvg: number}>([
         ...(schoolID ? [{
             $match: {
@@ -845,7 +845,7 @@ export function getGlobalStats(filter: ("registered"|"printed_label"|"accepted"|
       ]);
 }
 
-export function getRoleTime(schoolID?: ObjectID){
+export function getRoleTime(schoolID?: ObjectId){
     return UserPerformance.aggregate<{
       _id:string; sum: number, avg:number
 }>([

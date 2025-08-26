@@ -1,103 +1,246 @@
-# 🐳 SignumLBRI Enhanced - Docker Only
+# � SignumLBRI - Modern School Book Management System
 
-Modern school book management system with **glassmorphism UI** - runs exclusively in Docker.
+Nowoczesny system zarządzania książkami szkolnymi z glassmorphism UI i zaawansowanymi funkcjami.
 
-## ✨ Features
+## ✨ Funkcje
 
-- 🎨 **Glassmorphism Design** - Modern transparent UI
-- 🌙 **Dark/Light Mode** - Theme switching
-- 📱 **Responsive Design** - Works on all devices  
-- 🌍 **Multi-language** - Polish/English/Ukrainian
-- 📚 **Book Management** - Advanced library system
-- 👥 **User Management** - Students, teachers, admin
-- 📊 **Analytics Dashboard** - Reports and statistics
-- 🔒 **Security** - Password hashing, sessions, CSRF protection
+- 🎨 **Glassmorphism Design** - Nowoczesny przezroczysty interfejs
+- 🌙 **Tryb ciemny/jasny** - Przełączanie motywów
+- 📱 **Responsywny design** - Działa na wszystkich urządzeniach  
+- 🌍 **Wielojęzyczność** - Polski/Angielski/Ukraiński
+- 📚 **Zarządzanie książkami** - Zaawansowany system biblioteczny
+- 👥 **Zarządzanie użytkownikami** - Uczniowie, nauczyciele, admin
+- 📊 **Panel analityczny** - Raporty i statystyki
+- 🔒 **Bezpieczeństwo** - Hashowanie haseł, sesje, ochrona CSRF
 
-## 🐳 Docker Setup (ONLY WAY)
+## � Szybki start
 
-### Prerequisites
-- **Docker** (download from [docker.com](https://www.docker.com/))
-- **Docker Compose** (included with Docker Desktop)
+### Wymagania
+- **Docker** (pobierz z [docker.com](https://www.docker.com/))
+- **Docker Compose** (dołączony do Docker Desktop)
 
-### Quick Start
+### Uruchomienie
 
 ```bash
-# Clone repository
+# Klonowanie repozytorium
 git clone https://github.com/Samorzad-Ucznowski-Elektryk-Opole/SignumLBRI.git
 cd SignumLBRI
 
-# Start with Docker Compose (recommended)
+# Start za pomocą skryptu (Windows)
+.\scripts\start.bat
+
+# Lub bezpośrednio Docker Compose
 docker-compose up -d
 
-# Or build and run manually
-docker build -t signumlbri-enhanced .
-docker run -p 4000:4000 signumlbri-enhanced
+# Szybki restart
+.\scripts\quick-restart.bat
 ```
 
-**Application will be available at:** 🌐 **http://localhost:4000/enhanced**
+**Aplikacja będzie dostępna pod adresem:** 🌐 **http://localhost:4000**
 
-## 📋 Docker Commands
+## 🌐 Punkty dostępu
 
-### Main Commands
+Po uruchomieniu kontenerów aplikacja dostępna jest pod:
+
+- **Główna aplikacja**: http://localhost:4000
+- **Panel administracyjny**: http://localhost:4000/admin  
+- **Health check**: http://localhost:4000/health
+- **Statystyki systemu**: http://localhost:4000/stats
+- **API**: http://localhost:4000/api/
+
+## 🐳 Zarządzanie Docker
+
+### Podstawowe komendy
 ```bash
-# Start application
+# Uruchomienie serwisów
 docker-compose up -d
 
-# Stop application  
+# Zatrzymanie serwisów  
 docker-compose down
 
-# View logs
+# Wyświetlanie logów
 docker-compose logs -f
 
-# Restart application
+# Restart serwisów
 docker-compose restart
 
-# Rebuild and start
+# Przebudowanie kontenerów
 docker-compose up --build -d
 ```
 
-### NPM Docker Scripts
+### NPM skrypty
 ```bash
-npm run docker:up      # Start with docker-compose
-npm run docker:down    # Stop docker-compose
-npm run docker:logs    # View logs
-npm run docker:restart # Restart containers
-npm run docker:build  # Build Docker image
-npm run docker:run     # Run single container
+npm run docker:up       # Start z docker-compose
+npm run docker:down     # Stop docker-compose  
+npm run docker:logs     # Wyświetl logi
+npm run docker:restart  # Restart kontenerów
 ```
 
-## 🌐 Application Routes
-
-- **Enhanced UI**: http://localhost:4000/enhanced
-- **Admin Panel**: http://localhost:4000/enhanced/admin
-- **API**: http://localhost:4000/api/
-- **Health Check**: http://localhost:4000/health
-
-## 🏗️ Docker Architecture
-
-- **Base**: Alpine Linux (lightweight)
-- **Runtime**: Node.js 18+
-- **Port**: 4000
-- **Database**: MongoDB (in-memory fallback)
-- **Security**: Non-root user, security headers
-- **Health**: Built-in health checks
-
-## 📁 Project Structure
+## 📁 Struktura projektu (uporządkowana)
 
 ```
 SignumLBRI/
-├── Dockerfile                  # Docker configuration
-├── docker-compose.yml         # Docker Compose setup
-├── enhanced-app.js            # Main Enhanced application
-├── package.json               # Dependencies and Docker scripts
-├── src/                       # Source code
-│   ├── controllers/           # Route controllers
-│   ├── models/               # Database models
-│   ├── util/                 # Utilities
-│   └── lang/                 # Language files
-├── views/                    # Pug templates
-└── public/                   # Static assets (CSS, JS, images)
+├── 📋 Pliki konfiguracyjne
+│   ├── Dockerfile              # Konfiguracja kontenera
+│   ├── docker-compose.yml      # Orchestracja kontenerów
+│   ├── package.json           # Zależności i skrypty
+│   └── .env                   # Zmienne środowiskowe
+├── 🗂️ scripts/               # Skrypty zarządzania
+│   ├── start.bat              # Start aplikacji (Windows)
+│   ├── quick-restart.bat      # Szybki restart
+│   └── Makefile              # Zadania automatyzacji
+├── 📚 docs/                   # Dokumentacja
+│   ├── DOCKER-SETUP.md        # Szczegóły Docker
+│   └── TROUBLESHOOTING.md     # Rozwiązywanie problemów
+├── ⚙️ configs/               # Alternatywne konfiguracje
+│   └── docker-compose-complete.yml
+├── 🔧 temp/                   # Pliki tymczasowe/debug
+│   ├── enhanced-app-debug.js  # Wersja debug
+│   └── debug-wrapper.js       # Wrapper debug
+├── 💻 src/                    # Kod źródłowy TypeScript
+│   ├── app.ts                # Główna aplikacja
+│   ├── controllers/          # Kontrolery tras
+│   ├── models/              # Modele bazy danych
+│   ├── util/                # Narzędzia pomocnicze
+│   ├── config/              # Konfiguracje
+│   └── lang/                # Pliki językowe
+├── 🎨 views/                  # Szablony Pug
+├── 🌍 public/                 # Zasoby statyczne
+└── 🗄️ mongo-init/            # Inicjalizacja bazy danych
 ```
+
+## 🔧 Konfiguracja
+
+### Zmienne środowiskowe
+```bash
+# Aplikacja
+PORT=4000
+NODE_ENV=production
+SESSION_SECRET=your_session_secret
+
+# Baza danych
+MONGODB_URI=mongodb://mongodb:27017/signumlbri
+
+# Funkcje
+ENABLE_REGISTRATION=true
+ENABLE_GUEST_MODE=false
+```
+
+### Wolumeny Docker
+- **Logi aplikacji**: `./logs:/app/logs`
+- **Dane MongoDB**: `./mongodb-data:/data/db`  
+- **Pliki uploadowane**: `./public/uploads:/app/public/uploads`
+
+## 🐛 Diagnostyka i debug
+
+### Health check
+Aplikacja zawiera zaawansowane monitorowanie stanu:
+
+```bash
+# Szybki check stanu
+curl http://localhost:4000/health
+
+# Szczegółowe statystyki
+curl http://localhost:4000/stats
+```
+
+### Analiza logów
+```bash
+# Wyświetl wszystkie logi
+docker-compose logs -f
+
+# Logi konkretnego serwisu
+docker-compose logs -f signumlbri-enhanced
+
+# Filtrowanie logów według czasu
+docker-compose logs --since=1h signumlbri-enhanced
+```
+
+### Dostęp do bazy danych
+```bash
+# Dostęp do shell MongoDB
+docker-compose exec mongodb mongosh signumlbri
+
+# Wyświetl kolekcje
+show collections
+
+# Query użytkownicy
+db.users.find().pretty()
+```
+
+## � Wdrożenie produkcyjne
+
+### Docker Swarm
+```bash
+# Inicjalizacja swarm
+docker swarm init
+
+# Deploy stack
+docker stack deploy -c docker-compose.yml signumlbri
+
+# Check serwisów
+docker service ls
+```
+
+### Monitorowanie
+
+Aplikacja zawiera wbudowane monitorowanie:
+- **Śledzenie requestów**: Unikalne ID requestów i timing
+- **Zasoby systemowe**: Pamięć, CPU, uptime
+- **Stan bazy danych**: Status połączenia i wydajność
+- **Śledzenie błędów**: Komprehensywne logowanie
+
+## 🔐 Bezpieczeństwo
+
+### Domyślne zabezpieczenia
+- **Ochrona CSRF**: Wbudowana walidacja tokenów
+- **Zarządzanie sesją**: Bezpieczne obsługiwanie sesji
+- **Hashowanie haseł**: bcrypt dla bezpieczeństwa haseł
+- **Rate limiting**: Ograniczenia API requestów
+- **Nagłówki bezpieczeństwa**: Integracja Helmet.js
+
+### Najlepsze praktyki
+1. **Zmień domyślne hasła**
+2. **Używaj zmiennych środowiskowych dla sekretów**
+3. **Włącz HTTPS w produkcji**
+4. **Regularne aktualizacje bezpieczeństwa**
+5. **Monitoruj logi dostępu**
+
+## 📞 Wsparcie
+
+W przypadku problemów:
+
+1. Sprawdź [przewodnik rozwiązywania problemów](docs/TROUBLESHOOTING.md)
+2. Przejrzyj logi Docker pod kątem błędów
+3. Zweryfikuj status health kontenerów
+4. Otwórz issue na GitHub
+
+## 🔄 Rozwój i wkład
+
+### Lokalne środowisko deweloperskie
+```bash
+# Klonowanie repo
+git clone https://github.com/Samorzad-Ucznowski-Elektryk-Opole/SignumLBRI.git
+
+# Uruchomienie w trybie dev
+npm install
+npm run dev
+
+# Lub za pomocą Docker
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+### Struktura kodu
+- **TypeScript**: Główny kod w `src/`
+- **Pug templates**: Szablony w `views/`
+- **SCSS**: Style w `src/public/css/`
+- **Tests**: Testy w `tests/`
+
+---
+
+🔧 **Maintainer**: ZSEL SignumLBRI Team  
+📅 **Ostatnia aktualizacja**: Sierpień 2025  
+📄 **Licencja**: MIT
 
 ## 🔧 Environment Configuration
 

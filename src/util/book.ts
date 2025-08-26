@@ -1,4 +1,4 @@
-import { ObjectID } from "bson";
+import { ObjectId } from "bson";
 import { Book, BookDocument } from "../models/Book";
 import { SchoolDocument } from "../models/School";
 import { BookListing } from "../models/BookListing";
@@ -70,7 +70,7 @@ export async function fetchTopBooks(): Promise<
 
 export async function fetchAnonTopBooks(): Promise<
   {
-    _id: ObjectID,
+    _id: ObjectId,
     school: SchoolDocument,
     book: {
       book: BookDocument,

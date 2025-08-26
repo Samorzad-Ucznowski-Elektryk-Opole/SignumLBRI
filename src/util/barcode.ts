@@ -28,7 +28,7 @@ export function generateRand(n: number): string {
   max = Math.pow(10, n + add);
   const min = max / 10; // Math.pow(10, n) basically
   const number = Math.floor(Math.random() * (max - min + 1)) + min;
-  return ("" + number).substring(add).replaceAll("0", "1");
+  return ("" + number).substring(add).replace(/0/g, "1");
 }
 
 export function generateEAN13(): string {

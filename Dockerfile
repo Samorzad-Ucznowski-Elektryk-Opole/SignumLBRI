@@ -1,15 +1,38 @@
-# 🐳 SignumLBRI Enhanced - Docker Image
-# Nowoczesna aplikacja z glassmorphism UI i zaawansowanymi funkcjami
+# 🐳 SignumLBRI - Production Docker Image
+# System zarządzania książkami szkolnymi z TypeScript i glassmorphism UI
 
-FROM node:18-alpine
+# Multi-stage build for TypeScript
+FROM node:18-alpine AS builder
 
 # Metadane
-LABEL maintainer="SignumLBRI Enhanced Team"
-LABEL version="1.0.0"
+LABEL maintainer="ZSEL SignumLBRI Team"
+LABEL version="2.0.0"
 LABEL description="Modern school book management system with glassmorphism UI"
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init wget
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first (for better layer caching)
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Install all dependencies (including dev dependencies for build)
+RUN npm install
+
+# Copy source code
+COPY src/ ./src/
+
+# Build TypeScript to JavaScript
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+
+# Install runtime dependencies
+RUN apk add --no-cache dumb-init wget curl
 
 # Create app user
 RUN addgroup -g 1001 -S nodejs
@@ -18,24 +41,31 @@ RUN adduser -S signumlbri -u 1001
 # Set working directory
 WORKDIR /app
 
-# Copy package files first (for better layer caching)
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies as root
-RUN npm install --only=production && npm cache clean --force
+# Install only production dependencies
+RUN npm install --only=production --ignore-scripts && npm cache clean --force
 
-# Copy application files
-COPY enhanced-app.js ./
+# Copy built application from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy runtime assets
 COPY views/ ./views/
 COPY public/ ./public/
-COPY src/lang/ ./src/lang/
+COPY mongo-init/ ./mongo-init/
 
-# Create necessary directories
-RUN mkdir -p public/uploads logs public/css/enhanced public/js/enhanced views/enhanced
+# Copy debug files to temp (for troubleshooting)
+RUN mkdir -p temp
+COPY temp/ ./temp/
 
-# Set proper ownership
+# Create necessary directories with proper permissions
+RUN mkdir -p public/uploads logs /app/node_modules/.cache
+
+# Set proper ownership before switching users
 RUN chown -R signumlbri:nodejs /app
 RUN chmod -R 755 /app
+RUN chmod -R 777 public/uploads logs
 
 # Switch to non-root user for security
 USER signumlbri
@@ -46,14 +76,13 @@ EXPOSE 4000
 # Environment variables
 ENV NODE_ENV=production
 ENV PORT=4000
-ENV USE_MEMORY_DB=true
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+# Health check with enhanced monitoring
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:4000/health || exit 1
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the application
-CMD ["node", "enhanced-app.js"]
+# Start the TypeScript compiled application
+CMD ["node", "dist/server.js"]

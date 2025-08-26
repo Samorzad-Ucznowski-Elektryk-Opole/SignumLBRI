@@ -123,14 +123,14 @@ const bookDictionarySchema = new mongoose.Schema<BookDictionaryDocument>(
     }
   },
   { 
-    timestamps: true,
-    indexes: [
-      { isbn: 1, status: 1 },
-      { title: 'text', publisher: 'text', authors: 'text' },
-      { status: 1, submittedAt: -1 }
-    ]
+    timestamps: true
   }
 );
+
+// Add indexes separately
+bookDictionarySchema.index({ isbn: 1, status: 1 });
+bookDictionarySchema.index({ title: 'text', publisher: 'text', authors: 'text' });
+bookDictionarySchema.index({ status: 1, submittedAt: -1 });
 
 // Create compound index for unique ISBN per approved status
 bookDictionarySchema.index({ isbn: 1, status: 1 }, { 

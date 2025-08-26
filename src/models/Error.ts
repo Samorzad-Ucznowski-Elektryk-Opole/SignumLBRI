@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { UserDocument } from "./User";
-import { ObjectID } from "bson";
+import { ObjectId } from "bson";
 export type ErrorDocument = mongoose.Document & {
 	name?: string;
 	message?: string;
@@ -18,7 +18,7 @@ const errorSchema = new mongoose.Schema<ErrorDocument>(
 	stack: String,
 	cause: mongoose.Schema.Types.Mixed,
 	code: String,
-	user: ObjectID,
+	user: ObjectId,
 	agent: String,
   },
   { timestamps: true },

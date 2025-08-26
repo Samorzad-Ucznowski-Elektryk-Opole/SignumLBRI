@@ -24,15 +24,15 @@ html(lang=lang)
     //- Theme and Language Variables
     script.
       window.ENHANCED_CONFIG = {
-        currentTheme: '#{req.session && req.session.theme ? req.session.theme : "auto"}',
+        currentTheme: '#{theme || "auto"}',
         currentLanguage: '#{lang}',
         user: !{JSON.stringify(user || null)},
-        csrfToken: '#{req.csrfToken && req.csrfToken() || ""}'
+        csrfToken: ''
       };
     
     block additional_head
   
-  body(class=`enhanced-app theme-${req.session && req.session.theme ? req.session.theme : 'auto'} lang-${lang}` data-theme=`${req.session && req.session.theme ? req.session.theme : 'auto'}` data-lang=lang)
+  body(class=`enhanced-app theme-${theme || 'auto'} lang-${lang}` data-theme=`${theme || 'auto'}` data-lang=lang)
     
     //- Loading Screen
     #enhanced-loading.loading-screen

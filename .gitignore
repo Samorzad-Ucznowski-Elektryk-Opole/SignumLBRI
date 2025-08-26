@@ -25,10 +25,17 @@ tmp/
 
 # Database and cache data
 redis-data/
-mongo-init/
+mongodb-data/
 elasticsearch-data/
 mongo-data/
 data/
+
+# Temporary and debug files
+temp/*.js
+temp/*.ts
+temp/debug-*
+temp/enhanced-app.js
+temp/fix-*.js
 
 # SSL certificates
 ssl/*.crt
@@ -62,6 +69,9 @@ Thumbs.db
 # Docker volumes and temp data
 docker-data/
 .docker/
+
+# TypeScript
+*.tsbuildinfo
 
 # Yarn
 yarn.lock
