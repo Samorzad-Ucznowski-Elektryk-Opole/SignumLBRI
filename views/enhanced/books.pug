@@ -1,0 +1,81 @@
+extends layout
+
+//- 🚀 SignumLBRI Enhanced - Books View
+block content
+  .books-container
+    .books-header
+      h1.page-title 📚 Biblioteka Książek
+      .books-actions
+        .search-box
+          input.form-control(type="text" placeholder="Szukaj książek..." id="searchBooks")
+          button.btn.btn-primary(type="button") 🔍
+        a.btn.btn-success(href="/enhanced/books/add") ➕ Dodaj książkę
+    
+    .books-filters
+      .filter-group
+        label Kategoria:
+        select.form-control(id="categoryFilter")
+          option(value="") Wszystkie
+          option(value="Matematyka") Matematyka
+          option(value="Język Polski") Język Polski  
+          option(value="Elektronika") Elektronika
+          option(value="Historia") Historia
+          option(value="Geografia") Geografia
+      
+      .filter-group
+        label Cena:
+        select.form-control(id="priceFilter")
+          option(value="") Wszystkie
+          option(value="0-20") 0-20 zł
+          option(value="20-50") 20-50 zł
+          option(value="50-100") 50-100+ zł
+    
+    .books-grid
+      if books && books.length > 0
+        each book in books
+          .book-card
+            .book-cover
+              if book.cover
+                img(src=book.cover alt=book.title)
+              else
+                .book-cover-placeholder 📖
+            
+            .book-info
+              h3.book-title= book.title
+              p.book-author= book.author
+              p.book-publisher= book.publisher
+              if book.isbn
+                p.book-isbn ISBN: #{book.isbn}
+              
+              .book-meta
+                span.book-category= book.category
+                span.book-price #{book.price} zł
+              
+              .book-actions
+                a.btn.btn-primary.btn-sm(href=`/enhanced/books/${book._id}`) Zobacz szczegóły
+                if book.seller
+                  a.btn.btn-success.btn-sm(href=`/enhanced/books/${book._id}/buy`) Kup teraz
+      else
+        .no-books
+          .empty-state
+            h2 📚 Brak książek
+            p Nie znaleziono żadnych książek spełniających kryteria.
+            a.btn.btn-primary(href="/enhanced/books/add") Dodaj pierwszą książkę
+
+  script.
+    // Search functionality
+    document.getElementById('searchBooks').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const bookCards = document.querySelectorAll('.book-card');
+      
+      bookCards.forEach(card => {
+        const title = card.querySelector('.book-title').textContent.toLowerCase();
+        const author = card.querySelector('.book-author').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || author.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });

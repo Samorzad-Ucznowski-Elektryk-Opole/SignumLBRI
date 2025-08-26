@@ -1,0 +1,20 @@
+extends layout
+
+//- 🚀 SignumLBRI Enhanced - Error View
+block content
+  .error-container
+    .error-content
+      h1.error-code= error.status || 500
+      h2.error-message= error.message || 'Wystąpił błąd'
+      
+      if error.stack && process.env.NODE_ENV !== 'production'
+        .error-stack
+          h3 Stack Trace:
+          pre= error.stack
+      
+      .error-actions
+        a.btn.btn-primary(href="/enhanced") Powrót do strony głównej
+        if error.status === 404
+          a.btn.btn-secondary(href="/enhanced/books") Przeglądaj książki
+        else
+          a.btn.btn-secondary(href="javascript:history.back()") Wstecz

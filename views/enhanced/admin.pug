@@ -1,0 +1,67 @@
+extends layout
+
+//- 🚀 SignumLBRI Enhanced - Admin View
+block content
+  .admin-container
+    .admin-header
+      h1.page-title ⚙️ Panel Administratora
+      p.admin-description Zarządzaj systemem SignumLBRI Enhanced
+    
+    .admin-stats.row.mb-4
+      .col-md-3
+        .stat-card.glassmorphism
+          .stat-icon
+            i.fas.fa-heartbeat
+          .stat-content
+            .stat-number= data.stats.systemHealth === 'good' ? 'Dobry' : 'Błąd'
+            .stat-label Stan systemu
+      
+      .col-md-3
+        .stat-card.glassmorphism
+          .stat-icon
+            i.fas.fa-clock
+          .stat-content
+            .stat-number= Math.floor(data.stats.uptime / 3600) + 'h'
+            .stat-label Czas pracy
+      
+      .col-md-3
+        .stat-card.glassmorphism
+          .stat-icon
+            i.fas.fa-memory
+          .stat-content
+            .stat-number= Math.floor(data.stats.memoryUsage.heapUsed / 1024 / 1024) + 'MB'
+            .stat-label Pamięć
+      
+      .col-md-3
+        .stat-card.glassmorphism
+          .stat-icon
+            i.fas.fa-code-branch
+          .stat-content
+            .stat-number= data.stats.nodeVersion
+            .stat-label Node.js
+    
+    .admin-actions
+      .row
+        .col-md-4
+          .action-card.glassmorphism
+            .action-header
+              h3 📚 Książki
+            .action-content
+              p Zarządzaj książkami w systemie
+              a.btn.btn-primary(href="/enhanced/books") Przejdź do książek
+        
+        .col-md-4
+          .action-card.glassmorphism
+            .action-header
+              h3 👥 Użytkownicy
+            .action-content
+              p Zarządzaj użytkownikami systemu
+              a.btn.btn-primary(href="#") Zarządzaj użytkownikami
+        
+        .col-md-4
+          .action-card.glassmorphism
+            .action-header
+              h3 🏫 Szkoły
+            .action-content
+              p Zarządzaj szkołami w systemie
+              a.btn.btn-primary(href="#") Zarządzaj szkołami

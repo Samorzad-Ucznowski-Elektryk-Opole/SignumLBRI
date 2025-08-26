@@ -1,5 +1,6 @@
 extends layout
 
+//- 🚀 SignumLBRI Enhanced - Dashboard View
 block content
   .dashboard-container
     
@@ -8,10 +9,22 @@ block content
       .hero-content
         .hero-text
           h1.hero-title
-            span.title-main= lang === 'pl' ? 'Witaj w SignumLBRI Enhanced' : lang === 'uk' ? 'Ласкаво просимо до SignumLBRI Enhanced' : 'Welcome to SignumLBRI Enhanced'
+            if lang === 'pl'
+              span.title-main Witaj w SignumLBRI Enhanced
+            else if lang === 'uk'
+              span.title-main Ласкаво просимо до SignumLBRI Enhanced
+            else
+              span.title-main Welcome to SignumLBRI Enhanced
             if user
               span.title-user , #{user.profile && user.profile.name ? user.profile.name : user.email.split('@')[0]}!
-          p.hero-description= lang === 'pl' ? 'Nowoczesny system zarządzania książkami szkolnymi z zaawansowanymi funkcjami i pięknym interfejsem użytkownika.' : lang === 'uk' ? 'Сучасна система управління шкільними книгами з розширеними функціями та гарним користувацьким інтерфейсом.' : 'Modern school book management system with advanced features and beautiful user interface.'
+          
+          p.hero-description 
+            if lang === 'pl'
+              | Nowoczesny system zarządzania książkami szkolnymi z zaawansowanymi funkcjami i pięknym interfejsem użytkownika.
+            else if lang === 'uk'
+              | Сучасна система управління шкільними книгами з розширеними функціями та гарним користувацьким інтерфейсом.
+            else
+              | Modern school book management system with advanced features and beautiful user interface.
         
         .hero-stats
           .stat-card
@@ -19,46 +32,273 @@ block content
               i.fas.fa-book
             .stat-content
               .stat-number #{data.stats.totalBooks}
-              .stat-label= lang === 'pl' ? 'Książek' : lang === 'uk' ? 'Книг' : 'Books'
+              .stat-label 
+                if lang === 'pl'
+                  | Książek
+                else if lang === 'uk'
+                  | Книг
+                else
+                  | Books
           
           .stat-card
             .stat-icon
               i.fas.fa-users
             .stat-content
               .stat-number #{data.stats.totalUsers}
-              .stat-label= lang === 'pl' ? 'Użytkowników' : lang === 'uk' ? 'Користувачів' : 'Users'
+              .stat-label
+                if lang === 'pl'
+                  | Użytkowników
+                else if lang === 'uk'
+                  | Користувачів
+                else
+                  | Users
           
           .stat-card
             .stat-icon
               i.fas.fa-school
             .stat-content
               .stat-number #{data.stats.totalSchools}
-              .stat-label= lang === 'pl' ? 'Szkół' : lang === 'uk' ? 'Шкіл' : 'Schools'
+              .stat-label
+                if lang === 'pl'
+                  | Szkół
+                else if lang === 'uk'
+                  | Шкіл
+                else
+                  | Schools
           
           .stat-card
             .stat-icon
               i.fas.fa-chart-line
             .stat-content
               .stat-number #{data.stats.conversionRate}%
-              .stat-label= lang === 'pl' ? 'Aktywność' : lang === 'uk' ? 'Активність' : 'Activity'
+              .stat-label
+                if lang === 'pl'
+                  | Aktywność
+                else if lang === 'uk'
+                  | Активність
+                else
+                  | Activity
         
         .hero-actions
           if user
             a.btn.btn-primary.btn-lg(href="/enhanced/library")
               i.fas.fa-books
-              = ' ' + (lang === 'pl' ? 'Przeglądaj bibliotekę' : lang === 'uk' ? 'Переглянути бібліотеку' : 'Browse Library')
+              if lang === 'pl'
+                | &nbsp;Przeglądaj bibliotekę
+              else if lang === 'uk'
+                | &nbsp;Переглянути бібліотеку
+              else
+                | &nbsp;Browse Library
             
-            a.btn.btn-outline-primary.btn-lg(href="/enhanced/books/add")
+            a.btn.btn-outline-primary.btn-lg(href="/enhanced/books")
               i.fas.fa-plus
-              = ' ' + (lang === 'pl' ? 'Dodaj książkę' : lang === 'uk' ? 'Додати книгу' : 'Add Book')
+              if lang === 'pl'
+                | &nbsp;Przeglądaj książki
+              else if lang === 'uk'
+                | &nbsp;Переглянути книги
+              else
+                | &nbsp;Browse Books
           else
-            a.btn.btn-primary.btn-lg(href="/enhanced/auth/register")
+            a.btn.btn-primary.btn-lg(href="/enhanced/library")
               i.fas.fa-user-plus
-              = ' ' + (lang === 'pl' ? 'Rozpocznij teraz' : lang === 'uk' ? 'Почніть зараз' : 'Get Started')
+              if lang === 'pl'
+                | &nbsp;Przeglądaj książki
+              else if lang === 'uk'
+                | &nbsp;Переглянути книги
+              else
+                | &nbsp;Browse Books
             
             a.btn.btn-outline-primary.btn-lg(href="/enhanced/library")
               i.fas.fa-eye
-              = ' ' + (lang === 'pl' ? 'Przeglądaj książki' : lang === 'uk' ? 'Переглянути книги' : 'Browse Books')
+              if lang === 'pl'
+                | &nbsp;Zobacz więcej
+              else if lang === 'uk'
+                | &nbsp;Дивитися більше
+              else
+                | &nbsp;See More
+    
+    //- Dashboard Content Grid
+    .dashboard-content
+      .row
+        
+        //- Main Content Column
+        .col-lg-8.mb-4
+          
+          //- Quick Actions Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-bolt
+                span 
+                  if lang === 'pl'
+                    | Szybkie akcje
+                  else if lang === 'uk'
+                    | Швидкі дії
+                  else
+                    | Quick Actions
+            .card-body
+              .quick-actions-grid
+                a.quick-action(href="/enhanced/library")
+                  .action-icon
+                    i.fas.fa-books
+                  .action-text
+                    if lang === 'pl'
+                      | Biblioteka
+                    else if lang === 'uk'
+                      | Бібліотека
+                    else
+                      | Library
+                
+                a.quick-action(href="/enhanced/books")
+                  .action-icon
+                    i.fas.fa-search
+                  .action-text
+                    if lang === 'pl'
+                      | Książki
+                    else if lang === 'uk'
+                      | Книги
+                    else
+                      | Books
+          
+          //- Recent Books Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-clock
+                span
+                  if lang === 'pl'
+                    | Najnowsze książki
+                  else if lang === 'uk'
+                    | Найновіші книги
+                  else
+                    | Recent Books
+              .card-actions
+                a.btn.btn-sm.btn-outline-primary(href="/enhanced/library")
+                  if lang === 'pl'
+                    | Zobacz wszystkie
+                  else if lang === 'uk'
+                    | Переглянути всі
+                  else
+                    | View All
+            .card-body
+              if data.recentBooks && data.recentBooks.length > 0
+                .books-grid
+                  each book in data.recentBooks
+                    .book-item
+                      .book-cover
+                        if book.cover
+                          img(src=book.cover alt=book.title)
+                        else
+                          .book-placeholder
+                            i.fas.fa-book
+                      .book-info
+                        h6.book-title= book.title
+                        p.book-author= book.author
+                        .book-meta
+                          span.book-category
+                            i.fas.fa-tag
+                            = book.category
+                          span.book-price
+                            i.fas.fa-money-bill
+                            if book.price
+                              = book.price + ' zł'
+                            else
+                              if lang === 'pl'
+                                | Brak ceny
+                              else if lang === 'uk'
+                                | Немає ціни
+                              else
+                                | No price
+                      .book-actions
+                        a.btn.btn-sm.btn-primary(href="/enhanced/books")
+                          if lang === 'pl'
+                            | Szczegóły
+                          else if lang === 'uk'
+                            | Деталі
+                          else
+                            | Details
+              else
+                .empty-state
+                  i.fas.fa-book-open
+                  p
+                    if lang === 'pl'
+                      | Brak najnowszych książek
+                    else if lang === 'uk'
+                      | Немає нових книг
+                    else
+                      | No recent books
+        
+        //- Sidebar Column
+        .col-lg-4
+          
+          //- Welcome Message Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-body.text-center
+              .welcome-section
+                .welcome-icon
+                  i.fas.fa-graduation-cap
+                .welcome-info
+                  h5.welcome-title
+                    if lang === 'pl'
+                      | Witaj w systemie!
+                    else if lang === 'uk'
+                      | Ласкаво просимо до систему!
+                    else
+                      | Welcome to the system!
+                  p.welcome-description
+                    if lang === 'pl'
+                      | Zarządzaj książkami szkolnymi w prosty i efektywny sposób.
+                    else if lang === 'uk'
+                      | Керуйте шкільними книгами простим і ефективним способом.
+                    else
+                      | Manage school books in a simple and efficient way.
+                .welcome-actions.mt-3
+                  a.btn.btn-primary.btn-sm(href="/enhanced/library")
+                    if lang === 'pl'
+                      | Rozpocznij przeglądanie
+                    else if lang === 'uk'
+                      | Почати перегляд
+                    else
+                      | Start browsing
+          
+          //- System Info Card
+          .card.dashboard-card.glassmorphism
+            .card-header
+              .card-title
+                i.fas.fa-info-circle
+                span
+                  if lang === 'pl'
+                    | Informacje o systemie
+                  else if lang === 'uk'
+                    | Інформація про систему
+                  else
+                    | System Information
+            .card-body
+              .system-info
+                .info-item
+                  .info-label
+                    if lang === 'pl'
+                      | Wersja:
+                    else if lang === 'uk'
+                      | Версія:
+                    else
+                      | Version:
+                  .info-value Enhanced 1.0
+                .info-item
+                  .info-label
+                    if lang === 'pl'
+                      | Status:
+                    else if lang === 'uk'
+                      | Статус:
+                    else
+                      | Status:
+                  .info-value.text-success
+                    if lang === 'pl'
+                      | Aktywny
+                    else if lang === 'uk'
+                      | Активний
+                    else
+                      | Active
     
     //- Dashboard Content Grid
     .dashboard-content
@@ -165,7 +405,7 @@ block content
                       span.count-number= category.count
                       span.count-label= lang === 'pl' ? 'książek' : lang === 'uk' ? 'книг' : 'books'
                     .category-bar
-                      .bar-fill(style=`width: ${(category.count / (data.popularCategories[0]?.count || 1)) * 100}%`)
+                      .bar-fill(style="width: " + ((category.count / (data.popularCategories[0] && data.popularCategories[0].count ? data.popularCategories[0].count : 1)) * 100) + "%")
         
         //- Sidebar Column
         .col-lg-4

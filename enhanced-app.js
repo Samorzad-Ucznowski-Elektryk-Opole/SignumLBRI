@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 // Enhanced Application Setup
 const app = express();
 const PORT = process.env.ENHANCED_PORT || 4000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/signumlbri';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://mongodb:27017/signumlbri';
 
 console.log('🚀 Initializing SignumLBRI Enhanced Application...');
 
@@ -72,10 +72,7 @@ const School = mongoose.model('School', SchoolSchema);
 // Database Connection
 async function connectDatabase() {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(MONGODB_URI);
     console.log('✅ Connected to MongoDB successfully');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
@@ -229,7 +226,7 @@ app.get('/enhanced/library', async (req, res) => {
       popularBooks: await getPopularBooks(6)
     };
     
-    res.render('library/dashboard', {
+    res.render('library', {
       title: getLocalizedText('library.title', req.language),
       data: libraryData,
       user: req.user,
@@ -255,7 +252,7 @@ app.get('/enhanced/books', async (req, res) => {
       categories: await getCategories()
     };
     
-    res.render('books/list', {
+    res.render('books', {
       title: getLocalizedText('books.title', req.language),
       data: booksData,
       user: req.user,
@@ -283,7 +280,7 @@ app.get('/enhanced/admin', (req, res) => {
     }
   };
   
-  res.render('admin/dashboard', {
+  res.render('admin', {
     title: getLocalizedText('admin.title', req.language),
     data: adminData,
     user: req.user,

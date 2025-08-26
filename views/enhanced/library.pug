@@ -1,0 +1,88 @@
+extends layout
+
+//- 🚀 SignumLBRI Enhanced - Library View  
+block content
+  .library-container
+    .library-header
+      h1.page-title 🏛️ Biblioteka Szkolna
+      p.library-description Zarządzaj zasobami bibliotecznymi i wypożyczeniami
+    
+    .library-stats
+      .stat-card
+        .stat-icon 📚
+        .stat-info
+          h3.stat-number= stats.totalBooks || 0
+          p.stat-label Wszystkie książki
+      
+      .stat-card
+        .stat-icon 📖
+        .stat-info  
+          h3.stat-number= stats.availableBooks || 0
+          p.stat-label Dostępne
+      
+      .stat-card
+        .stat-icon 👥
+        .stat-info
+          h3.stat-number= stats.activeUsers || 0
+          p.stat-label Aktywni użytkownicy
+      
+      .stat-card
+        .stat-icon 📊
+        .stat-info
+          h3.stat-number= stats.totalViews || 0
+          p.stat-label Wyświetlenia
+    
+    .library-sections
+      .library-section
+        h2 📚 Najnowsze Książki
+        .books-list
+          if recentBooks && recentBooks.length > 0
+            each book in recentBooks
+              .book-item
+                .book-info
+                  h4= book.title
+                  p= book.author
+                  span.book-category= book.category
+                .book-actions
+                  a.btn.btn-sm.btn-primary(href=`/enhanced/books/${book._id}`) Szczegóły
+          else
+            p.empty-message Brak najnowszych książek
+      
+      .library-section
+        h2 🔥 Najpopularniejsze
+        .books-list
+          if popularBooks && popularBooks.length > 0
+            each book in popularBooks
+              .book-item
+                .book-info
+                  h4= book.title
+                  p= book.author
+                  span.book-views #{book.views} wyświetleń
+                .book-actions
+                  a.btn.btn-sm.btn-primary(href=`/enhanced/books/${book._id}`) Szczegóły
+          else
+            p.empty-message Brak popularnych książek
+      
+      .library-section
+        h2 👥 Aktywność Użytkowników
+        .users-activity
+          if activeUsers && activeUsers.length > 0
+            each user in activeUsers
+              .user-item
+                .user-avatar
+                  if user.profile && user.profile.avatar
+                    img(src=user.profile.avatar alt=user.profile.name)
+                  else
+                    .avatar-placeholder 👤
+                .user-info
+                  h4= user.profile.name + ' ' + user.profile.surname
+                  p= user.email
+                  span.user-role= user.role
+          else
+            p.empty-message Brak aktywnych użytkowników
+    
+    .library-actions
+      .action-buttons
+        a.btn.btn-primary(href="/enhanced/books") 📚 Wszystkie książki
+        a.btn.btn-success(href="/enhanced/books/add") ➕ Dodaj książkę
+        a.btn.btn-info(href="/enhanced/admin") ⚙️ Panel admin

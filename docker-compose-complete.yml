@@ -9,6 +9,8 @@ services:
     ports:
       - "27017:27017"
     environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: signumlbri2024
       MONGO_INITDB_DATABASE: signumlbri
     volumes:
       - mongodb_data:/data/db
@@ -33,7 +35,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
-      - MONGODB_URI=mongodb://mongodb:27017/signumlbri
+      - MONGODB_URI=mongodb://admin:signumlbri2024@mongodb:27017/signumlbri?authSource=admin
       - USE_MEMORY_DB=false
       - SESSION_SECRET=enhanced-secret-key-production-change-this
       - DEFAULT_LANGUAGE=pl
