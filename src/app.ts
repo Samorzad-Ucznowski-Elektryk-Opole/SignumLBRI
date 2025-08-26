@@ -42,6 +42,9 @@ import * as publicUserController from "./controllers/publicUser";
 import * as shoppingCartController from "./controllers/shoppingCart";
 import * as imageController from "./controllers/image";
 
+// Enhanced controller for modern UI
+import * as enhancedController from "./controllers/enhanced";
+
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
 import { languageMiddleware, changeLanguage } from "./controllers/language";
@@ -197,6 +200,12 @@ app.use((req, res, next) => {
 app.use(
   express.static(path.join(__dirname, "public"), { maxAge: 31557600000 }),
 );
+
+// Enhanced static files - modern CSS and JS
+app.use(
+  "/enhanced", 
+  express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
+);
 app.use(performanceController.registerPerformance);
 /**
  * ========================================
@@ -241,6 +250,21 @@ app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
+
+/**
+ * ========================================
+ * ENHANCED UI ROUTES - Modern Interface
+ * Nowoczesny interfejs z glassmorphism design
+ * ========================================
+ */
+// Enhanced dashboard and modern UI
+app.get("/enhanced", homeController.enhanced);
+app.get("/enhanced/library", enhancedController.getEnhancedLibrary);
+app.get("/enhanced/books", enhancedController.getEnhancedBooks);
+
+// Enhanced API endpoints
+app.get("/enhanced/api/books", enhancedController.getEnhancedBooksAPI);
+app.post("/enhanced/api/language", enhancedController.postEnhancedLanguage);
 
 /**
  * API examples routes.
@@ -558,6 +582,16 @@ app.post("/book-fairs/:id/register", passportConfig.isAuthenticated, adminContro
 // Book Dictionary API
 app.get("/admin/book-dictionary/api/pending-count", passportConfig.isAuthenticated, passportConfig.isAdmin, bookDictionaryController.getPendingCount);
 app.get("/api/book-dictionary/search", bookDictionaryController.apiSearchDictionary);
+
+// Health check endpoint for Docker
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: "healthy", 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: version
+  });
+});
 
 app.use("/admin", adminRoutes);
 app.use("/public", publicRoutes);

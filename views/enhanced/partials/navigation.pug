@@ -1,0 +1,234 @@
+//- Enhanced Navigation Component
+nav#enhanced-navbar.enhanced-navbar.glassmorphism
+  .container-fluid
+    //- Brand
+    .navbar-brand-section
+      a.navbar-brand.enhanced-brand(href="/enhanced")
+        .brand-icon
+          i.fas.fa-book-open
+        .brand-text
+          .brand-main SignumLBRI
+          .brand-sub Enhanced
+    
+    //- Search Bar
+    .navbar-search-section.d-none.d-lg-block
+      form.search-form(action="/enhanced/search" method="GET")
+        .search-input-group
+          input.search-input(
+            type="text"
+            name="q"
+            placeholder=lang === 'pl' ? 'Szukaj książek, autorów...' : lang === 'uk' ? 'Шукати книги, авторів...' : 'Search books, authors...'
+            value=searchQuery || ''
+            autocomplete="off"
+          )
+          button.search-btn(type="submit")
+            i.fas.fa-search
+        .search-suggestions#search-suggestions.d-none
+    
+    //- Navigation Links & Actions
+    .navbar-actions-section
+      //- Main Navigation
+      ul.navbar-nav.main-nav.d-none.d-lg-flex
+        li.nav-item
+          a.nav-link(href="/enhanced" class=page === 'dashboard' ? 'active' : '')
+            i.fas.fa-home
+            span= lang === 'pl' ? 'Panel' : lang === 'uk' ? 'Панель' : 'Dashboard'
+        
+        li.nav-item
+          a.nav-link(href="/enhanced/library" class=page && page.startsWith('library') ? 'active' : '')
+            i.fas.fa-books
+            span= lang === 'pl' ? 'Biblioteka' : lang === 'uk' ? 'Бібліотека' : 'Library'
+        
+        li.nav-item
+          a.nav-link(href="/enhanced/books" class=page && page.startsWith('book') ? 'active' : '')
+            i.fas.fa-book
+            span= lang === 'pl' ? 'Książki' : lang === 'uk' ? 'Книги' : 'Books'
+        
+        if user && (user.role === 'admin' || user.role === 'staff')
+          li.nav-item
+            a.nav-link(href="/enhanced/analytics" class=page === 'analytics' ? 'active' : '')
+              i.fas.fa-chart-line
+              span= lang === 'pl' ? 'Analityka' : lang === 'uk' ? 'Аналітика' : 'Analytics'
+        
+        if user && user.role === 'admin'
+          li.nav-item
+            a.nav-link(href="/enhanced/admin" class=page === 'admin' ? 'active' : '')
+              i.fas.fa-cog
+              span= lang === 'pl' ? 'Admin' : lang === 'uk' ? 'Адмін' : 'Admin'
+      
+      //- Action Buttons
+      .navbar-actions
+        //- Theme Toggle
+        .action-item.theme-toggle
+          button.action-btn.theme-btn(data-bs-toggle="tooltip" title=lang === 'pl' ? 'Zmień motyw' : lang === 'uk' ? 'Змінити тему' : 'Toggle theme')
+            i.fas.fa-moon
+        
+        //- Language Toggle
+        .action-item.language-toggle
+          .dropdown
+            button.action-btn.dropdown-toggle(data-bs-toggle="dropdown")
+              i.fas.fa-globe
+              span.current-lang= lang.toUpperCase()
+            ul.dropdown-menu.language-menu
+              li
+                a.dropdown-item.lang-option(href="#" data-lang="pl")
+                  i.flag.flag-pl
+                  span Polski
+              li
+                a.dropdown-item.lang-option(href="#" data-lang="en")
+                  i.flag.flag-gb
+                  span English
+              li
+                a.dropdown-item.lang-option(href="#" data-lang="uk")
+                  i.flag.flag-ua
+                  span Українська
+        
+        //- Notifications
+        if user
+          .action-item.notifications
+            .dropdown
+              button.action-btn.dropdown-toggle(data-bs-toggle="dropdown")
+                i.fas.fa-bell
+                span.notification-badge.d-none 0
+              ul.dropdown-menu.notifications-menu
+                li.dropdown-header
+                  span= lang === 'pl' ? 'Powiadomienia' : lang === 'uk' ? 'Сповіщення' : 'Notifications'
+                li.dropdown-divider
+                li.no-notifications.text-center.py-3
+                  i.fas.fa-bell-slash.text-muted
+                  div.text-muted= lang === 'pl' ? 'Brak powiadomień' : lang === 'uk' ? 'Немає сповіщень' : 'No notifications'
+        
+        //- User Menu
+        if user
+          .action-item.user-menu
+            .dropdown
+              button.action-btn.user-btn.dropdown-toggle(data-bs-toggle="dropdown")
+                .user-avatar
+                  if user.profile && user.profile.avatar
+                    img(src=user.profile.avatar alt=user.profile.name || user.email)
+                  else
+                    i.fas.fa-user
+                .user-info.d-none.d-md-block
+                  .user-name= user.profile && user.profile.name ? user.profile.name : user.email.split('@')[0]
+                  .user-role= user.role === 'admin' ? (lang === 'pl' ? 'Administrator' : lang === 'uk' ? 'Адміністратор' : 'Administrator') : (lang === 'pl' ? 'Użytkownik' : lang === 'uk' ? 'Користувач' : 'User')
+              
+              ul.dropdown-menu.user-dropdown-menu
+                li
+                  a.dropdown-item(href="/enhanced/profile")
+                    i.fas.fa-user
+                    span= lang === 'pl' ? 'Profil' : lang === 'uk' ? 'Профіль' : 'Profile'
+                
+                li
+                  a.dropdown-item(href="/enhanced/library/favorites")
+                    i.fas.fa-heart
+                    span= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorites'
+                
+                li
+                  a.dropdown-item(href="/enhanced/settings")
+                    i.fas.fa-cog
+                    span= lang === 'pl' ? 'Ustawienia' : lang === 'uk' ? 'Налаштування' : 'Settings'
+                
+                li.dropdown-divider
+                
+                li
+                  a.dropdown-item.logout-btn(href="/enhanced/auth/logout")
+                    i.fas.fa-sign-out-alt
+                    span= lang === 'pl' ? 'Wyloguj' : lang === 'uk' ? 'Вийти' : 'Logout'
+        else
+          .action-item.auth-buttons
+            a.btn.btn-outline-primary.me-2(href="/enhanced/auth/login")= lang === 'pl' ? 'Zaloguj' : lang === 'uk' ? 'Увійти' : 'Login'
+            a.btn.btn-primary(href="/enhanced/auth/register")= lang === 'pl' ? 'Zarejestruj' : lang === 'uk' ? 'Зареєструватися' : 'Register'
+        
+        //- Mobile Menu Toggle
+        .action-item.mobile-toggle.d-lg-none
+          button.action-btn.mobile-menu-btn
+            i.fas.fa-bars
+
+//- Mobile Navigation Menu
+.mobile-nav-overlay#mobile-nav-overlay.d-lg-none
+  .mobile-nav-content
+    .mobile-nav-header
+      .mobile-brand
+        i.fas.fa-book-open
+        span SignumLBRI Enhanced
+      button.mobile-close-btn
+        i.fas.fa-times
+    
+    .mobile-nav-body
+      //- Mobile Search
+      .mobile-search.mb-4
+        form(action="/enhanced/search" method="GET")
+          .search-input-group
+            input.form-control(
+              type="text"
+              name="q"
+              placeholder=lang === 'pl' ? 'Szukaj...' : lang === 'uk' ? 'Шукати...' : 'Search...'
+            )
+            button.btn.btn-primary(type="submit")
+              i.fas.fa-search
+      
+      //- Mobile Menu Items
+      ul.mobile-nav-list
+        li.mobile-nav-item
+          a.mobile-nav-link(href="/enhanced")
+            i.fas.fa-home
+            span= lang === 'pl' ? 'Panel' : lang === 'uk' ? 'Панель' : 'Dashboard'
+        
+        li.mobile-nav-item
+          a.mobile-nav-link(href="/enhanced/library")
+            i.fas.fa-books
+            span= lang === 'pl' ? 'Biblioteka' : lang === 'uk' ? 'Бібліотека' : 'Library'
+        
+        li.mobile-nav-item
+          a.mobile-nav-link(href="/enhanced/books")
+            i.fas.fa-book
+            span= lang === 'pl' ? 'Książki' : lang === 'uk' ? 'Книги' : 'Books'
+        
+        if user && (user.role === 'admin' || user.role === 'staff')
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/analytics")
+              i.fas.fa-chart-line
+              span= lang === 'pl' ? 'Analityka' : lang === 'uk' ? 'Аналітика' : 'Analytics'
+        
+        if user && user.role === 'admin'
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/admin")
+              i.fas.fa-cog
+              span Admin
+        
+        if user
+          li.mobile-nav-divider
+          
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/profile")
+              i.fas.fa-user
+              span= lang === 'pl' ? 'Profil' : lang === 'uk' ? 'Профіль' : 'Profile'
+          
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/library/favorites")
+              i.fas.fa-heart
+              span= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorites'
+          
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/settings")
+              i.fas.fa-cog
+              span= lang === 'pl' ? 'Ustawienia' : lang === 'uk' ? 'Налаштування' : 'Settings'
+          
+          li.mobile-nav-divider
+          
+          li.mobile-nav-item
+            a.mobile-nav-link.logout-btn(href="/enhanced/auth/logout")
+              i.fas.fa-sign-out-alt
+              span= lang === 'pl' ? 'Wyloguj' : lang === 'uk' ? 'Вийти' : 'Logout'
+        else
+          li.mobile-nav-divider
+          
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/auth/login")
+              i.fas.fa-sign-in-alt
+              span= lang === 'pl' ? 'Zaloguj' : lang === 'uk' ? 'Увійти' : 'Login'
+          
+          li.mobile-nav-item
+            a.mobile-nav-link(href="/enhanced/auth/register")
+              i.fas.fa-user-plus
+              span= lang === 'pl' ? 'Zarejestruj' : lang === 'uk' ? 'Зареєструватися' : 'Register'

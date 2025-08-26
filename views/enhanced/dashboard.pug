@@ -1,0 +1,404 @@
+extends layout
+
+block content
+  .dashboard-container
+    
+    //- Welcome Hero Section
+    .hero-section.glassmorphism.mb-4
+      .hero-content
+        .hero-text
+          h1.hero-title
+            span.title-main= lang === 'pl' ? 'Witaj w SignumLBRI Enhanced' : lang === 'uk' ? 'Ласкаво просимо до SignumLBRI Enhanced' : 'Welcome to SignumLBRI Enhanced'
+            if user
+              span.title-user , #{user.profile && user.profile.name ? user.profile.name : user.email.split('@')[0]}!
+          p.hero-description= lang === 'pl' ? 'Nowoczesny system zarządzania książkami szkolnymi z zaawansowanymi funkcjami i pięknym interfejsem użytkownika.' : lang === 'uk' ? 'Сучасна система управління шкільними книгами з розширеними функціями та гарним користувацьким інтерфейсом.' : 'Modern school book management system with advanced features and beautiful user interface.'
+        
+        .hero-stats
+          .stat-card
+            .stat-icon
+              i.fas.fa-book
+            .stat-content
+              .stat-number #{data.stats.totalBooks}
+              .stat-label= lang === 'pl' ? 'Książek' : lang === 'uk' ? 'Книг' : 'Books'
+          
+          .stat-card
+            .stat-icon
+              i.fas.fa-users
+            .stat-content
+              .stat-number #{data.stats.totalUsers}
+              .stat-label= lang === 'pl' ? 'Użytkowników' : lang === 'uk' ? 'Користувачів' : 'Users'
+          
+          .stat-card
+            .stat-icon
+              i.fas.fa-school
+            .stat-content
+              .stat-number #{data.stats.totalSchools}
+              .stat-label= lang === 'pl' ? 'Szkół' : lang === 'uk' ? 'Шкіл' : 'Schools'
+          
+          .stat-card
+            .stat-icon
+              i.fas.fa-chart-line
+            .stat-content
+              .stat-number #{data.stats.conversionRate}%
+              .stat-label= lang === 'pl' ? 'Aktywność' : lang === 'uk' ? 'Активність' : 'Activity'
+        
+        .hero-actions
+          if user
+            a.btn.btn-primary.btn-lg(href="/enhanced/library")
+              i.fas.fa-books
+              = ' ' + (lang === 'pl' ? 'Przeglądaj bibliotekę' : lang === 'uk' ? 'Переглянути бібліотеку' : 'Browse Library')
+            
+            a.btn.btn-outline-primary.btn-lg(href="/enhanced/books/add")
+              i.fas.fa-plus
+              = ' ' + (lang === 'pl' ? 'Dodaj książkę' : lang === 'uk' ? 'Додати книгу' : 'Add Book')
+          else
+            a.btn.btn-primary.btn-lg(href="/enhanced/auth/register")
+              i.fas.fa-user-plus
+              = ' ' + (lang === 'pl' ? 'Rozpocznij teraz' : lang === 'uk' ? 'Почніть зараз' : 'Get Started')
+            
+            a.btn.btn-outline-primary.btn-lg(href="/enhanced/library")
+              i.fas.fa-eye
+              = ' ' + (lang === 'pl' ? 'Przeglądaj książki' : lang === 'uk' ? 'Переглянути книги' : 'Browse Books')
+    
+    //- Dashboard Content Grid
+    .dashboard-content
+      .row
+        
+        //- Main Content Column
+        .col-lg-8.mb-4
+          
+          //- Quick Actions Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-bolt
+                span= lang === 'pl' ? 'Szybkie akcje' : lang === 'uk' ? 'Швидкі дії' : 'Quick Actions'
+            .card-body
+              .quick-actions-grid
+                a.quick-action(href="/enhanced/library")
+                  .action-icon
+                    i.fas.fa-books
+                  .action-text= lang === 'pl' ? 'Biblioteka' : lang === 'uk' ? 'Бібліотека' : 'Library'
+                
+                a.quick-action(href="/enhanced/books/search")
+                  .action-icon
+                    i.fas.fa-search
+                  .action-text= lang === 'pl' ? 'Szukaj' : lang === 'uk' ? 'Пошук' : 'Search'
+                
+                if user
+                  a.quick-action(href="/enhanced/books/add")
+                    .action-icon
+                      i.fas.fa-plus-circle
+                    .action-text= lang === 'pl' ? 'Dodaj książkę' : lang === 'uk' ? 'Додати книгу' : 'Add Book'
+                  
+                  a.quick-action(href="/enhanced/library/favorites")
+                    .action-icon
+                      i.fas.fa-heart
+                    .action-text= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorites'
+                  
+                  if user.role === 'admin' || user.role === 'staff'
+                    a.quick-action(href="/enhanced/analytics")
+                      .action-icon
+                        i.fas.fa-chart-pie
+                      .action-text= lang === 'pl' ? 'Analityka' : lang === 'uk' ? 'Аналітика' : 'Analytics'
+                else
+                  a.quick-action(href="/enhanced/auth/login")
+                    .action-icon
+                      i.fas.fa-sign-in-alt
+                    .action-text= lang === 'pl' ? 'Zaloguj' : lang === 'uk' ? 'Увійти' : 'Login'
+                  
+                  a.quick-action(href="/enhanced/auth/register")
+                    .action-icon
+                      i.fas.fa-user-plus
+                    .action-text= lang === 'pl' ? 'Zarejestruj' : lang === 'uk' ? 'Реєстрація' : 'Register'
+          
+          //- Recent Books Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-clock
+                span= lang === 'pl' ? 'Najnowsze książki' : lang === 'uk' ? 'Найновіші книги' : 'Recent Books'
+              .card-actions
+                a.btn.btn-sm.btn-outline-primary(href="/enhanced/library")= lang === 'pl' ? 'Zobacz wszystkie' : lang === 'uk' ? 'Переглянути всі' : 'View All'
+            .card-body
+              .books-grid
+                each book in data.recentBooks || []
+                  .book-item
+                    .book-cover
+                      if book.cover
+                        img(src=book.cover alt=book.title)
+                      else
+                        .book-placeholder
+                          i.fas.fa-book
+                    .book-info
+                      h6.book-title= book.title
+                      p.book-author= book.author
+                      .book-meta
+                        span.book-category
+                          i.fas.fa-tag
+                          = book.category
+                        span.book-price
+                          i.fas.fa-money-bill
+                          = book.price ? `${book.price} zł` : lang === 'pl' ? 'Brak ceny' : lang === 'uk' ? 'Немає ціни' : 'No price'
+                    .book-actions
+                      a.btn.btn-sm.btn-primary(href=`/enhanced/library/book/${book._id}`)= lang === 'pl' ? 'Szczegóły' : lang === 'uk' ? 'Деталі' : 'Details'
+              
+              if !data.recentBooks || data.recentBooks.length === 0
+                .empty-state
+                  i.fas.fa-book-open
+                  p= lang === 'pl' ? 'Brak najnowszych książek' : lang === 'uk' ? 'Немає нових книг' : 'No recent books'
+          
+          //- Popular Categories Card
+          .card.dashboard-card.glassmorphism
+            .card-header
+              .card-title
+                i.fas.fa-fire
+                span= lang === 'pl' ? 'Popularne kategorie' : lang === 'uk' ? 'Популярні категорії' : 'Popular Categories'
+            .card-body
+              .categories-chart-container
+                canvas#categoriesChart
+              .categories-list
+                each category in data.popularCategories || []
+                  .category-item
+                    .category-name= category._id || lang === 'pl' ? 'Bez kategorii' : lang === 'uk' ? 'Без категорії' : 'Uncategorized'
+                    .category-count
+                      span.count-number= category.count
+                      span.count-label= lang === 'pl' ? 'książek' : lang === 'uk' ? 'книг' : 'books'
+                    .category-bar
+                      .bar-fill(style=`width: ${(category.count / (data.popularCategories[0]?.count || 1)) * 100}%`)
+        
+        //- Sidebar Column
+        .col-lg-4
+          
+          //- User Profile Card (if logged in)
+          if user
+            .card.dashboard-card.glassmorphism.mb-4
+              .card-body.text-center
+                .user-profile-section
+                  .user-avatar-large
+                    if user.profile && user.profile.avatar
+                      img.rounded-circle(src=user.profile.avatar alt=user.profile.name style="width: 80px; height: 80px;")
+                    else
+                      .avatar-placeholder
+                        i.fas.fa-user
+                  
+                  .user-info
+                    h5.user-name= user.profile && user.profile.name ? user.profile.name : user.email.split('@')[0]
+                    p.user-email= user.email
+                    span.badge.bg-primary.user-role= user.role === 'admin' ? (lang === 'pl' ? 'Administrator' : lang === 'uk' ? 'Адміністратор' : 'Administrator') : (lang === 'pl' ? 'Użytkownik' : lang === 'uk' ? 'Користувач' : 'User')
+                  
+                  .user-stats.row.mt-3
+                    .col-4
+                      .stat-item
+                        .stat-number #{data.userStats ? data.userStats.ownedBooks : 0}
+                        .stat-label= lang === 'pl' ? 'Książek' : lang === 'uk' ? 'Книг' : 'Books'
+                    .col-4
+                      .stat-item
+                        .stat-number #{data.userStats ? data.userStats.activeListings : 0}
+                        .stat-label= lang === 'pl' ? 'Ofert' : lang === 'uk' ? 'Пропозицій' : 'Listings'
+                    .col-4
+                      .stat-item
+                        .stat-number #{data.userStats ? data.userStats.favoriteBooks : 0}
+                        .stat-label= lang === 'pl' ? 'Ulubionych' : lang === 'uk' ? 'Улюблених' : 'Favorites'
+                  
+                  .user-actions.mt-3
+                    a.btn.btn-outline-primary.btn-sm(href="/enhanced/profile")
+                      i.fas.fa-user-edit
+                      = ' ' + (lang === 'pl' ? 'Edytuj profil' : lang === 'uk' ? 'Редагувати профіль' : 'Edit Profile')
+          
+          //- System Status Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-heartbeat
+                span= lang === 'pl' ? 'Status systemu' : lang === 'uk' ? 'Статус системи' : 'System Status'
+            .card-body
+              .status-items
+                .status-item
+                  .status-indicator.status-online
+                  .status-info
+                    .status-name= lang === 'pl' ? 'Serwer' : lang === 'uk' ? 'Сервер' : 'Server'
+                    .status-value= lang === 'pl' ? 'Online' : lang === 'uk' ? 'Онлайн' : 'Online'
+                
+                .status-item
+                  .status-indicator.status-online
+                  .status-info
+                    .status-name= lang === 'pl' ? 'Baza danych' : lang === 'uk' ? 'База даних' : 'Database'
+                    .status-value= lang === 'pl' ? 'Połączono' : lang === 'uk' ? 'З\'єднано' : 'Connected'
+                
+                .status-item
+                  .status-indicator.status-warning
+                  .status-info
+                    .status-name= lang === 'pl' ? 'Wykorzystanie' : lang === 'uk' ? 'Використання' : 'Usage'
+                    .status-value 67%
+                
+                .status-item
+                  .status-indicator.status-online
+                  .status-info
+                    .status-name= lang === 'pl' ? 'Ostatnia kopia' : lang === 'uk' ? 'Останній бекап' : 'Last Backup'
+                    .status-value= lang === 'pl' ? '2 godz. temu' : lang === 'uk' ? '2 год тому' : '2h ago'
+          
+          //- Activity Feed Card
+          .card.dashboard-card.glassmorphism.mb-4
+            .card-header
+              .card-title
+                i.fas.fa-rss
+                span= lang === 'pl' ? 'Ostatnia aktywność' : lang === 'uk' ? 'Остання активність' : 'Recent Activity'
+            .card-body
+              .activity-feed
+                each activity in data.recentActivity || []
+                  .activity-item
+                    .activity-icon
+                      i(class=activity.icon)
+                    .activity-content
+                      .activity-text= activity.text
+                      .activity-time= activity.time
+                
+                if !data.recentActivity || data.recentActivity.length === 0
+                  //- Mock activity data
+                  .activity-item
+                    .activity-icon
+                      i.fas.fa-book.text-primary
+                    .activity-content
+                      .activity-text= lang === 'pl' ? 'Dodano nową książkę "Matematyka klasa 3"' : lang === 'uk' ? 'Додано нову книгу "Математика клас 3"' : 'New book "Mathematics Grade 3" added'
+                      .activity-time= lang === 'pl' ? '5 minut temu' : lang === 'uk' ? '5 хвилин тому' : '5 minutes ago'
+                  
+                  .activity-item
+                    .activity-icon
+                      i.fas.fa-user.text-success
+                    .activity-content
+                      .activity-text= lang === 'pl' ? 'Nowy użytkownik dołączył do systemu' : lang === 'uk' ? 'Новий користувач приєднався до системи' : 'New user joined the system'
+                      .activity-time= lang === 'pl' ? '12 minut temu' : lang === 'uk' ? '12 хвилин тому' : '12 minutes ago'
+                  
+                  .activity-item
+                    .activity-icon
+                      i.fas.fa-exchange-alt.text-info
+                    .activity-content
+                      .activity-text= lang === 'pl' ? 'Sprzedano książkę "Fizyka dla gimnazjum"' : lang === 'uk' ? 'Продано книгу "Фізика для гімназії"' : 'Book "Physics for Middle School" sold'
+                      .activity-time= lang === 'pl' ? '1 godzinę temu' : lang === 'uk' ? '1 годину тому' : '1 hour ago'
+          
+          //- Quick Tips Card
+          .card.dashboard-card.glassmorphism
+            .card-header
+              .card-title
+                i.fas.fa-lightbulb
+                span= lang === 'pl' ? 'Wskazówki' : lang === 'uk' ? 'Поради' : 'Tips'
+            .card-body
+              .tips-list
+                .tip-item
+                  .tip-icon
+                    i.fas.fa-camera
+                  .tip-text= lang === 'pl' ? 'Dodaj zdjęcia książek, aby zwiększyć szanse na sprzedaż' : lang === 'uk' ? 'Додайте фото книг, щоб збільшити шанси на продаж' : 'Add book photos to increase sales chances'
+                
+                .tip-item
+                  .tip-icon
+                    i.fas.fa-tags
+                  .tip-text= lang === 'pl' ? 'Używaj odpowiednich kategorii dla lepszego wyszukiwania' : lang === 'uk' ? 'Використовуйте відповідні категорії для кращого пошуку' : 'Use appropriate categories for better search'
+                
+                .tip-item
+                  .tip-icon
+                    i.fas.fa-star
+                  .tip-text= lang === 'pl' ? 'Oznacz ulubione książki, aby szybko je znaleźć' : lang === 'uk' ? 'Позначте улюблені книги для швидкого пошуку' : 'Mark favorite books for quick access'
+
+block additional_scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize categories chart
+      initCategoriesChart();
+      
+      // Initialize dashboard animations
+      initDashboardAnimations();
+      
+      // Initialize tooltips
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach(tooltip => {
+        new bootstrap.Tooltip(tooltip);
+      });
+    });
+    
+    function initCategoriesChart() {
+      const ctx = document.getElementById('categoriesChart');
+      if (!ctx) return;
+      
+      const categories = !{JSON.stringify(data.popularCategories || [])};
+      
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: categories.map(cat => cat._id || '#{lang === "pl" ? "Bez kategorii" : lang === "uk" ? "Без категорії" : "Uncategorized"}'),
+          datasets: [{
+            data: categories.map(cat => cat.count),
+            backgroundColor: [
+              'rgba(99, 102, 241, 0.8)',
+              'rgba(16, 185, 129, 0.8)',
+              'rgba(245, 158, 11, 0.8)',
+              'rgba(239, 68, 68, 0.8)',
+              'rgba(139, 92, 246, 0.8)',
+              'rgba(6, 182, 212, 0.8)',
+              'rgba(236, 72, 153, 0.8)',
+              'rgba(34, 197, 94, 0.8)'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          animation: {
+            animateRotate: true,
+            duration: 1500
+          }
+        }
+      });
+    }
+    
+    function initDashboardAnimations() {
+      // Animate statistics counters
+      const statNumbers = document.querySelectorAll('.stat-number');
+      
+      statNumbers.forEach(element => {
+        const finalValue = parseInt(element.textContent.replace(/[^\d]/g, ''));
+        if (isNaN(finalValue)) return;
+        
+        animateCounter(element, finalValue, 2000);
+      });
+      
+      // Animate category bars
+      setTimeout(() => {
+        const categoryBars = document.querySelectorAll('.bar-fill');
+        categoryBars.forEach(bar => {
+          const width = bar.style.width;
+          bar.style.width = '0%';
+          setTimeout(() => {
+            bar.style.transition = 'width 1.5s ease-out';
+            bar.style.width = width;
+          }, 100);
+        });
+      }, 500);
+    }
+    
+    function animateCounter(element, target, duration) {
+      const start = 0;
+      const startTime = performance.now();
+      const originalText = element.textContent;
+      const suffix = originalText.replace(/[\d,]/g, '');
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (target - start) * progress);
+        
+        element.textContent = current.toLocaleString() + suffix;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }

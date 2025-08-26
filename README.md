@@ -1,169 +1,175 @@
-# 🚀 SignumLBRI 2025 Ultra Edition
+# 🚀 SignumLBRI Enhanced
 
-## 🎯 Najnowocześniejsza platforma księgarska w Polsce!
+**Nowoczesny system zarządzania książkami szkolnymi z glassmorphism UI**
 
-**Zajebista aplikacja** do handlu podręcznikami szkolnymi z ultra-nowoczesną architekturą 2025! 
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/Docker-supported-blue.svg)](https://docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-### ⚡ Porty zgodnie z wymaganiami:
-- **🌐 PORT 8080** - Główny dostęp HTTP
-- **🔒 PORT 8443** - Bezpieczny dostęp HTTPS
+## ✨ Funkcjonalności
 
----
+### 🎨 Nowoczesny UI
+- **Glassmorphism Design** - Przezroczyste, eleganckie elementy
+- **Dark/Light Mode** - Automatyczne przełączanie motywów
+- **Animacje CSS** - Płynne przejścia i efekty
+- **Mobile-First** - Pełna responsywność
 
-## 🚀 SZYBKI START (3 opcje):
+### 🌍 Wielojęzyczność
+- 🇵🇱 **Polski** - Kompletne tłumaczenie
+- 🇺🇸 **English** - Full translation
+- 🇺🇦 **Українська** - Повний переклад
 
-### � **Super łatwy sposób:**
-```cmd
-start.bat                   # Interaktywne menu!
+### 📊 Zaawansowane Funkcje
+- **Real-time Dashboard** - Statystyki i wykresy na żywo
+- **Zarządzanie Książkami** - Dodawanie, edycja, wyszukiwanie
+- **System Szkół** - Zarządzanie placówkami edukacyjnymi
+- **Użytkownicy** - Role, uprawnienia, profile
+- **Analytics** - Szczegółowe analizy i raporty
+- **API** - RESTful endpoints
+- **PWA Support** - Instalacja jak aplikacja mobilna
+
+## 🚀 Szybki Start
+
+### Opcja 1: Automatyczna Instalacja (Zalecana)
+```bash
+# 1. Zainstaluj Node.js z https://nodejs.org/
+# 2. Uruchom skrypt setup:
+setup-enhanced-new.bat
 ```
 
-### �🎮 **Opcja A - Dla programistów:**
-```cmd
-scripts\1-install-nodejs.bat    # Zainstaluj Node.js
-scripts\2-install-dependencies.bat  # Zainstaluj pakiety
-scripts\3-dev-start.bat        # Uruchom aplikację
+### Opcja 2: Docker (Containerized)
+```bash
+# Wymagana instalacja Docker Desktop
+docker-quick-start.bat
 ```
 
-### 🐳 **Opcja B - Tylko Docker:**
-```cmd
-scripts\DOCKER-ONLY-START.bat  # Wszystko w kontenerach!
+### Opcja 3: Ręczna Instalacja
+```bash
+npm install
+node enhanced-app.js
 ```
 
-### 📖 **Opcja C - Quick start:**
-```cmd
-scripts\QUICK-START.bat     # Bazy danych + instrukcje
+## 🌐 Dostęp
+
+Po uruchomieniu aplikacja będzie dostępna pod adresem:
+- **Enhanced UI**: http://localhost:4000/enhanced
+- **Health Check**: http://localhost:4000/health
+
+## 📁 Struktura Projektu
+
+```
+SignumLBRI/
+├── enhanced-app.js                 # 🎯 Główna aplikacja Enhanced
+├── views/enhanced/                 # 🎨 Szablony stron
+├── public/css/enhanced/           # 💅 Style CSS
+├── public/js/enhanced/            # ⚡ JavaScript Enhanced
+├── Dockerfile.enhanced            # 🐳 Docker build
+├── docker-compose-minimal.yml     # 🐳 Docker compose
+├── setup-enhanced-new.bat         # 🔧 Automatyczna instalacja
+├── docker-quick-start.bat         # 🐳 Docker start
+├── enhanced-preview.html          # 👀 Podgląd bez serwera
+├── INSTRUKCJA-ENHANCED.md         # 📖 Pełna dokumentacja
+└── QUICK-START.md                 # ⚡ Szybki start
 ```
 
----
+## 🔧 Konfiguracja
 
-## 🌟 Co nowego w 2025 Ultra:
+### Zmienne Środowiskowe
+```env
+# Aplikacja
+NODE_ENV=production
+PORT=4000
+USE_MEMORY_DB=true
 
-### 🏗️ Ultra-nowoczesna architektura:
-- **Node.js 20** (najnowsza LTS)
-- **MongoDB 7** + **Redis 7** + **Elasticsearch 8**
-- **Docker Compose** z pełnym stackiem
-- **Nginx** z SSL i load balancing
+# UI
+DEFAULT_THEME=light
+DEFAULT_LANGUAGE=pl
+ENABLE_THEME_SWITCHING=true
 
-### 🔒 Bezpieczeństwo na najwyższym poziomie:
-- **Helmet.js** - zaawansowane zabezpieczenia
-- **Rate limiting** - ochrona przed atakami
-- **SSL/HTTPS** - szyfrowane połączenia
-- **JWT + Sessions** - podwójne uwierzytelnianie
+# Funkcjonalności
+ENABLE_ANALYTICS=true
+ENABLE_NOTIFICATIONS=true
+```
 
-### ⚡ Performance WOW:
-- **Multi-tier caching** (Local + Redis + CDN-ready)
-- **WebSocket support** - real-time updates
-- **Kompresja Gzip/Brotli**
-- **Connection pooling**
+## 🐳 Docker
 
-### 🎮 Real-time features:
-- Live book updates
-- Instant notifications
-- WebSocket chat
-- Real-time analytics
+### Szybkie Uruchomienie
+```bash
+# Build i start jedną komendą
+docker-quick-start.bat
+```
 
----
+### Ręczne Docker
+```bash
+# Build
+docker build -f Dockerfile.enhanced -t signumlbri-enhanced .
 
-## 🌐 Po uruchomieniu dostępne na:
+# Run
+docker run -p 4000:4000 signumlbri-enhanced
+```
 
-| Serwis | URL | Opis |
-|--------|-----|------|
-| 🎯 **Główna aplikacja** | http://localhost:8080 | **TWÓJ PORT 8080!** |
-| 🔒 **Bezpieczna aplikacja** | https://localhost:8443 | **TWÓJ PORT 8443!** |
-| 📧 Email testing | http://localhost:8025 | MailHog UI |
-| 🗄️ Database admin | http://localhost:8081 | Adminer |
-| 📊 Redis admin | http://localhost:8082 | Redis Commander |
+## 📖 Dokumentacja
 
----
+- **[INSTRUKCJA-ENHANCED.md](INSTRUKCJA-ENHANCED.md)** - Pełna dokumentacja
+- **[QUICK-START.md](QUICK-START.md)** - Szybki przewodnik
+- **[enhanced-preview.html](enhanced-preview.html)** - Podgląd UI
 
-## 📋 Wymagania:
+## 🛠️ Rozwój
 
-### Minimalne:
-- **Windows 10/11**
-- **Docker Desktop** (pobierze się automatycznie)
-- **4GB RAM**
+### Uruchamianie w Trybie Development
+```bash
+npm install
+npm run dev  # z nodemon
+```
 
-### Opcjonalnie dla programistów:
-- **Node.js 20.x** (zainstaluje się automatycznie)
-- **VS Code** z rozszerzeniami TypeScript
+### Build CSS
+```bash
+npm run build:css
+```
 
----
+### Testy
+```bash
+npm test
+```
 
-## 🛠️ Stack technologiczny:
+## 🔒 Bezpieczeństwo
 
-### Backend:
-- **Node.js 20** + **TypeScript 5**
-- **Express.js** z middleware security
-- **MongoDB 7** z connection pooling
-- **Redis 7** dla cache i sesji
-- **Elasticsearch 8** dla wyszukiwania
+- **JWT Authentication** - Bezpieczne tokeny
+- **Session Management** - Zarządzanie sesjami
+- **Input Validation** - Walidacja danych
+- **Rate Limiting** - Ograniczenia żądań
+- **CORS Protection** - Ochrona CORS
+- **Helmet.js** - Security headers
 
-### Frontend:
-- **Pug** templating z modern syntax
-- **Bootstrap 5** + custom CSS
-- **Socket.IO** dla real-time
-- **Progressive Web App** ready
+## 🤝 Wkład w Projekt
 
-### DevOps:
-- **Docker Compose** multi-service
-- **Nginx Alpine** reverse proxy
-- **SSL certificates** auto-generation
-- **Health checks** i monitoring
+1. Fork repository
+2. Utwórz branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Otwórz Pull Request
 
----
+## 📄 Licencja
 
-## 📚 Dokumentacja:
+Ten projekt jest licencjonowany na warunkach MIT License - zobacz plik [LICENSE](LICENSE) dla szczegółów.
 
-| Plik | Opis |
-|------|------|
-| [`docs/START-HERE.md`](docs/START-HERE.md) | 🚀 **ZACZNIJ TUTAJ** - instrukcje instalacji |
-| [`docs/DEPLOYMENT-COMPLETE.md`](docs/DEPLOYMENT-COMPLETE.md) | 📋 Kompletne info o wdrożeniu |
-| [`docs/README-ULTRA.md`](docs/README-ULTRA.md) | 🌟 Szczegóły wszystkich funkcji |
-| [`docs/SUCCESS.md`](docs/SUCCESS.md) | 🎉 Kompletne podsumowanie projektu |
-| [`.env.example`](.env.example) | ⚙️ Przykład konfiguracji |
+## 👥 Autorzy
 
----
+- **ZSEL SignumLBRI Team** - Samorząd Uczniowski Elektryk Opole
 
-## 🎊 Features "WOW":
+## 🙏 Podziękowania
 
-### 📚 Księgarnia:
-- **Zaawansowane wyszukiwanie** z Elasticsearch
-- **System rekomendacji** AI-powered
-- **Koszyk z session storage**
-- **Multi-language support** (PL/EN/UK)
-
-### 👥 Społeczność:
-- **Real-time chat** między użytkownikami
-- **Live notifications** o nowych książkach
-- **Rating system** dla sprzedających
-- **Advanced user profiles**
-
-### 🏫 Szkoły:
-- **School management panel**
-- **Bulk import** z CSV
-- **Statistics dashboard**
-- **Multi-school support**
-
-### 📊 Analytics:
-- **Real-time metrics** z Socket.IO
-- **Performance monitoring**
-- **User behavior tracking**
-- **Sales analytics**
+- Node.js Community
+- Express.js Team
+- MongoDB Team
+- Docker Team
 
 ---
 
-## 🏆 Gratulacje!
+<div align="center">
+  
+**🎯 SignumLBRI Enhanced - Nowoczesność w Zarządzaniu Książkami 🎯**
 
-Masz teraz **najnowocześniejszą aplikację księgarni szkolnej** z:
-- ✅ **Portami 8080 i 8443** (zgodnie z wymaganiami)
-- ✅ **Wszystko lokalnie** (bazy danych, cache, search)
-- ✅ **Ultra-nowoczesny stack** technologiczny
-- ✅ **Bezpieczeństwo** na najwyższym poziomie
-- ✅ **Performance WOW** factor
-- ✅ **Łatwość** rozwoju i wdrażania
+Made with ❤️ by ZSEL Team
 
-**🚀 Aplikacja gotowa do zajebistego działania! 🎉**
-
----
-
-*Created with ❤️ for modern education technology*
+</div>

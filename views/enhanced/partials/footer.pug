@@ -1,0 +1,239 @@
+//- Enhanced Footer Component
+footer#enhanced-footer.enhanced-footer.glassmorphism
+  .container
+    .footer-content
+      .footer-section.brand-section
+        .footer-brand
+          .brand-icon
+            i.fas.fa-book-open
+          .brand-text
+            .brand-main SignumLBRI
+            .brand-sub Enhanced
+        .footer-description
+          p= lang === 'pl' ? 'Nowoczesny system zarządzania książkami szkolnymi z zaawansowanymi funkcjami i pięknym interfejsem.' : lang === 'uk' ? 'Сучасна система управління шкільними книгами з розширеними функціями та гарним інтерфейсом.' : 'Modern school book management system with advanced features and beautiful interface.'
+        .footer-stats
+          .stat-item
+            .stat-number#footer-books-count 0
+            .stat-label= lang === 'pl' ? 'Książek' : lang === 'uk' ? 'Книг' : 'Books'
+          .stat-item
+            .stat-number#footer-users-count 0
+            .stat-label= lang === 'pl' ? 'Użytkowników' : lang === 'uk' ? 'Користувачів' : 'Users'
+          .stat-item
+            .stat-number#footer-schools-count 0
+            .stat-label= lang === 'pl' ? 'Szkół' : lang === 'uk' ? 'Шкіл' : 'Schools'
+      
+      .footer-section.links-section
+        .footer-links-grid
+          .link-column
+            h5.footer-heading= lang === 'pl' ? 'Biblioteka' : lang === 'uk' ? 'Бібліотека' : 'Library'
+            ul.footer-links
+              li
+                a(href="/enhanced/library")= lang === 'pl' ? 'Przeglądaj książki' : lang === 'uk' ? 'Переглянути книги' : 'Browse books'
+              li
+                a(href="/enhanced/library/favorites")= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorites'
+              li
+                a(href="/enhanced/books/add")= lang === 'pl' ? 'Dodaj książkę' : lang === 'uk' ? 'Додати книгу' : 'Add book'
+              li
+                a(href="/enhanced/books/sell")= lang === 'pl' ? 'Sprzedaj książkę' : lang === 'uk' ? 'Продати книгу' : 'Sell book'
+          
+          .link-column
+            h5.footer-heading= lang === 'pl' ? 'Konto' : lang === 'uk' ? 'Акаунт' : 'Account'
+            ul.footer-links
+              if user
+                li
+                  a(href="/enhanced/profile")= lang === 'pl' ? 'Profil' : lang === 'uk' ? 'Профіль' : 'Profile'
+                li
+                  a(href="/enhanced/settings")= lang === 'pl' ? 'Ustawienia' : lang === 'uk' ? 'Налаштування' : 'Settings'
+                li
+                  a(href="/enhanced/activity")= lang === 'pl' ? 'Aktywność' : lang === 'uk' ? 'Активність' : 'Activity'
+              else
+                li
+                  a(href="/enhanced/auth/login")= lang === 'pl' ? 'Zaloguj się' : lang === 'uk' ? 'Увійти' : 'Login'
+                li
+                  a(href="/enhanced/auth/register")= lang === 'pl' ? 'Zarejestruj się' : lang === 'uk' ? 'Зареєструватися' : 'Register'
+                li
+                  a(href="/enhanced/auth/forgot")= lang === 'pl' ? 'Odzyskaj hasło' : lang === 'uk' ? 'Відновити пароль' : 'Forgot password'
+          
+          .link-column
+            h5.footer-heading= lang === 'pl' ? 'Wsparcie' : lang === 'uk' ? 'Підтримка' : 'Support'
+            ul.footer-links
+              li
+                a(href="/enhanced/help")= lang === 'pl' ? 'Pomoc' : lang === 'uk' ? 'Допомога' : 'Help'
+              li
+                a(href="/enhanced/contact")= lang === 'pl' ? 'Kontakt' : lang === 'uk' ? 'Контакт' : 'Contact'
+              li
+                a(href="/enhanced/feedback")= lang === 'pl' ? 'Opinia' : lang === 'uk' ? 'Відгук' : 'Feedback'
+              li
+                a(href="/enhanced/faq")= lang === 'pl' ? 'FAQ' : lang === 'uk' ? 'FAQ' : 'FAQ'
+          
+          .link-column
+            h5.footer-heading= lang === 'pl' ? 'Prawne' : lang === 'uk' ? 'Правова інформація' : 'Legal'
+            ul.footer-links
+              li
+                a(href="/enhanced/privacy")= lang === 'pl' ? 'Polityka prywatności' : lang === 'uk' ? 'Політика конфіденційності' : 'Privacy Policy'
+              li
+                a(href="/enhanced/terms")= lang === 'pl' ? 'Regulamin' : lang === 'uk' ? 'Правила користування' : 'Terms of Service'
+              li
+                a(href="/enhanced/cookies")= lang === 'pl' ? 'Polityka cookies' : lang === 'uk' ? 'Політика cookies' : 'Cookie Policy'
+              li
+                a(href="/enhanced/licenses")= lang === 'pl' ? 'Licencje' : lang === 'uk' ? 'Ліцензії' : 'Licenses'
+      
+      .footer-section.social-section
+        .social-links
+          a.social-link(href="#" target="_blank" data-bs-toggle="tooltip" title="Facebook")
+            i.fab.fa-facebook-f
+          a.social-link(href="#" target="_blank" data-bs-toggle="tooltip" title="Twitter")
+            i.fab.fa-twitter
+          a.social-link(href="#" target="_blank" data-bs-toggle="tooltip" title="Instagram")
+            i.fab.fa-instagram
+          a.social-link(href="#" target="_blank" data-bs-toggle="tooltip" title="GitHub")
+            i.fab.fa-github
+        
+        .newsletter-signup
+          h6.newsletter-title= lang === 'pl' ? 'Newsletter' : lang === 'uk' ? 'Розсилка' : 'Newsletter'
+          .newsletter-form
+            .input-group
+              input.form-control(
+                type="email"
+                placeholder=lang === 'pl' ? 'Twój email...' : lang === 'uk' ? 'Ваш email...' : 'Your email...'
+                id="newsletter-email"
+              )
+              button.btn.btn-primary#newsletter-subscribe
+                i.fas.fa-paper-plane
+    
+    .footer-bottom
+      .footer-bottom-content
+        .footer-copyright
+          p
+            | © #{new Date().getFullYear()} SignumLBRI Enhanced. 
+            = lang === 'pl' ? 'Wszelkie prawa zastrzeżone.' : lang === 'uk' ? 'Всі права захищені.' : 'All rights reserved.'
+        
+        .footer-version
+          .version-info
+            span.version-label v2.0.0
+            span.version-status
+              i.fas.fa-circle.text-success
+              = lang === 'pl' ? 'Online' : lang === 'uk' ? 'Онлайн' : 'Online'
+        
+        .footer-actions
+          .theme-toggle-footer
+            button.btn.btn-sm.btn-outline-secondary.theme-toggle-btn(
+              data-bs-toggle="tooltip" 
+              title=lang === 'pl' ? 'Zmień motyw' : lang === 'uk' ? 'Змінити тему' : 'Toggle theme'
+            )
+              i.fas.fa-moon
+          
+          .back-to-top
+            button.btn.btn-sm.btn-outline-secondary#back-to-top-btn(
+              data-bs-toggle="tooltip" 
+              title=lang === 'pl' ? 'Wróć na górę' : lang === 'uk' ? 'Повернутися нагору' : 'Back to top'
+            )
+              i.fas.fa-chevron-up
+
+//- Footer Enhancement Scripts
+script.
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animate footer stats on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateFooterStats();
+          observer.disconnect();
+        }
+      });
+    });
+    
+    const footer = document.getElementById('enhanced-footer');
+    if (footer) {
+      observer.observe(footer);
+    }
+    
+    // Newsletter subscription
+    const newsletterBtn = document.getElementById('newsletter-subscribe');
+    const newsletterEmail = document.getElementById('newsletter-email');
+    
+    if (newsletterBtn && newsletterEmail) {
+      newsletterBtn.addEventListener('click', function() {
+        const email = newsletterEmail.value.trim();
+        if (email && isValidEmail(email)) {
+          subscribeToNewsletter(email);
+        } else {
+          showNotification('error', '#{lang === "pl" ? "Podaj prawidłowy adres email" : lang === "uk" ? "Введіть правильну адресу електронної пошти" : "Please enter a valid email address"}');
+        }
+      });
+      
+      newsletterEmail.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          newsletterBtn.click();
+        }
+      });
+    }
+    
+    // Back to top button
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  });
+  
+  function animateFooterStats() {
+    const stats = [
+      { id: 'footer-books-count', target: Math.floor(Math.random() * 1000) + 500 },
+      { id: 'footer-users-count', target: Math.floor(Math.random() * 500) + 100 },
+      { id: 'footer-schools-count', target: Math.floor(Math.random() * 50) + 20 }
+    ];
+    
+    stats.forEach(stat => {
+      const element = document.getElementById(stat.id);
+      if (element) {
+        animateNumber(element, stat.target, 2000);
+      }
+    });
+  }
+  
+  function animateNumber(element, target, duration) {
+    const start = 0;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const current = Math.floor(start + (target - start) * progress);
+      
+      element.textContent = current.toLocaleString();
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+  
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+  
+  function subscribeToNewsletter(email) {
+    // Mock newsletter subscription
+    const btn = document.getElementById('newsletter-subscribe');
+    const input = document.getElementById('newsletter-email');
+    
+    if (btn && input) {
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        input.value = '';
+        showNotification('success', '#{lang === "pl" ? "Dziękujemy za subskrypcję!" : lang === "uk" ? "Дякуємо за підписку!" : "Thank you for subscribing!"}');
+        
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+          btn.disabled = false;
+        }, 2000);
+      }, 1500);
+    }
+  }

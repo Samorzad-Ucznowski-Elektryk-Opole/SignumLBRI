@@ -33,7 +33,7 @@ export const IS_PROD = prod;
 export const SESSION_SECRET = process.env["SESSION_SECRET"];
 export const MONGODB_URI = prod
   ? process.env["MONGODB_URI"]
-  : process.env["MONGODB_URI_LOCAL"];
+  : (process.env["MONGODB_URI_DEV"] || process.env["MONGODB_URI_LOCAL"] || "mongodb://mongo:27017/signumlbri");
 
 if (!SESSION_SECRET) {
   logger.error("No client secret. Set SESSION_SECRET environment variable.");

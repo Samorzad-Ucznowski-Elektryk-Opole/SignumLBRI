@@ -1,0 +1,42 @@
+//- Enhanced Flash Messages Component
+if messages && (messages.error || messages.warning || messages.info || messages.success)
+  .flash-messages-container
+    if messages.error
+      each error in messages.error
+        .alert.alert-danger.flash-message.animate__animated.animate__slideInDown(role="alert")
+          .alert-content
+            .alert-icon
+              i.fas.fa-exclamation-circle
+            .alert-text= error
+            button.btn-close.alert-close(type="button" data-bs-dismiss="alert")
+              i.fas.fa-times
+    
+    if messages.warning  
+      each warning in messages.warning
+        .alert.alert-warning.flash-message.animate__animated.animate__slideInDown(role="alert")
+          .alert-content
+            .alert-icon
+              i.fas.fa-exclamation-triangle
+            .alert-text= warning
+            button.btn-close.alert-close(type="button" data-bs-dismiss="alert")
+              i.fas.fa-times
+    
+    if messages.info
+      each info in messages.info
+        .alert.alert-info.flash-message.animate__animated.animate__slideInDown(role="alert")
+          .alert-content
+            .alert-icon
+              i.fas.fa-info-circle
+            .alert-text= info
+            button.btn-close.alert-close(type="button" data-bs-dismiss="alert")
+              i.fas.fa-times
+    
+    if messages.success
+      each success in messages.success
+        .alert.alert-success.flash-message.animate__animated.animate__slideInDown(role="alert")
+          .alert-content
+            .alert-icon
+              i.fas.fa-check-circle
+            .alert-text= success
+            button.btn-close.alert-close(type="button" data-bs-dismiss="alert")
+              i.fas.fa-times

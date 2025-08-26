@@ -1,43 +1,39 @@
 services:
-  # MongoDB Database - Simplified version
   mongo:
-    image: mongo:7-jammy
-    restart: unless-stopped
-    container_name: signum-mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
     volumes:
       - './data:/data/db'
     networks:
-      - signum-network
-    ports:
-      - "27017:27017"
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+      - app-network
 
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    container_name: signum-redis
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-temp_password_change_me}
-    volumes:
-      - './redis-data:/data'
-    networks:
-      - signum-network
+  signumlbri:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.debug
+    restart: always
     ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - "3000:3000"
+      - "9229:9229"
+    environment:
+      NODE_ENV: development
+      SESSION_SECRET: "development-secret-key"
+      MONGODB_URI: mongodb://mongo:27017/signumlbri
+      MONGODB_URI_LOCAL: mongodb://mongo:27017/signumlbri
+      MAIL_HOST: 
+      MAIL_USER: 
+      MAIL_SHOWMAIL: true
+      MAIL_PASSWORD: 
+    volumes:
+      - ./public/uploads:/usr/src/app/dist/public/uploads
+    depends_on:
+      - mongo
+    command: ["npm", "run", "watch-debug"]
+    networks:
+      - app-network
 
 networks:
-  signum-network:
+  app-network:
     driver: bridge

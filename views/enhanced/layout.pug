@@ -1,0 +1,89 @@
+doctype html
+html(lang=lang)
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(name="description" content="SignumLBRI Enhanced - Nowoczesny system zarządzania książkami szkolnymi")
+    meta(name="author" content="SignumLBRI")
+    
+    title #{title} | SignumLBRI Enhanced
+    
+    //- Favicon
+    link(rel="icon" type="image/x-icon" href="/images/favicon.ico")
+    
+    //- CSS Dependencies
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet")
+    link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet")
+    
+    //- Enhanced Styles
+    link(rel="stylesheet" href="/css/enhanced/main.css")
+    link(rel="stylesheet" href="/css/enhanced/components.css")
+    link(rel="stylesheet" href="/css/enhanced/themes.css")
+    
+    //- Theme and Language Variables
+    script.
+      window.ENHANCED_CONFIG = {
+        currentTheme: '#{req.session && req.session.theme ? req.session.theme : "auto"}',
+        currentLanguage: '#{lang}',
+        user: !{JSON.stringify(user || null)},
+        csrfToken: '#{req.csrfToken && req.csrfToken() || ""}'
+      };
+    
+    block additional_head
+  
+  body(class=`enhanced-app theme-${req.session && req.session.theme ? req.session.theme : 'auto'} lang-${lang}` data-theme=`${req.session && req.session.theme ? req.session.theme : 'auto'}` data-lang=lang)
+    
+    //- Loading Screen
+    #enhanced-loading.loading-screen
+      .loading-content
+        .loading-spinner
+        .loading-text Ładowanie...
+    
+    //- Navigation
+    include partials/navigation
+    
+    //- Flash Messages
+    include partials/flash-messages
+    
+    //- Main Content
+    main#main-content.main-content
+      block content
+    
+    //- Footer
+    include partials/footer
+    
+    //- Modals
+    include partials/modals
+    
+    //- Scripts
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js")
+    script(src="/js/enhanced/core.js")
+    script(src="/js/enhanced/components.js")
+    script(src="/js/enhanced/api.js")
+    
+    block additional_scripts
+    
+    //- Enhanced App Initialization
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Enhanced App
+        if (window.EnhancedApp) {
+          window.EnhancedApp.init({
+            theme: window.ENHANCED_CONFIG.currentTheme,
+            language: window.ENHANCED_CONFIG.currentLanguage,
+            user: window.ENHANCED_CONFIG.user,
+            csrfToken: window.ENHANCED_CONFIG.csrfToken
+          });
+        }
+        
+        // Hide loading screen
+        const loading = document.getElementById('enhanced-loading');
+        if (loading) {
+          setTimeout(() => {
+            loading.classList.add('loaded');
+            setTimeout(() => loading.remove(), 500);
+          }, 300);
+        }
+      });

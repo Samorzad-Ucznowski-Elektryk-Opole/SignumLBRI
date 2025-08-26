@@ -1,0 +1,221 @@
+//- Enhanced Modals Collection
+
+//- Confirmation Modal
+#confirmModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-question-circle
+          span#confirmModalTitle= lang === 'pl' ? 'Potwierdź akcję' : lang === 'uk' ? 'Підтвердіть дію' : 'Confirm Action'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body
+        p#confirmModalMessage= lang === 'pl' ? 'Czy na pewno chcesz wykonać tę akcję?' : lang === 'uk' ? 'Ви впевнені, що хочете виконати цю дію?' : 'Are you sure you want to perform this action?'
+      .modal-footer
+        button.btn.btn-secondary(type='button' data-bs-dismiss='modal')= lang === 'pl' ? 'Anuluj' : lang === 'uk' ? 'Скасувати' : 'Cancel'
+        button.btn.btn-primary#confirmModalAction= lang === 'pl' ? 'Potwierdź' : lang === 'uk' ? 'Підтвердити' : 'Confirm'
+
+//- Loading Modal
+#loadingModal.modal.fade(tabindex='-1' data-bs-backdrop='static' data-bs-keyboard='false')
+  .modal-dialog.modal-dialog-centered.modal-sm
+    .modal-content.glassmorphism
+      .modal-body.text-center
+        .loading-spinner.mb-3
+          .spinner-border.text-primary(role='status')
+            span.visually-hidden Loading...
+        p#loadingModalMessage= lang === 'pl' ? 'Przetwarzanie...' : lang === 'uk' ? 'Обробка...' : 'Processing...'
+
+//- Book Quick View Modal
+#bookQuickViewModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-lg.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-book
+          span#bookQuickViewTitle= lang === 'pl' ? 'Szczegóły książki' : lang === 'uk' ? 'Деталі книги' : 'Book Details'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body
+        .book-quick-view-content
+          .row
+            .col-md-4
+              .book-cover-container
+                img#bookQuickViewCover.book-cover.img-fluid(alt='Book Cover')
+                .book-actions.mt-3
+                  button.btn.btn-outline-danger.btn-sm.favorite-btn
+                    i.fas.fa-heart
+                    span= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorite'
+            .col-md-8
+              .book-info
+                h4#bookQuickViewTitleText Book Title
+                p.book-author
+                  i.fas.fa-user
+                  span#bookQuickViewAuthor Author Name
+                p.book-category
+                  i.fas.fa-tag
+                  span#bookQuickViewCategory Category
+                p.book-price
+                  i.fas.fa-money-bill
+                  span#bookQuickViewPrice $0.00
+                .book-description
+                  h6= lang === 'pl' ? 'Opis' : lang === 'uk' ? 'Опис' : 'Description'
+                  p#bookQuickViewDescription Book description...
+                .book-availability
+                  h6= lang === 'pl' ? 'Dostępność' : lang === 'uk' ? 'Доступність' : 'Availability'
+                  .availability-info
+                    span.availability-count
+                      i.fas.fa-check-circle.text-success
+                      span#bookQuickViewAvailable 0
+                      = ' ' + (lang === 'pl' ? 'dostępnych' : lang === 'uk' ? 'доступних' : 'available')
+      .modal-footer
+        a.btn.btn-primary#bookQuickViewDetailsBtn(href='#')
+          i.fas.fa-eye
+          = ' ' + (lang === 'pl' ? 'Zobacz szczegóły' : lang === 'uk' ? 'Переглянути деталі' : 'View Details')
+        button.btn.btn-success#bookQuickViewContactBtn
+          i.fas.fa-envelope
+          = ' ' + (lang === 'pl' ? 'Kontakt' : lang === 'uk' ? 'Контакт' : 'Contact')
+
+//- User Profile Modal
+#userProfileModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-user
+          span#userProfileModalTitle= lang === 'pl' ? 'Profil użytkownika' : lang === 'uk' ? 'Профіль користувача' : 'User Profile'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body
+        .user-profile-content
+          .text-center.mb-4
+            .user-avatar-large
+              img#userProfileAvatar.rounded-circle(alt='User Avatar' style='width: 80px; height: 80px;')
+            h5#userProfileName User Name
+            span.badge.bg-primary#userProfileRole user
+          
+          .user-stats.row.text-center
+            .col-4
+              .stat-item
+                .stat-number#userProfileBooks 0
+                .stat-label= lang === 'pl' ? 'Książek' : lang === 'uk' ? 'Книг' : 'Books'
+            .col-4
+              .stat-item
+                .stat-number#userProfileListings 0
+                .stat-label= lang === 'pl' ? 'Ofert' : lang === 'uk' ? 'Пропозицій' : 'Listings'
+            .col-4
+              .stat-item
+                .stat-number#userProfileRating 0
+                .stat-label= lang === 'pl' ? 'Ocena' : lang === 'uk' ? 'Рейтинг' : 'Rating'
+          
+          .user-info.mt-4
+            .info-item
+              i.fas.fa-envelope
+              span#userProfileEmail user@example.com
+            .info-item
+              i.fas.fa-school
+              span#userProfileSchool School Name
+            .info-item
+              i.fas.fa-calendar
+              span= (lang === 'pl' ? 'Dołączył ' : lang === 'uk' ? 'Приєднався ' : 'Joined ') + '<span id="userProfileJoined">Jan 2024</span>'
+      .modal-footer
+        button.btn.btn-primary#userProfileContactBtn
+          i.fas.fa-envelope
+          = ' ' + (lang === 'pl' ? 'Wyślij wiadomość' : lang === 'uk' ? 'Надіслати повідомлення' : 'Send Message')
+
+//- Image Gallery Modal
+#imageGalleryModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-xl.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-images
+          span= lang === 'pl' ? 'Galeria zdjęć' : lang === 'uk' ? 'Галерея зображень' : 'Image Gallery'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body.p-0
+        .image-gallery-container
+          .main-image-container
+            img#galleryMainImage.img-fluid(alt='Gallery Image')
+          .thumbnail-container
+            .thumbnail-list#galleryThumbnails
+              //- Thumbnails will be populated dynamically
+      .modal-footer
+        .gallery-navigation
+          button.btn.btn-outline-secondary#galleryPrevBtn
+            i.fas.fa-chevron-left
+          span.gallery-counter
+            span#galleryCurrentIndex 1
+            = ' ' + (lang === 'pl' ? 'z' : lang === 'uk' ? 'з' : 'of') + ' '
+            span#galleryTotalCount 1
+          button.btn.btn-outline-secondary#galleryNextBtn
+            i.fas.fa-chevron-right
+        .gallery-actions
+          button.btn.btn-primary#galleryDownloadBtn
+            i.fas.fa-download
+            = ' ' + (lang === 'pl' ? 'Pobierz' : lang === 'uk' ? 'Завантажити' : 'Download')
+
+//- Notification Toast Container
+.toast-container.position-fixed.top-0.end-0.p-3#toastContainer
+
+//- Search Suggestions Modal
+#searchSuggestionsModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-search
+          span= lang === 'pl' ? 'Sugestie wyszukiwania' : lang === 'uk' ? 'Пропозиції пошуку' : 'Search Suggestions'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body
+        .search-suggestions-content
+          .recent-searches.mb-4
+            h6= lang === 'pl' ? 'Ostatnie wyszukiwania' : lang === 'uk' ? 'Останні пошуки' : 'Recent Searches'
+            .recent-searches-list#recentSearchesList
+              //- Recent searches will be populated dynamically
+          
+          .popular-searches
+            h6= lang === 'pl' ? 'Popularne wyszukiwania' : lang === 'uk' ? 'Популярні пошуки' : 'Popular Searches'
+            .popular-searches-list
+              a.search-suggestion(href='#' data-query='matematyka')= lang === 'pl' ? 'Matematyka' : lang === 'uk' ? 'Математика' : 'Mathematics'
+              a.search-suggestion(href='#' data-query='fizyka')= lang === 'pl' ? 'Fizyka' : lang === 'uk' ? 'Фізика' : 'Physics'
+              a.search-suggestion(href='#' data-query='chemia')= lang === 'pl' ? 'Chemia' : lang === 'uk' ? 'Хімія' : 'Chemistry'
+              a.search-suggestion(href='#' data-query='biologia')= lang === 'pl' ? 'Biologia' : lang === 'uk' ? 'Біологія' : 'Biology'
+              a.search-suggestion(href='#' data-query='historia')= lang === 'pl' ? 'Historia' : lang === 'uk' ? 'Історія' : 'History'
+
+//- Quick Actions Modal
+#quickActionsModal.modal.fade(tabindex='-1')
+  .modal-dialog.modal-dialog-centered
+    .modal-content.glassmorphism
+      .modal-header
+        h5.modal-title
+          i.fas.fa-bolt
+          span= lang === 'pl' ? 'Szybkie akcje' : lang === 'uk' ? 'Швидкі дії' : 'Quick Actions'
+        button.btn-close(type='button' data-bs-dismiss='modal')
+      .modal-body
+        .quick-actions-grid
+          a.quick-action-item(href='/enhanced/books/add')
+            .action-icon
+              i.fas.fa-plus-circle
+            .action-text= lang === 'pl' ? 'Dodaj książkę' : lang === 'uk' ? 'Додати книгу' : 'Add Book'
+          
+          a.quick-action-item(href='/enhanced/books/sell')
+            .action-icon
+              i.fas.fa-money-bill
+            .action-text= lang === 'pl' ? 'Sprzedaj książkę' : lang === 'uk' ? 'Продати книгу' : 'Sell Book'
+          
+          a.quick-action-item(href='/enhanced/library/favorites')
+            .action-icon
+              i.fas.fa-heart
+            .action-text= lang === 'pl' ? 'Ulubione' : lang === 'uk' ? 'Улюблені' : 'Favorites'
+          
+          a.quick-action-item(href='/enhanced/profile')
+            .action-icon
+              i.fas.fa-user-edit
+            .action-text= lang === 'pl' ? 'Edytuj profil' : lang === 'uk' ? 'Редагувати профіль' : 'Edit Profile'
+          
+          a.quick-action-item(href='/enhanced/settings')
+            .action-icon
+              i.fas.fa-cog
+            .action-text= lang === 'pl' ? 'Ustawienia' : lang === 'uk' ? 'Налаштування' : 'Settings'
+          
+          a.quick-action-item(href='/enhanced/help')
+            .action-icon
+              i.fas.fa-question-circle
+            .action-text= lang === 'pl' ? 'Pomoc' : lang === 'uk' ? 'Допомога' : 'Help'
