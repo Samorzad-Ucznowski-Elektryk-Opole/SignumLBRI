@@ -6,12 +6,13 @@
   "scripts": {
     "start": "node enhanced-app.js",
     "dev": "nodemon enhanced-app.js",
-    "enhanced": "node enhanced-app.js",
     "test": "jest",
-    "docker:build": "docker build -f Dockerfile.enhanced -t signumlbri-enhanced .",
+    "docker:build": "docker build -t signumlbri-enhanced .",
     "docker:run": "docker run -p 4000:4000 signumlbri-enhanced",
-    "docker:compose": "docker-compose -f docker-compose-minimal.yml up -d",
-    "docker:down": "docker-compose -f docker-compose-minimal.yml down"
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart"
   },
   "keywords": [
     "education",

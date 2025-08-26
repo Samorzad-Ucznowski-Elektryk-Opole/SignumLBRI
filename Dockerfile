@@ -22,11 +22,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies as root
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install --only=production && npm cache clean --force
 
 # Copy application files
 COPY enhanced-app.js ./
-COPY .env ./
 COPY views/ ./views/
 COPY public/ ./public/
 COPY src/lang/ ./src/lang/
@@ -51,18 +50,10 @@ ENV USE_MEMORY_DB=true
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:4000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+    CMD wget --quiet --tries=1 --spider http://localhost:4000/health || exit 1
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
-CMD ["node", "enhanced-app.js"]
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:4000/enhanced', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
-
-# Start application with dumb-init
-ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "enhanced-app.js"]

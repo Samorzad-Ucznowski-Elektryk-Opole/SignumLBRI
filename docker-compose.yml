@@ -6,7 +6,7 @@ services:
   signumlbri-enhanced:
     build:
       context: .
-      dockerfile: Dockerfile.enhanced
+      dockerfile: Dockerfile
     container_name: signumlbri-enhanced
     ports:
       - "4000:4000"
