@@ -1,6 +1,0 @@
-FROM node:18-alpine
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", ".eslintrc*", ".eslintignore*", "./"]
-RUN npm install --development --silent && mv node_modules ../
-COPY . .
-EXPOSE 3000 9229
