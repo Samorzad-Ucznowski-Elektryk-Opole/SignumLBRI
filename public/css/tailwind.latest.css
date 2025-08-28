@@ -1,0 +1,21 @@
+/* Basic Tailwind CSS placeholder */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic styles for SignumLBRI */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.bg-back-blue {
+  background-color: #f8fafc;
+}
+
+.text-primary {
+  color: #2563eb;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}

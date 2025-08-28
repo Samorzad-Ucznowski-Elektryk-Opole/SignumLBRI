@@ -619,6 +619,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Main routes
+app.get('/', (req, res) => {
+  console.log('🏠 Home route accessed, redirecting to enhanced dashboard');
+  res.redirect('/enhanced');
+});
+
 // Enhanced Routes
 app.get('/enhanced', async (req, res) => {
   console.log('🏠 Dashboard route accessed:', { user: req.user?.email, language: req.language });
@@ -788,6 +794,191 @@ app.get('/enhanced/api/books', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Unable to fetch books',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Dashboard API
+app.get('/enhanced/api/dashboard/stats', async (req, res) => {
+  try {
+    const stats = {
+      totalBooks: 1247,
+      totalUsers: 324,
+      activeListings: 89,
+      recentSales: 23,
+      monthlyGrowth: 12.5,
+      systemHealth: 98.7
+    };
+    res.json({
+      success: true,
+      data: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Unable to fetch dashboard stats',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/enhanced/api/dashboard/activity', async (req, res) => {
+  try {
+    const activities = [
+      {
+        id: 1,
+        type: 'book_added',
+        text: 'Dodano nową książkę: Matematyka dla szkół średnich',
+        icon: 'book',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString()
+      },
+      {
+        id: 2,
+        type: 'user_registered',
+        text: 'Nowy użytkownik: jan.kowalski@email.com',
+        icon: 'user-plus',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+      },
+      {
+        id: 3,
+        type: 'sale_completed',
+        text: 'Sprzedano książkę: Historia Polski',
+        icon: 'shopping-cart',
+        timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: activities,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Unable to fetch activity',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Users API
+app.get('/enhanced/api/users/profile', async (req, res) => {
+  try {
+    const profile = {
+      id: 'mock-user-id',
+      email: 'admin@signumlbri.com',
+      name: 'Administrator',
+      role: 'admin',
+      avatar: '/images/default-avatar.png',
+      preferences: {
+        theme: req.session?.theme || 'auto',
+        language: req.session?.language || 'pl',
+        notifications: true
+      },
+      stats: {
+        ownedBooks: 14,
+        activeListings: 5,
+        favoriteBooks: 9,
+        joinedDate: '2024-01-15'
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: profile,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Unable to fetch user profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Books search API
+app.get('/enhanced/api/books/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.trim().length < 2) {
+      return res.json({
+        success: true,
+        data: { results: [] },
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mock search results
+    const results = [
+      {
+        id: 1,
+        title: `Matematyka - ${q}`,
+        description: 'Podręcznik matematyki dla szkół średnich',
+        category: 'Matematyka',
+        grade: '1-3 LO'
+      },
+      {
+        id: 2,
+        title: `Historia Polski - ${q}`,
+        description: 'Kompleksowy przegląd historii Polski',
+        category: 'Historia',
+        grade: '2-3 LO'
+      }
+    ].filter(book => 
+      book.title.toLowerCase().includes(q.toLowerCase()) ||
+      book.description.toLowerCase().includes(q.toLowerCase())
+    );
+    
+    res.json({
+      success: true,
+      data: { results },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Search failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Admin API
+app.get('/enhanced/api/admin/system', async (req, res) => {
+  try {
+    const systemInfo = {
+      server: {
+        uptime: Math.floor(process.uptime()),
+        memory: process.memoryUsage(),
+        cpu: process.cpuUsage(),
+        version: process.version,
+        platform: process.platform
+      },
+      database: {
+        status: 'connected',
+        collections: 8,
+        totalDocuments: 1247
+      },
+      cache: {
+        status: 'healthy',
+        hitRate: 89.5,
+        keys: 156
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: systemInfo,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Unable to fetch system info',
       timestamp: new Date().toISOString()
     });
   }

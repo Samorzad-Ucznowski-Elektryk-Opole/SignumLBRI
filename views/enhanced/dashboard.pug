@@ -149,6 +149,17 @@ block content
                     else
                       | Library
                 
+                button.quick-action#test-api-btn(type="button")
+                  .action-icon
+                    i.fas.fa-flask
+                  .action-text
+                    if lang === 'pl'
+                      | Test API
+                    else if lang === 'uk'
+                      | Тест API
+                    else
+                      | Test API
+                
                 a.quick-action(href="/enhanced/books")
                   .action-icon
                     i.fas.fa-search
@@ -620,6 +631,55 @@ block additional_scripts
           }, 100);
         });
       }, 500);
+      
+      // API Test Button Handler
+      const testApiBtn = document.getElementById('test-api-btn');
+      if (testApiBtn && window.EnhancedAPI) {
+        testApiBtn.addEventListener('click', async function() {
+          this.classList.add('loading');
+          this.disabled = true;
+          
+          try {
+            console.log('🧪 Testing API endpoints...');
+            
+            // Test dashboard stats
+            const stats = await window.EnhancedAPI.dashboard.getStats();
+            console.log('📊 Dashboard stats:', stats);
+            
+            // Test user profile
+            const profile = await window.EnhancedAPI.users.getProfile();
+            console.log('👤 User profile:', profile);
+            
+            // Test book search
+            const searchResults = await window.EnhancedAPI.books.search('matematyka');
+            console.log('🔍 Search results:', searchResults);
+            
+            // Show success notification
+            if (window.EnhancedComponents) {
+              window.EnhancedComponents.toast.show(
+                'API test completed successfully! Check console for details.', 
+                'success'
+              );
+            } else {
+              alert('API test completed successfully! Check console for details.');
+            }
+            
+          } catch (error) {
+            console.error('❌ API Test failed:', error);
+            if (window.EnhancedComponents) {
+              window.EnhancedComponents.toast.show(
+                'API test failed: ' + error.message, 
+                'danger'
+              );
+            } else {
+              alert('API test failed: ' + error.message);
+            }
+          } finally {
+            this.classList.remove('loading');
+            this.disabled = false;
+          }
+        });
+      }
     }
     
     function animateCounter(element, target, duration) {
